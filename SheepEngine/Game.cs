@@ -6,6 +6,8 @@ using Runtime.Graphics;
 using Runtime.Graphics.Pipeline;
 using Runtime.Scenes;
 
+using static System.Console;
+
 namespace Runtime
 {
     public class Game
@@ -42,7 +44,7 @@ namespace Runtime
     {
         public static void Main(string[] args)
         {
-            Game.Start("C:\\Users\\zttde\\Desktop\\TestProject");
+            Game.Start("TestProject");
         }
     }
 }
