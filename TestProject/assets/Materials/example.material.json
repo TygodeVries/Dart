@@ -1,0 +1,4 @@
+{
+    "Vertex": "Assets/Shaders/lit.vert",
+    "Fragment": "Assets/Shaders/lit.frag"
+}
