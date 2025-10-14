@@ -1,7 +1,8 @@
 {
   "profiles": {
     "Runtime": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "workingDirectory": "$(SolutionDir)"
     },
     "Profile 1": {
       "commandName": "Project"
