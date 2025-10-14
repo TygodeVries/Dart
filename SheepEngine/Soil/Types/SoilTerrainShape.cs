@@ -26,7 +26,7 @@ namespace Runtime.Soil.Types
 
         Mesh GenerateMesh()
         {
-            
+            return null;
         }
     }
 }

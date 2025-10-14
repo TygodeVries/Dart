@@ -1,4 +1,5 @@
 ﻿using OpenTK.Windowing.GraphicsLibraryFramework;
+using Runtime.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace Runtime.Input
         public Keyboard()
         {
             current = this;
+            Debug.Log("Activated keyboard!");
         }
 
         Dictionary<Keys, bool> keyStates = new Dictionary<Keys, bool>();

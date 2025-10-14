@@ -6,6 +6,7 @@ using Runtime.Calc;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
 using Runtime.Graphics.Shaders;
+using Runtime.Logging;
 
 namespace Runtime.Graphics.Pipeline
 {
@@ -15,6 +16,7 @@ namespace Runtime.Graphics.Pipeline
         DefaultLightManager defaultLightManager = new DefaultLightManager();
         public void Initialize()
         {
+            Debug.Log("Initializing...");
             // Load the materials
             ShaderProgram program = ShaderProgram.FromFile("assets/Shaders/lit.vert", "assets/Shaders/lit.frag");
             program.Compile();
@@ -56,13 +58,16 @@ namespace Runtime.Graphics.Pipeline
         List<Renderer> renderers = new List<Renderer>();
 
         public List<RenderPass> customRenderPasses = new List<RenderPass>();
+
+        bool sendNoCameraIssue;
         public void Render()
         {
             defaultLightManager.UploadAll();
             if(Camera.main == null)
             {
                 GL.ClearColor(1, 0, 0, 1);
-                Console.WriteLine("No camera's rendering");
+                if(!sendNoCameraIssue) Debug.Error("No camera is rendering to the screen, you must have at least 1 camera to render from.");
+                sendNoCameraIssue = true;
                 return;
             }
             else

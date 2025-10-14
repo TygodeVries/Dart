@@ -1,6 +1,7 @@
 ﻿using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using Runtime.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,21 +54,24 @@ namespace Runtime.Graphics.Shaders
             GL.LinkProgram(program);
             GL.ValidateProgram(program);
 
-            Console.WriteLine(GL.GetError());
-
+            if (GL.GetError() != 0)
+            {
+                Debug.Error("Shader complication resulted in an error!" + GL.GetError());
+            }
             GL.DeleteShader(vertex);
             GL.DeleteShader(fragment);
 
             shaderProgramId = program;
             compiled = true;
 
-
             string infoLog;
             GL.GetShaderInfoLog(fragment, out infoLog);
-            Console.WriteLine($"Fragement compile resulted in: {infoLog}");
+            if (infoLog.Length > 3)
+                Debug.Error($"Compiling fragment shader resulted an an error: {infoLog}");
 
             GL.GetShaderInfoLog(vertex, out infoLog);
-            Console.WriteLine($"Vertex compile resulted in: {infoLog}");
+            if (infoLog.Length > 3)
+                Debug.Error($"Compiling vertex shader resulted an an error: {infoLog}");
         }
 
 

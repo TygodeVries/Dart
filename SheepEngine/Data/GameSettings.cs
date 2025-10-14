@@ -9,5 +9,6 @@ namespace Runtime.Data
     public class GameSettings
     {
         public string WindowTitle { get; set; } = "Untitled Game";
+        public string CodePath { get; set; } = "null";
     }
 }

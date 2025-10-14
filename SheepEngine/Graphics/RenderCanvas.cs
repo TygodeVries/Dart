@@ -5,6 +5,7 @@ using OpenTK.Windowing.Desktop;
 using Runtime.Calc;
 using Runtime.Graphics.Pipeline;
 using Runtime.Input;
+using Runtime.Logging;
 using Runtime.Scenes;
 using System;
 using System.Collections.Generic;
@@ -37,9 +38,10 @@ namespace Runtime.Graphics
         {
             new Keyboard();
             new Mouse();
-            base.OnLoad();
 
-            Game.finishedStartup?.Invoke();
+
+            Debug.Log("Loading render canvas...");
+            base.OnLoad();
         }
 
         protected override void OnMouseDown(MouseButtonEventArgs e)

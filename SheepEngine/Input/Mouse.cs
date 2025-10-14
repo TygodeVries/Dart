@@ -1,4 +1,5 @@
 ﻿using OpenTK.Mathematics;
+using Runtime.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace Runtime.Input
         public Mouse()
         {
             current = this;
+            Debug.Log("Activated Mouse!");
         }
 
         public Vector2 mouseDelta;

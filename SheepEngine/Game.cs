@@ -5,8 +5,7 @@ using Runtime.Data;
 using Runtime.Graphics;
 using Runtime.Graphics.Pipeline;
 using Runtime.Scenes;
-
-using static System.Console;
+using static Runtime.Logging.Debug;
 
 namespace Runtime
 {
@@ -16,28 +15,36 @@ namespace Runtime
         public static int height = 480;
         public static void Start(string path)
         {
-            // Set the correct directory
+            Log("Starting Dart v0.1...");
+            Log($"Working from {path}");
             Directory.SetCurrentDirectory(path);
 
+            Log($"Loading {Path.Join(path, "GameSettings.json")}...");
             GameSettings gameSettings = Files.Load<GameSettings>("GameSettings.json");
 
+            Log("Attempting to switch to dedicated graphics card (If present)");
+            DedicatedSwitch.Switch();
+
+            Log($"Creating window of size {width}, {height}");
+            Log($"Setting window title to {gameSettings.WindowTitle}");
             var nativeWindowSettings = new NativeWindowSettings()
             {
                 Size = new Vector2i(width, height),
                 Title = gameSettings.WindowTitle,
             };
 
-            DedicatedSwitch.Switch();
             RenderCanvas window = new RenderCanvas(nativeWindowSettings);
-            window.SetGraphicsPipeline(new DefaultGraphicsPipeline());
 
-            Console.WriteLine("Loading Scene...");
+            IGraphicsPipeline graphicsPipeline = new DefaultGraphicsPipeline();
+            Log($"Using graphicsPipeline: {graphicsPipeline}.");            
+            window.SetGraphicsPipeline(graphicsPipeline);
 
+            Log($"Creating empty scene...");
             Scene.main = new Scene();
+
+            Log($"Opening window...");
             window.Run();
         }
-
-        public static Action finishedStartup;
     }
 
     class Program

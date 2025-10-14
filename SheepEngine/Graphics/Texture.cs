@@ -1,6 +1,7 @@
 ﻿using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using Runtime.Logging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
@@ -42,7 +43,10 @@ namespace Runtime.Graphics
             GL.TexParameterf(TextureTarget.Texture2d, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
             GL.TexParameterf(TextureTarget.Texture2d, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
             GL.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
-            Console.WriteLine($"Uploading texture! {GL.GetError()}");
+            Debug.Log($"Uploading texture of {width}x{height}");
+
+            if (GL.GetError() != ErrorCode.NoError)
+                Debug.Log($"OpenGL has an error: {GL.GetError()}");
         }
 
         public void Use(TextureUnit textureUnit)
