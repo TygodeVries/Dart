@@ -7,62 +7,41 @@ using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
 using Runtime.Graphics.Shaders;
 using Runtime.Logging;
+using Runtime.Scenes;
 
 namespace Runtime.Graphics.Pipeline
 {
     public class DefaultGraphicsPipeline : IGraphicsPipeline
-    {
-
-        DefaultLightManager defaultLightManager = new DefaultLightManager();
+    {  
         public void Initialize()
         {
             Debug.Log("Initializing...");
-            // Load the materials
-            ShaderProgram program = ShaderProgram.FromFile("assets/Shaders/lit.vert", "assets/Shaders/lit.frag");
-            program.Compile();
+            GL.ClearColor(0, 0, 0, 0);
 
-
-            ShaderProgram skyboxShader = ShaderProgram.FromFile("assets/Shaders/skybox.vert", "assets/Shaders/skybox.frag");
-
-            Texture rockColor = new Texture("Assets/Textures/Moss/color.png");
-            Texture rockNormal = new Texture("Assets/Textures/Moss/normal.png");
-            Texture rockRough = new Texture("Assets/Textures/Moss/rough.png");
-
-            sphereMaterial = new Material(program);
-            sphereMaterial.SetTexture("u_Texture", rockColor, 0);
-            sphereMaterial.SetTexture("u_NormalMap", rockNormal, 1);
-            sphereMaterial.SetTexture("u_Rough", rockRough, 2);
-
-            skyboxMaterial = new Material(skyboxShader);
-            skyboxMaterial.SetTexture("u_Texture", rockColor, 0);
-
-            // 46, 68, 130
-            GL.ClearColor(46 / 255f, 68 / 255f, 130 / 255f, 1);
-
-            defaultLightManager.AddEffected(sphereMaterial);
-
+            Debug.Log("Calling custom render pass start.");
             foreach (RenderPass renderPass in customRenderPasses)
             {
                 renderPass.Start();
             }
         }
-        Material sphereMaterial;
-        Material skyboxMaterial;
-
+       
         public void AddRenderer(Renderer renderer)
         {
             renderers.Add(renderer);
             Console.WriteLine("Added renderer: " + renderers.Count);
         }
-        float time = 0;
+
+        // Anything that needs to be renderered by this graphics pipeline
         List<Renderer> renderers = new List<Renderer>();
 
+        // Any custom passes we might need to do (ui?)
         public List<RenderPass> customRenderPasses = new List<RenderPass>();
 
         bool sendNoCameraIssue;
         public void Render()
         {
-            defaultLightManager.UploadAll();
+            Scene.main.GetLightManager().UploadAll();
+            
             if(Camera.main == null)
             {
                 GL.ClearColor(1, 0, 0, 1);
@@ -72,15 +51,10 @@ namespace Runtime.Graphics.Pipeline
             }
             else
             {
-                GL.ClearColor(46 / 255f, 68 / 255f, 130 / 255f, 1);
+                // Set to camera background color   
+                GL.ClearColor(Camera.main.backgroundColor.X, Camera.main.backgroundColor.Y, Camera.main.backgroundColor.Z, 1);
             }
 
-            sphereMaterial.SetVector3("u_camera_pos", Camera.main.GetComponent<Transform>().position);
-            skyboxMaterial.SetVector3("u_camera_forwards", Camera.main.GetComponent<Transform>().GetForwards());
-            sphereMaterial.SetFloat("u_shininess", 8);
-            time += (float)Time.deltaTime * 0.5f;
-            float x = MathF.Cos(time * MathF.PI);
-            float z = MathF.Sin(time * MathF.PI);
             Camera renderCamera = Camera.main;
             Matrix4 view = renderCamera.GetViewMatrix();
             Matrix4 projection = renderCamera.GetProjectionMatrix();
@@ -108,6 +82,7 @@ namespace Runtime.Graphics.Pipeline
 
                     material.SetMatrix4("uModel", model);
                 }
+
                 renderer.Render();
             }
 

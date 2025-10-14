@@ -14,6 +14,7 @@ namespace Runtime.Component.Core
         public static Camera main;
         public float fieldOfView = 60f;
 
+        public Vector3 backgroundColor = new Vector3(0.1f, 0.77f, 0.78f);
 
         public Camera()
         {

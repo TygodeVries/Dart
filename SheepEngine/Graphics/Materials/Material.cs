@@ -3,6 +3,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using Runtime.Graphics;
 using Runtime.Graphics.Shaders;
+using Runtime.Scenes;
 using System;
 
 
@@ -14,6 +15,15 @@ namespace Runtime.Graphics.Materials
         public Material(ShaderProgram shader)
         {
             this.shader = shader;
+        }
+
+
+        /// <summary>
+        /// Start sending lighting information to any attached shaders
+        /// </summary>
+        public void EnableLightData()
+        {
+            Scene.main.GetLightManager().AddEffected(this);
         }
 
         Dictionary<string, MaterialField> materialFields = new Dictionary<string, MaterialField>();

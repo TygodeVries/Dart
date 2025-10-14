@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Runtime.Component.Lighting;
+using Runtime.Graphics;
 
 namespace Runtime.Scenes
 {
@@ -15,6 +17,12 @@ namespace Runtime.Scenes
         {
             gameObjects.Add(game);
             game.OnLoad();
+        }
+
+        DefaultLightManager defaultLightManager = new DefaultLightManager();
+        public DefaultLightManager GetLightManager()
+        {
+            return defaultLightManager;
         }
 
         public static Scene main;

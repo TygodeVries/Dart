@@ -43,7 +43,7 @@ namespace Runtime
             Scene.main = new Scene();
 
             Log($"Opening window...");
-            window.Run();
+            window.Run(); // Keeps the thread blocked until closed.
         }
     }
 
