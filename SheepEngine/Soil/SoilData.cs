@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Runtime.Data
+namespace Runtime.Soil
 {
-    public class GameSettings
+    public class SoilData
     {
-        public string WindowTitle { get; set; } = "Untitled Game";
+       
     }
 }

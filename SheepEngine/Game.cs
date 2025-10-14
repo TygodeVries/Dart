@@ -19,13 +19,6 @@ namespace Runtime
 
             GameSettings gameSettings = Files.Load<GameSettings>("GameSettings.json");
 
-
-            if (gameSettings.EntryScene.Length < 1)
-            {
-                Console.WriteLine("No entry scene provided!");
-                return;
-            }
-
             var nativeWindowSettings = new NativeWindowSettings()
             {
                 Size = new Vector2i(width, height),
@@ -37,9 +30,8 @@ namespace Runtime
             window.SetGraphicsPipeline(new DefaultGraphicsPipeline());
 
             Console.WriteLine("Loading Scene...");
-            SceneSettings sceneSettings = SceneSettings.LoadFromFile(gameSettings.EntryScene);
 
-            Scene.main = sceneSettings.GetScene();
+            Scene.main = new Scene();
             window.Run();
         }
 

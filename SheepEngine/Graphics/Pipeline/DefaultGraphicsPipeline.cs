@@ -2,7 +2,6 @@
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common.Input;
 using Runtime.Component.Core;
-using Runtime.Component.Lighting;
 using Runtime.Calc;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
