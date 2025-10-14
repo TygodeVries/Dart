@@ -110,7 +110,7 @@ namespace Runtime.Graphics
 
                 avr /= frames.Length;
                 
-                Console.WriteLine($"{Math.Round(1.0 / avr)} FPS");
+               // Console.WriteLine($"{Math.Round(1.0 / avr)} FPS");
                 i = 0;
             }
 

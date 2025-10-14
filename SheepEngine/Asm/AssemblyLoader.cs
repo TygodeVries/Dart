@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Runtime.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static OpenTK.Graphics.OpenGLES2.GL;
 
 namespace Runtime.Asm
 {
@@ -11,15 +13,21 @@ namespace Runtime.Asm
     {
         public static void LogLoaded()
         {
+            Debug.Log("The following assemblies are loaded:");
             foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
             {
-                Console.WriteLine(asm.FullName);
+                Debug.Log("- " + asm.FullName);
             }
         }
 
         public static void LoadExternal(string filename)
         {
-            Assembly.LoadFrom(filename);
+            Debug.Log($"Loading assembly from {filename}");
+            Assembly ass = Assembly.LoadFrom(filename);
+            if(ass == null)
+            {
+                Debug.Error($"Failed to load assembly from {filename}. Null!");
+            }
         }
     }
 }
