@@ -42,5 +42,9 @@ namespace Runtime.Input
                 return false;
             return keyStates[key];
         }
+         public bool IsPressedThisFrame(Keys key)
+         {
+            return keyPressed.Contains(key);
+         }
     }
 }

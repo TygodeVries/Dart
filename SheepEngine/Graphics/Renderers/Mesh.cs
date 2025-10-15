@@ -25,7 +25,7 @@ namespace Runtime.Graphics.Renderers
         /// </summary>
         public void RecalculateTangents()
         {
-         if (null == vertices || null == indices || null == uvs)
+         if (null == vertices || null == indices || null == uvs || null == normals)
          {
             Debug.Error("Calculate tangents on incomplete mesh");
             return;

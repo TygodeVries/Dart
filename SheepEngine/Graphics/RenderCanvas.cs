@@ -42,8 +42,8 @@ namespace Runtime.Graphics
 
         protected override void OnLoad()
         {
-//            new Keyboard();
-//            new Mouse();
+            Keyboard.current.EndOfFrame();
+            Mouse.current.EndOfFrame();
 
 
             Debug.Log("Loading render canvas...");
