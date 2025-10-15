@@ -25,13 +25,12 @@ namespace Runtime.Scenes
             return defaultLightManager;
         }
 
-        public static Scene main;
+         // Implicitly make the main scene an empty scene
+        public static Scene main = new Scene();
 
         public PhysicsSolver physicsSolver = new PhysicsSolver();
         public Scene()
         {
-            if (main == null)
-                main = this;
         }
 
         public void Update()

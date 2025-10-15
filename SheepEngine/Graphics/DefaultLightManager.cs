@@ -13,10 +13,8 @@ namespace Runtime.Graphics
     {
 
         List<Material> materials = new List<Material>();
-        public static DefaultLightManager current;
         public DefaultLightManager()
         {
-            current = this;
         }
 
         /// <summary>

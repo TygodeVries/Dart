@@ -18,26 +18,32 @@ namespace Runtime.Graphics
 {
     public class RenderCanvas : GameWindow
     {
-        IGraphicsPipeline graphicsPipeline = null;
+        IGraphicsPipeline? graphicsPipeline = null;
         public void SetGraphicsPipeline(IGraphicsPipeline graphicsPipeline)
         {
             this.graphicsPipeline = graphicsPipeline;
             this.graphicsPipeline.Initialize();
         }
 
-        public IGraphicsPipeline GetGraphicsPipeline()
+        public IGraphicsPipeline? GetGraphicsPipeline()
         {
             return graphicsPipeline;
         }
 
-        public static RenderCanvas main;
+        public static RenderCanvas? main;
         public RenderCanvas(NativeWindowSettings settings)
-         : base(GameWindowSettings.Default, settings) { if (main == null) main = this; }
+         : base(GameWindowSettings.Default, settings) 
+         { 
+            if (main == null) main = this; 
+            Unload += () => {
+               Debug.Log("Unloading...");
+               }; 
+         }
 
         protected override void OnLoad()
         {
-            new Keyboard();
-            new Mouse();
+//            new Keyboard();
+//            new Mouse();
 
 
             Debug.Log("Loading render canvas...");
@@ -86,7 +92,8 @@ namespace Runtime.Graphics
                 Console.WriteLine("Frame dropped!");
             }
             Scene.main.Update();
-            Mouse.current.mouseDelta = Vector2.Zero;
+            Mouse.current.EndOfFrame();
+            Keyboard.current.EndOfFrame();
         }
 
         int i = 0;
@@ -97,7 +104,7 @@ namespace Runtime.Graphics
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            graphicsPipeline.Render();
+            graphicsPipeline?.Render();
             frames[i % 500] = args.Time;
 
             if (i == 500 - 1)

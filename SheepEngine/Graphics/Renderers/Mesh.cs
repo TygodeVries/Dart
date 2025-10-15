@@ -6,17 +6,18 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Runtime.Logging;
 
 namespace Runtime.Graphics.Renderers
 {
     public class Mesh
     {
-        public float[] vertices;
-        public uint[] indices;
-        public float[] normals;
-        public float[] uvs;
+        public float[]? vertices;
+        public uint[]? indices;
+        public float[]? normals;
+        public float[]? uvs;
 
-        public float[] tangents;
+        public float[]? tangents;
 
 
         /// <summary>
@@ -24,6 +25,11 @@ namespace Runtime.Graphics.Renderers
         /// </summary>
         public void RecalculateTangents()
         {
+         if (null == vertices || null == indices || null == uvs)
+         {
+            Debug.Error("Calculate tangents on incomplete mesh");
+            return;
+         }
             int vertexCount = vertices.Length / 3;
             int triangleCount = indices.Length / 3;
 

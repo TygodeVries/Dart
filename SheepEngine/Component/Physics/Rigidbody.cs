@@ -4,6 +4,7 @@ using Runtime.Physics;
 using Runtime.Calc;
 using Runtime.Objects;
 using Runtime.Scenes;
+using Runtime.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace Runtime.Component.Physics
                 return;
             }
 
-            PhysicsSolver solver = Scene.main.physicsSolver;
+            PhysicsSolver solver = Scene.main!.physicsSolver;
             Move(velocity * (float) Time.deltaTime);
             velocity += new Vector3(0, -7, 0) * (float) Time.deltaTime;
         }
@@ -32,20 +33,25 @@ namespace Runtime.Component.Physics
 
         public void Move(Vector3 delta)
         {
-            GetComponent<Transform>().position += delta;
-            ICollider collider = GetComponent<ICollider>();
+         if (GetComponent<Transform>() is Transform t)
+         {
+            t.position += delta;
+            ICollider? collider = GetComponent<ICollider>();
             if (collider == null)
             {
-                Console.WriteLine("Rigidbody has no collider attached!");
-                return;
+               Console.WriteLine("Rigidbody has no collider attached!");
+               return;
             }
-            bool hasAnyOverlap = Scene.main.physicsSolver.HasAnyOverlap(collider);
+            bool hasAnyOverlap = Scene.main!.physicsSolver.HasAnyOverlap(collider);
             if (hasAnyOverlap)
             {
-                // Undo!!
-                GetComponent<Transform>().position -= delta;
-                velocity = Vector3.Zero;
+               // Undo!!
+               t.position -= delta;
+               velocity = Vector3.Zero;
             }
+         }
+         else
+            Debug.Error("Rigidbody without Transform");
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Runtime.Data
 {
     internal class MaterialSettings
     {
-        public static MaterialSettings LoadFromFile(string file)
+        public static MaterialSettings? LoadFromFile(string file)
         {
             string fileContent = File.ReadAllText(file);
             return JsonSerializer.Deserialize<MaterialSettings>(fileContent);
@@ -22,6 +22,11 @@ namespace Runtime.Data
             ShaderProgram shaderProgram = ShaderProgram.FromFile(Vertex, Fragment);
             return new Material(shaderProgram);
         }
+
+      private MaterialSettings()
+      {
+         Fragment = Vertex = "";
+      }
 
         public string Vertex {  get; set; }
         public string Fragment { get; set; }

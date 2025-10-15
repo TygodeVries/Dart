@@ -8,10 +8,10 @@ namespace Runtime.Objects
 {
     public abstract class IComponent
     {
-        public GameObject gameObject;
-        public T GetComponent<T>() where T : IComponent
+        public GameObject? gameObject;
+        public T? GetComponent<T>() where T : IComponent
         {
-            return gameObject.GetComponent<T>();
+            return gameObject?.GetComponent<T>();
         }
 
         public virtual void OnLoad() { }

@@ -37,11 +37,11 @@ namespace Runtime.Graphics.Renderers
         private int uvbo;
         private int tbo;
 
-        private Mesh _mesh;  // backing field
-        public Mesh mesh
+        private Mesh? _mesh;  // backing field
+        public Mesh? mesh
         {
             get => _mesh;
-            set => SetMesh(value);
+            set => SetMesh(value!);
         }
 
         public void SetMesh(Mesh mesh)
@@ -66,11 +66,11 @@ namespace Runtime.Graphics.Renderers
 
             vbo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, mesh.vertices.Length * sizeof(float), mesh.vertices, BufferUsage.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, mesh.vertices!.Length * sizeof(float), mesh.vertices, BufferUsage.StaticDraw);
 
             ebo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, mesh.indices.Length * sizeof(uint), mesh.indices, BufferUsage.StaticDraw);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, mesh.indices!.Length * sizeof(uint), mesh.indices, BufferUsage.StaticDraw);
 
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
@@ -78,21 +78,21 @@ namespace Runtime.Graphics.Renderers
             // Normals
             nbo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, nbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, mesh.normals.Length * sizeof(float), mesh.normals, BufferUsage.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, mesh.normals!.Length * sizeof(float), mesh.normals, BufferUsage.StaticDraw);
             GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
             GL.EnableVertexAttribArray(1);
 
             // Uvs
             uvbo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, uvbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, mesh.uvs.Length * sizeof(float), mesh.uvs, BufferUsage.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, mesh.uvs!.Length * sizeof(float), mesh.uvs, BufferUsage.StaticDraw);
             GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, 2 * sizeof(float), 0);
             GL.EnableVertexAttribArray(2);
 
             // Tangents
             tbo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, tbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, mesh.tangents.Length * sizeof(float), mesh.uvs, BufferUsage.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, mesh.tangents!.Length * sizeof(float), mesh.uvs, BufferUsage.StaticDraw);
             GL.VertexAttribPointer(3, 4, VertexAttribPointerType.Float, false, 4 * sizeof(float), 0);
             GL.EnableVertexAttribArray(3);
 
@@ -113,7 +113,7 @@ namespace Runtime.Graphics.Renderers
                 Console.WriteLine("Mesh on renderer is null!");
                 return;
             }
-            material.Use();
+            material?.Use();
 
             GL.BindVertexArray(vao);
             GL.DrawElements(PrimitiveType.Triangles, indexCount, DrawElementsType.UnsignedInt, 0);

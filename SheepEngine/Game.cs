@@ -20,17 +20,23 @@ namespace Runtime
             Directory.SetCurrentDirectory(path);
 
             Log($"Loading {Path.Join(path, "GameSettings.json")}...");
-            GameSettings gameSettings = Files.Load<GameSettings>("GameSettings.json");
+            GameSettings? gameSettings = Files.Load<GameSettings>("GameSettings.json");
+
+            if (null == gameSettings)
+            {
+               Log("GameSettings.json not loaded");
+               return;
+            }
 
             Log("Attempting to switch to dedicated graphics card (If present)");
             DedicatedSwitch.Switch();
 
             Log($"Creating window of size {width}, {height}");
-            Log($"Setting window title to {gameSettings.WindowTitle}");
+            Log($"Setting window title to {gameSettings?.WindowTitle}");
             var nativeWindowSettings = new NativeWindowSettings()
             {
-                Size = new Vector2i(width, height),
-                Title = gameSettings.WindowTitle,
+                ClientSize = new Vector2i(width, height),
+                Title = gameSettings?.WindowTitle,
             };
 
             RenderCanvas window = new RenderCanvas(nativeWindowSettings);
@@ -39,11 +45,9 @@ namespace Runtime
             Log($"Using graphicsPipeline: {graphicsPipeline}.");            
             window.SetGraphicsPipeline(graphicsPipeline);
 
-            Log($"Creating empty scene...");
-            Scene.main = new Scene();
-
             Log($"Opening window...");
             window.Run(); // Keeps the thread blocked until closed.
+            Log($"Cleaning up...");
         }
     }
 
