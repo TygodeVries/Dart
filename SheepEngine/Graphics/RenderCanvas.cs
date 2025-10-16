@@ -52,7 +52,7 @@ namespace Runtime.Graphics
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
-            this.CursorState = CursorState.Grabbed;
+          //  this.CursorState = CursorState.Grabbed;
         }
 
         protected override void OnMouseMove(MouseMoveEventArgs e)

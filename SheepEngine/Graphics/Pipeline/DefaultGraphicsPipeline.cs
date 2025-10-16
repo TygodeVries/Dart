@@ -12,6 +12,7 @@ using Runtime.Objects;
 using Runtime.Component.Test;
 using OpenTK.Graphics.Vulkan.VulkanVideoCodecH264stdEncode;
 using Runtime.Component.Lighting;
+using Editor.ImGuiEditor;
 
 namespace Runtime.Graphics.Pipeline
 {
@@ -21,6 +22,8 @@ namespace Runtime.Graphics.Pipeline
         {
             Debug.Log("Initializing...");
             GL.ClearColor(0, 0, 0, 0);
+
+            customRenderPasses.Add(new ImGuiRenderPass());
 
 
             EnableCap[] caps = new EnableCap[]

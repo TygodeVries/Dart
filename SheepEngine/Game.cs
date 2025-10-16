@@ -60,10 +60,13 @@ namespace Runtime
                 Error($"Could not load user code from path {gameSettings.CodePath}. File not found!");
             }
 
+            onReady?.Invoke(null, null);
             Log($"Opening window...");
             window.Run(); // Keeps the thread blocked until closed.
             Log($"Cleaning up...");
         }
+
+        public static event EventHandler onReady;
     }
 
     class Program

@@ -39,6 +39,8 @@ namespace Runtime.Asm
             {
                 Debug.Error($"Failed to load assembly from {filename}. Null!");
             }
+
+            Activator.CreateInstance("Editor", "Editor.TestKick");
         }
     }
 }
