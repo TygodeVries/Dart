@@ -28,6 +28,8 @@ namespace Runtime.Graphics.Pipeline
 
             Scene.main.Instantiate(new GameObjectFactory()
                 .AddComponent(new TextRenderer("Hello, World!"))
+                .AddComponent(new TestWave())
+                .AddComponent(new Transform())
                 .Build());
 
             Scene.main.Instantiate(new GameObjectFactory()

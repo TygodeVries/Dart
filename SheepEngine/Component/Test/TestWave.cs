@@ -15,8 +15,7 @@ namespace Runtime.Component.Test
         public override void Update()
         {
             time += Time.deltaTime;
-            GetComponent<Transform>().position.Y = MathF.Cos((float) time + + GetComponent<Transform>().position.Z) + 2;
-            GetComponent<Transform>().position.X = MathF.Cos((float)time * 3 + GetComponent<Transform>().position.Z) + 1;
+            GetComponent<Transform>().Rotate(0, (float)Time.deltaTime * 100, 0);
         }
     }
 }
