@@ -17,6 +17,8 @@ namespace Runtime.Graphics.Materials
             this.shader = shader;
         }
 
+        public bool matrixEnabled = true;
+
 
         /// <summary>
         /// Start sending lighting information to any attached shaders

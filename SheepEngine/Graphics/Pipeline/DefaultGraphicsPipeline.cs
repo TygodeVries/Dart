@@ -25,7 +25,6 @@ namespace Runtime.Graphics.Pipeline
 
             EnableCap[] caps = new EnableCap[]
             {
-                EnableCap.CullFace,
                 EnableCap.LineSmooth,
                 EnableCap.PolygonSmooth,
                 EnableCap.Multisample
@@ -59,9 +58,11 @@ namespace Runtime.Graphics.Pipeline
             material.EnableLightData();
 
             Scene.main.Instantiate(new GameObjectFactory()
-                .AddComponent(new TextRenderer("What is the point.\nthese faces have 4!"))
-                .AddComponent(new TestWave())
-                .AddComponent(new Transform())
+                .AddComponent(new TextRenderer("What is your point?\nA triangle has 3.", true))
+                .AddComponent(new Transform()
+                {
+                    position = new Vector3(-0.5f, 0.8f, 0)
+                })
                 .Build());
 
             Scene.main.Instantiate(new GameObjectFactory()
@@ -125,7 +126,7 @@ namespace Runtime.Graphics.Pipeline
             {
                 Material? material = renderer.GetMaterial();
 
-                if (material != null)
+                if (material != null && material.matrixEnabled)
                 {
                     material.SetMatrix4("uView", view);
                     material.SetMatrix4("uProjection", projection);
