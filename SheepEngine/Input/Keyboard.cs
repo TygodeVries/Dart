@@ -11,7 +11,7 @@ namespace Runtime.Input
     internal class Keyboard
     {
         public static Keyboard current = new Keyboard();
-        private Keyboard()
+        static Keyboard()
         {
             Debug.Log("Activated keyboard!");
         }

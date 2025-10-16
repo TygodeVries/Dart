@@ -11,7 +11,7 @@ namespace Runtime.Input
     internal class Mouse
     {
         public static Mouse current = new Mouse();
-        private Mouse()
+        static Mouse()
         {
             Debug.Log("Activated Mouse!");
         }

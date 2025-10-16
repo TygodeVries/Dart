@@ -1,4 +1,10 @@
 <Solution>
-  <Project Path="SampleProject/SampleProject.csproj" Id="44367147-4a78-4e00-94bc-6b2259b07406" />
-  <Project Path="SheepEngine/Runtime.csproj" />
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="SampleProject\SampleProject.csproj" />
+  <Project Path="SheepEngine\Runtime.csproj" />
+  <Project Path="WindowsNativeAudio\WindowsNativeAudio.vcxproj" />
 </Solution>
