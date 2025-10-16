@@ -7,10 +7,19 @@ using System.Threading.Tasks;
 
 namespace Runtime.Calc
 {
+    /// <summary>
+    /// A 2 dimensional circle todo math with
+    /// </summary>
     public class Circle2D
     {
         public float radius;
         public Vector2 center;
+
+        public Circle2D(float radius, Vector2 center)
+        {
+            this.radius = radius;
+            this.center = center;
+        }
 
         public Circle2D(Vector2 x0, Vector2 x1, Vector2 x2)
         {
@@ -41,6 +50,11 @@ namespace Runtime.Calc
             radius = MathF.Sqrt(Vector2.Dot(center - x0, center - x0));
         }
 
+        /// <summary>
+        /// Check if a specific point is inside the circle
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
         public bool PointInCircle(Vector2 point)
         {
             return Vector2.Distance(center, point) < radius;

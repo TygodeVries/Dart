@@ -11,10 +11,14 @@ using System.Threading.Tasks;
 
 namespace Runtime.Component.Lighting
 {
+    /// <summary>
+    /// A light, not from a point, but from a direction
+    /// </summary>
     public class SunLight : IComponent
     {
         public override void OnLoad()
         {
+            // Just like the point light, we need to keep track of ourselfs
             DefaultLightManager? lightManager = Scene.main.GetLightManager() as DefaultLightManager;
             if (lightManager == null)
             {
@@ -25,7 +29,14 @@ namespace Runtime.Component.Lighting
             lightManager.SetSunLight(this);
         }
 
-        public Vector3 direction;
-        public Vector3 color;
+        /// <summary>
+        /// The direction the sun is facing
+        /// </summary>
+        public Vector3 direction = new Vector3(1, 1, 1);
+
+        /// <summary>
+        /// The color of the sun
+        /// </summary>
+        public Vector3 color = new Vector3(1, 1, 1);
     }
 }

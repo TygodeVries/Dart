@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace Runtime.Component.Test
 {
+    /// <summary>
+    /// Simple camera controls, usefull for testing.
+    /// </summary>
     public class TestCameraControls : IComponent
     {
         public override void Update()

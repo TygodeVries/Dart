@@ -9,19 +9,40 @@ using System.Threading.Tasks;
 
 namespace Runtime.Component.Core
 {
+
+    /// <summary>
+    /// A camera is used to render the game image from.
+    /// </summary>
     public class Camera : IComponent
     {
-        public static Camera ?main;
+        /// <summary>
+        /// The camera that is rendering the final image
+        /// </summary>
+        public static Camera? main;
+
+        /// <summary>
+        /// The field of view of the camera
+        /// </summary>
         public float fieldOfView = 60f;
 
+        /// <summary>
+        /// The color used to clear the background
+        /// </summary>
         public Vector3 backgroundColor = new Vector3(0.1f, 0.77f, 0.78f);
 
+        /// <summary>
+        /// Create a new camera, if there is no main camera, auto assign this
+        /// </summary>
         public Camera()
         {
             if (main == null)
                 main = this;
         }
 
+        /// <summary>
+        /// Returns the projection matrix of the camera
+        /// </summary>
+        /// <returns></returns>
         public Matrix4 GetProjectionMatrix()
         {
             return Matrix4.CreatePerspectiveFieldOfView(
@@ -31,6 +52,10 @@ namespace Runtime.Component.Core
             );
         }
 
+        /// <summary>
+        /// Returns the view matrix of the camera
+        /// </summary>
+        /// <returns></returns>
         public Matrix4 GetViewMatrix()
         {
             Transform? transform = GetComponent<Transform>();

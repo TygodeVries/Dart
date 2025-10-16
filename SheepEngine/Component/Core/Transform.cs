@@ -8,13 +8,26 @@ using System.Threading.Tasks;
 
 namespace Runtime.Component.Core
 {
+
+    /// <summary>
+    /// A transform changes where an object is rendered at
+    /// </summary>
     public class Transform : IComponent
     {
+        /// <summary>
+        /// The position of the object
+        /// </summary>
         public Vector3 position = Vector3.Zero;
+
+        /// <summary>
+        /// The rotation, in euler angles (degrees) of the object
+        /// </summary>
         public Vector3 rotation;
-        public Vector3 scale = new Vector3(1, 1, 1);
 
-
+        /// <summary>
+        /// The forwards facing direction of the object.
+        /// </summary>
+        /// <returns>A vector of magnitude 1 </returns>
         public Vector3 GetForwards()
         {
             Vector3 radians = new Vector3(
@@ -32,6 +45,10 @@ namespace Runtime.Component.Core
             return new Vector3(x, y, z).Normalized();
         }
 
+        /// <summary>
+        /// The direction of the right side
+        /// </summary>
+        /// <returns>A vector with magnitude 1</returns>
         public Vector3 GetRight()
         {
             Vector3 forward = GetForwards();
@@ -41,16 +58,30 @@ namespace Runtime.Component.Core
         }
 
 
+        /// <summary>
+        /// Rotate the object by the specified amount.
+        /// </summary>
+        /// <param name="yaw"></param>
+        /// <param name="pitch"></param>
+        /// <param name="roll"></param>
         public void Rotate(float yaw, float pitch, float roll)
         {
             Rotate(new Vector3(yaw, pitch, roll));
         }
 
+        /// <summary>
+        /// Rotate in yaw, pitch, roll
+        /// </summary>
+        /// <param name="v"></param>
         public void Rotate(Vector3 v)
         {
             rotation += v;
         }
 
+        /// <summary>
+        /// Get the matrix of this transform
+        /// </summary>
+        /// <returns></returns>
         public Matrix4 GetMatrix()
         {
             Vector3 radians = new Vector3(
