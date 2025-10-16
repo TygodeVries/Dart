@@ -2,6 +2,7 @@
 using Runtime.Graphics;
 using Runtime.Graphics.Pipeline;
 using Runtime.Objects;
+using Runtime.Scenes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Runtime.Component.Lighting
     {
         public override void OnLoad()
         {
-            DefaultLightManager lightManager = DefaultLightManager.current;
+            DefaultLightManager? lightManager = Scene.main.GetLightManager() as DefaultLightManager;
             if (lightManager == null)
             {
                 Console.WriteLine("The SunLight component can not be used without the DefaultLightManager!");

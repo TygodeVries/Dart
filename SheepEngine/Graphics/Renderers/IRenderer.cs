@@ -11,9 +11,9 @@ namespace Runtime.Graphics.Renderers
 {
     public abstract class Renderer : IComponent
     {
-        protected Material material;
+        protected Material? material;
 
-        public Material GetMaterial()
+        public Material? GetMaterial()
         {
             return material;
         }
@@ -22,7 +22,7 @@ namespace Runtime.Graphics.Renderers
 
         public override void OnLoad()
         {
-            RenderCanvas.main.GetGraphicsPipeline().AddRenderer(this);
+            RenderCanvas.main!.GetGraphicsPipeline()?.AddRenderer(this);
             base.OnLoad();
         }
     }

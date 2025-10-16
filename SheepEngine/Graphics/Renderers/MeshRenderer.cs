@@ -38,11 +38,11 @@ namespace Runtime.Graphics.Renderers
         private int uvbo;
         private int tbo;
 
-        private Mesh _mesh;  // backing field
-        public Mesh mesh
+        private Mesh? _mesh;  // backing field
+        public Mesh? mesh
         {
             get => _mesh;
-            set => SetMesh(value);
+            set => SetMesh(value!);
         }
 
         public void SetMesh(Mesh mesh)
@@ -67,11 +67,11 @@ namespace Runtime.Graphics.Renderers
 
             vbo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, mesh.vertices.Length * sizeof(float), mesh.vertices, BufferUsage.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, mesh.vertices!.Length * sizeof(float), mesh.vertices, BufferUsage.StaticDraw);
 
             ebo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, mesh.indices.Length * sizeof(uint), mesh.indices, BufferUsage.StaticDraw);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, mesh.indices!.Length * sizeof(uint), mesh.indices, BufferUsage.StaticDraw);
 
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
@@ -128,8 +128,8 @@ namespace Runtime.Graphics.Renderers
                 Debug.Error("Material on renderer is null!");
                 return;
             }
-
-            material.Use();
+            material?.Use();
+            
             GL.BindVertexArray(vao);
             GL.DrawElements(PrimitiveType.Triangles, indexCount, DrawElementsType.UnsignedInt, 0);
         }

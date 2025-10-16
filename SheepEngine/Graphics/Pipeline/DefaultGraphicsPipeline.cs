@@ -75,7 +75,7 @@ namespace Runtime.Graphics.Pipeline
 
             foreach(Renderer renderer in renderers)
             {
-                Material material = renderer.GetMaterial();
+                Material? material = renderer.GetMaterial();
 
                 if (material != null)
                 {
@@ -83,7 +83,7 @@ namespace Runtime.Graphics.Pipeline
                     material.SetMatrix4("uProjection", projection);
 
                     Matrix4 model;
-                    Transform transform = renderer.GetComponent<Transform>();
+                    Transform? transform = renderer.GetComponent<Transform>();
                     if (transform == null)
                     {
                         // If no transform, just go to the default

@@ -14,9 +14,9 @@ namespace Runtime.Logging
             var stackTrace = new StackTrace(1, true);
             var frame = stackTrace.GetFrame(0);
 
-            var method = frame.GetMethod();
+            var method = frame?.GetMethod();
 
-            Console.WriteLine($"[{method.DeclaringType.FullName}] {log}");
+            Console.WriteLine($"[{method?.DeclaringType?.FullName}] {log}");
         }
 
         public static void Error(string log)
@@ -24,10 +24,10 @@ namespace Runtime.Logging
             var stackTrace = new StackTrace(1, true);
             var frame = stackTrace.GetFrame(0);
 
-            var method = frame.GetMethod();
+            var method = frame?.GetMethod();
 
             Console.BackgroundColor = ConsoleColor.Red;
-            Console.WriteLine($"[{method.DeclaringType.FullName}] {log}");
+            Console.WriteLine($"[{method?.DeclaringType?.FullName}] {log}");
             Console.BackgroundColor = ConsoleColor.Black;
         }
     }

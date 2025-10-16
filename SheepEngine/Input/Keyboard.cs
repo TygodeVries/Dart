@@ -10,14 +10,14 @@ namespace Runtime.Input
 {
     internal class Keyboard
     {
-        public static Keyboard current;
-        public Keyboard()
+        public static Keyboard current = new Keyboard();
+        private Keyboard()
         {
-            current = this;
             Debug.Log("Activated keyboard!");
         }
 
         Dictionary<Keys, bool> keyStates = new Dictionary<Keys, bool>();
+        List<Keys> keyPressed = new List<Keys>();
         public void SetKeyState(Keys key, bool pressed)
         {
             if (keyStates.ContainsKey(key))
@@ -26,13 +26,25 @@ namespace Runtime.Input
             {
                 keyStates.Add(key, pressed);
             }
+            if (pressed && !keyPressed.Contains(key))
+               keyPressed.Add(key);
         }
-
+         /// <summary>
+         /// Cleanup at the end of a frame
+         /// </summary>
+         public void EndOfFrame()
+         {
+            keyPressed.Clear();
+         }
         public bool IsPressed(Keys key)
         {
             if (!keyStates.ContainsKey(key))
                 return false;
             return keyStates[key];
         }
+         public bool IsPressedThisFrame(Keys key)
+         {
+            return keyPressed.Contains(key);
+         }
     }
 }

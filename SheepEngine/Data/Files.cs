@@ -9,7 +9,7 @@ namespace Runtime.Data
 {
     public class Files
     {
-        public static T Load<T>(string file)
+        public static T? Load<T>(string file)
         {
             if (!File.Exists(file))
                 throw new FileNotFoundException($"The file '{file}' does not exist.");

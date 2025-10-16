@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Runtime.Logging;
 
 namespace Runtime.Graphics.Renderers
 {
@@ -51,6 +52,11 @@ namespace Runtime.Graphics.Renderers
         /// </summary>
         public void RecalculateTangents()
         {
+         if (null == vertices || null == indices || null == uvs || null == normals)
+         {
+            Debug.Error("Calculate tangents on incomplete mesh");
+            return;
+         }
             int vertexCount = vertices.Length / 3;
             int triangleCount = indices.Length / 3;
 

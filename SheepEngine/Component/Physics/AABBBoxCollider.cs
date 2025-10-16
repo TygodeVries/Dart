@@ -14,14 +14,14 @@ namespace Runtime.Component.Physics
     {
         public override void OnLoad()
         {
-            Scene.main.physicsSolver.colliders.Add(this);
+            Scene.main?.physicsSolver.colliders.Add(this);
             base.OnLoad();
         }
 
 
         public Vector3 GetCenter()
         {
-            Transform transform = GetComponent<Transform>();
+            Transform? transform = GetComponent<Transform>();
             if (transform != null)
                 return transform.position;
             return Vector3.Zero;

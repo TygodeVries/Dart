@@ -11,7 +11,7 @@ namespace Runtime.Objects
         private Dictionary<Type, IComponent> componentMap = new();
         private List<IComponent> components = new();
 
-        public T GetComponent<T>() where T : IComponent
+        public T? GetComponent<T>() where T : IComponent
         {
             // Try to get by exact type first
             if (componentMap.TryGetValue(typeof(T), out var exactMatch))
