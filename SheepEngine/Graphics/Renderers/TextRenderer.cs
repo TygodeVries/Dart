@@ -108,9 +108,10 @@ namespace Runtime.Graphics.Renderers
             uvs.AddRange(characterMap.GetCharacterUv(c));
         }
 
-        public TextRenderer(bool uiLayer)
+        public TextRenderer(TextSpace textSpace)
         {
-            if (!uiLayer)
+            text = "";
+            if (textSpace == TextSpace.World)
             {
                 if (worldTextMaterial == null)
                     LoadTextMaterials();
@@ -138,10 +139,23 @@ namespace Runtime.Graphics.Renderers
             }
         }
 
-        public TextRenderer(string text, bool uiLayer) : this(uiLayer)
+        public TextRenderer(string text, TextSpace textSpace) : this(textSpace)
         {
             SetText(text);
         }
+    }
+
+    public enum TextSpace
+    {
+        /// <summary>
+        /// The text is a 3d object in the world
+        /// </summary>
+        World,
+
+        /// <summary>
+        /// The text is attached to the camera
+        /// </summary>
+        Camera
     }
 
     public class CharacterMap

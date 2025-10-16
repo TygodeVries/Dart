@@ -58,7 +58,7 @@ namespace Runtime.Graphics.Pipeline
             material.EnableLightData();
 
             Scene.main.Instantiate(new GameObjectFactory()
-                .AddComponent(new TextRenderer("What is your point?\nA triangle has 3.", true))
+                .AddComponent(new TextRenderer("What is your point?\nA triangle has 3.", TextSpace.World))
                 .AddComponent(new Transform()
                 {
                     position = new Vector3(-0.5f, 0.8f, 0)
