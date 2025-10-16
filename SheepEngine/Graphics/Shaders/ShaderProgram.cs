@@ -34,6 +34,17 @@ namespace Runtime.Graphics.Shaders
         string fragmentSource;
         public ShaderProgram(string vertexShader, string fragmentShader)
         {
+            if(vertexShader.Length < 20)
+            {
+                Debug.Log($"VertexShader does not look like source code, please be aware. {vertexShader}");
+            }
+
+            if (fragmentShader.Length < 20)
+            {
+                Debug.Log($"FragmentShader does not look like source code, please be aware. {fragmentShader}");
+            }
+
+
             this.vertexSource = vertexShader;
             this.fragmentSource = fragmentShader;
         }
@@ -115,7 +126,7 @@ namespace Runtime.Graphics.Shaders
 
             location = GL.GetUniformLocation(shaderProgramId, name);
             if (location == -1)
-                Console.WriteLine($"Error: Value '{name}' not found in shader!");
+                Debug.Error($"Error: Value '{name}' not found in shader!");
 
             uniformLocations[name] = location;
             return location;

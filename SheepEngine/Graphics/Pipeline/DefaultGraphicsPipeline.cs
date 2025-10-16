@@ -8,6 +8,8 @@ using Runtime.Graphics.Renderers;
 using Runtime.Graphics.Shaders;
 using Runtime.Logging;
 using Runtime.Scenes;
+using Runtime.Objects;
+using Runtime.Component.Test;
 
 namespace Runtime.Graphics.Pipeline
 {
@@ -23,6 +25,18 @@ namespace Runtime.Graphics.Pipeline
             {
                 renderPass.Start();
             }
+
+            Scene.main.Instantiate(new GameObjectFactory()
+                .AddComponent(new TextRenderer("Hello, World!"))
+                .AddComponent(new TestWave())
+                .AddComponent(new Transform())
+                .Build());
+
+            Scene.main.Instantiate(new GameObjectFactory()
+                .AddComponent(new Camera())
+                .AddComponent(new Transform())
+                .AddComponent(new TestCameraControls())
+                .Build());
         }
        
         public void AddRenderer(Renderer renderer)
