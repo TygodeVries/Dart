@@ -1,9 +1,9 @@
-﻿using System;
+﻿using OpenTK.Mathematics;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Runtime.Logging;
@@ -12,13 +12,40 @@ namespace Runtime.Graphics.Renderers
 {
     public class Mesh
     {
-        public float[]? vertices;
-        public uint[]? indices;
+        public float[] vertices;
+        public uint[] indices;
         public float[]? normals;
         public float[]? uvs;
-
         public float[]? tangents;
 
+        public Mesh(float[] vertices, uint[] indices)
+        {
+            this.vertices = vertices;
+            this.indices = indices;
+        }
+
+        public Mesh(Vector3[] vertices, uint[] indices, Vector2[] uvs) : this(vertices, indices)
+        {
+            this.uvs = new float[uvs.Length * 2];
+            for(int i = 0; i < uvs.Length; i++)
+            {
+                this.uvs[(i * 2) + 0] = uvs[i].X;
+                this.uvs[(i * 2) + 1] = uvs[i].Y;
+            }
+        }
+
+        public Mesh(Vector3[] vertices, uint[] indices)
+        {
+            this.vertices = new float[vertices.Length * 3];
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                this.vertices[(i * 3) + 0] = vertices[i].X;
+                this.vertices[(i * 3) + 1] = vertices[i].Y;
+                this.vertices[(i * 3) + 2] = vertices[i].Z;
+            }
+
+            this.indices = indices;
+        }
 
         /// <summary>
         /// https://discussions.unity.com/t/calculating-tangents-vector4/179/4
@@ -188,11 +215,9 @@ namespace Runtime.Graphics.Renderers
                 }
             }
 
-            Mesh mesh = new Mesh
+            Mesh mesh = new Mesh(finalVertices.ToArray(), finalIndices.ToArray())
             {
-                vertices = finalVertices.ToArray(),
                 normals = finalNormals.ToArray(),
-                indices = finalIndices.ToArray(),
                 uvs = finalUVs.ToArray()
             };
 
