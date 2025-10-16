@@ -1,6 +1,7 @@
 ﻿
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
+using Runtime.Asm;
 using Runtime.Data;
 using Runtime.Graphics;
 using Runtime.Graphics.Pipeline;
@@ -44,6 +45,19 @@ namespace Runtime
             IGraphicsPipeline graphicsPipeline = new DefaultGraphicsPipeline();
             Log($"Using graphicsPipeline: {graphicsPipeline}.");            
             window.SetGraphicsPipeline(graphicsPipeline);
+
+            Log($"Creating empty scene...");
+            Scene.main = new Scene();
+
+            if (File.Exists(gameSettings.CodePath))
+            {
+                Log($"Loading user code from {gameSettings.CodePath}");
+                AssemblyLoader.LoadExternal(gameSettings.CodePath);
+            }
+            else
+            {
+                Error($"Could not load user code from path {gameSettings.CodePath}. File not found!");
+            }
 
             Log($"Opening window...");
             window.Run(); // Keeps the thread blocked until closed.

@@ -1,4 +1,4 @@
 {
-	"EntryScene": "LoadScreen.json",
+	"CodePath": "SampleProject.dll",
 	"WindowTitle": "Dart Test Project"
 }

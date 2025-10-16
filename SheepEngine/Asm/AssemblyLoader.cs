@@ -23,7 +23,7 @@ namespace Runtime.Asm
         public static void LoadExternal(string filename)
         {
             Debug.Log($"Loading assembly from {filename}");
-            Assembly ass = Assembly.LoadFrom(filename);
+            Assembly ass = Assembly.LoadFrom(Path.Join(Directory.GetCurrentDirectory(), filename));
             if(ass == null)
             {
                 Debug.Error($"Failed to load assembly from {filename}. Null!");
