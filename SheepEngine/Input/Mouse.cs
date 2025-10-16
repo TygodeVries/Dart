@@ -8,20 +8,24 @@ using System.Threading.Tasks;
 
 namespace Runtime.Input
 {
-    internal class Mouse
-    {
-        public static Mouse current = new Mouse();
-        static Mouse()
-        {
-            Debug.Log("Activated Mouse!");
-        }
+   internal class Mouse
+   {
+      public static Mouse current;
+      static Mouse()
+      {
+         Debug.Log("Activated Mouse!");
+
+         current = new Mouse();
+
+      }
+      private Mouse() { }
       /// <summary>
       /// Cleanup at the end of a frame
       /// </summary>
-         public void EndOfFrame()
-         {
-		      mouseDelta = Vector2.Zero;
-         }
-        public Vector2 mouseDelta;
-    }
+      public void EndOfFrame()
+      {
+         mouseDelta = Vector2.Zero;
+      }
+      public Vector2 mouseDelta;
+   }
 }

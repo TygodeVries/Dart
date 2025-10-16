@@ -6,5 +6,5 @@
   </Configurations>
   <Project Path="SampleProject\SampleProject.csproj" />
   <Project Path="SheepEngine\Runtime.csproj" />
-  <Project Path="WindowsNativeAudio\WindowsNativeAudio.vcxproj" />
+</Solution>Path="WindowsNativeAudio\WindowsNativeAudio.vcxproj" />
 </Solution>

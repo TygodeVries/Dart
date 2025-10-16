@@ -10,11 +10,15 @@ namespace Runtime.Input
 {
     internal class Keyboard
     {
-        public static Keyboard current = new Keyboard();
+        public static Keyboard current;
         static Keyboard()
         {
             Debug.Log("Activated keyboard!");
+            current = new Keyboard();
         }
+         private Keyboard()
+         {
+         }
 
         Dictionary<Keys, bool> keyStates = new Dictionary<Keys, bool>();
         List<Keys> keyPressed = new List<Keys>();
