@@ -1,4 +1,5 @@
 ﻿
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using Runtime.Asm;
@@ -48,8 +49,7 @@ namespace Runtime
             IGraphicsPipeline graphicsPipeline = new DefaultGraphicsPipeline();
             Log($"Using graphicsPipeline: {graphicsPipeline}.");            
             window.SetGraphicsPipeline(graphicsPipeline);
-
-
+            
             if (File.Exists(gameSettings.CodePath))
             {
                 Log($"Loading user code from {gameSettings.CodePath}");

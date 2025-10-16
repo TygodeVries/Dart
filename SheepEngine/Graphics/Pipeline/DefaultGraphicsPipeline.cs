@@ -10,6 +10,8 @@ using Runtime.Logging;
 using Runtime.Scenes;
 using Runtime.Objects;
 using Runtime.Component.Test;
+using OpenTK.Graphics.Vulkan.VulkanVideoCodecH264stdEncode;
+using Runtime.Component.Lighting;
 
 namespace Runtime.Graphics.Pipeline
 {
@@ -20,14 +22,44 @@ namespace Runtime.Graphics.Pipeline
             Debug.Log("Initializing...");
             GL.ClearColor(0, 0, 0, 0);
 
+
+            EnableCap[] caps = new EnableCap[]
+            {
+                EnableCap.CullFace,
+                EnableCap.LineSmooth,
+                EnableCap.PolygonSmooth,
+                EnableCap.Multisample
+            };
+            Debug.Log("Turning on OpenGL features...");
+            string features = "";
+            foreach(EnableCap enableCap in caps)
+            {
+                features += enableCap;
+                GL.Enable(enableCap);
+            }
+
+            Debug.Log($"Enabled features ({features})!");
+
             Debug.Log("Calling custom render pass start.");
             foreach (RenderPass renderPass in customRenderPasses)
             {
                 renderPass.Start();
             }
 
+            Mesh mesh = Mesh.FromFileObj("assets/Sphere.obj");
+
+            ShaderProgram shaderProgram = ShaderProgram.FromFile("assets/shaders/lit.vert", "assets/shaders/lit.frag");
+            
+            Material material = new Material(shaderProgram);
+
+            material.SetTexture("u_Texture", new Texture("assets/textures/moss/color.png"), 0);
+            material.SetTexture("u_NormalMap", new Texture("assets/textures/moss/normal.png"), 1);
+            material.SetTexture("u_Rough", new Texture("assets/textures/moss/rough.png"), 2);
+
+            material.EnableLightData();
+
             Scene.main.Instantiate(new GameObjectFactory()
-                .AddComponent(new TextRenderer("Hello, World!"))
+                .AddComponent(new TextRenderer("What is the point.\nthese faces have 4!"))
                 .AddComponent(new TestWave())
                 .AddComponent(new Transform())
                 .Build());
@@ -37,12 +69,28 @@ namespace Runtime.Graphics.Pipeline
                 .AddComponent(new Transform())
                 .AddComponent(new TestCameraControls())
                 .Build());
+
+            Scene.main.Instantiate(new GameObjectFactory()
+                .AddComponent(new MeshRenderer(material, mesh))
+                .AddComponent(new Transform()
+                {
+                    position = new Vector3(0, -2, 0)
+                })
+                .Build());
+
+            Scene.main.Instantiate(new GameObjectFactory()
+                .AddComponent(new PointLight()
+                {
+                    intensity = 2,
+                    color = new Vector3(1, 1, 1)
+                })
+                .Build());
         }
        
         public void AddRenderer(Renderer renderer)
         {
             renderers.Add(renderer);
-            Console.WriteLine("Added renderer: " + renderers.Count);
+            Debug.Log("Added renderer: " + renderers.Count);
         }
 
         // Anything that needs to be renderered by this graphics pipeline

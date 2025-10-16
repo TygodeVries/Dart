@@ -29,22 +29,36 @@ namespace Runtime.Graphics.Renderers
             List<uint> ind = new List<uint>();
             List<Vector2> uvs = new List<Vector2>();
 
+
+            int character = 0;
+            int line = 0;
             for (int i = 0; i < text.Length; i++)
             {
-                AddCharacter(verts, ind, uvs, i / 2f, text[i]);
+                if (text[i] == '\n')
+                {
+                    character = 0;
+                    line++;
+                }
+                else
+                {
+                    AddCharacter(verts, ind, uvs, character / 2f, -line, text[i]);
+                    character++;
+                }
             }
+
+            Debug.Log($"Added {text.Length * 2} triangles for text");
 
             this.SetMesh(new Mesh(verts.ToArray(), ind.ToArray(), uvs.ToArray()));
         }
 
-        private void AddCharacter(List<Vector3> verts, List<uint> ind, List<Vector2> uvs, float x, char c)
+        private void AddCharacter(List<Vector3> verts, List<uint> ind, List<Vector2> uvs, float x, float y, char c)
         {
             uint startIndex = (uint)verts.Count;
 
-            verts.Add(new Vector3(x, 0, 0));
-            verts.Add(new Vector3(x + 1, 0, 0));
-            verts.Add(new Vector3(x + 1, 1, 0));
-            verts.Add(new Vector3(x, 1, 0));
+            verts.Add(new Vector3(x, y, 0));
+            verts.Add(new Vector3(x + 1, y, 0));
+            verts.Add(new Vector3(x + 1, y + 1, 0));
+            verts.Add(new Vector3(x, y + 1, 0));
 
             // First triangle
             ind.Add(startIndex);
@@ -86,7 +100,6 @@ namespace Runtime.Graphics.Renderers
         public Vector2[] GetCharacterUv(char c)
         {
             int charIndex = fontText.IndexOf(c);
-            Debug.Log($"Index of {charIndex}");
             float x = charIndex % 16;
             float y = MathF.Floor(charIndex / 16f);
 
