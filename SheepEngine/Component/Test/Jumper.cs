@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Runtime.Component.Test
 {
+    /// <summary>
+    /// A test script that adds an upwards force to any attached rigid bodies.
+    /// </summary>
     internal class Jumper : IComponent
     {
         public override void Update()
