@@ -12,8 +12,8 @@ namespace Runtime
 {
     public class Game
     {
-        public static int width = 640;
-        public static int height = 480;
+        public static int width = 640 * 2;
+        public static int height = 480 * 2;
         public static void Start(string path)
         {
             Log("Starting Dart v0.1...");
@@ -34,14 +34,15 @@ namespace Runtime
                 Title = gameSettings.WindowTitle,
             };
 
+            Log($"Creating empty scene...");
+            Scene.main = new Scene();
+
             RenderCanvas window = new RenderCanvas(nativeWindowSettings);
 
             IGraphicsPipeline graphicsPipeline = new DefaultGraphicsPipeline();
             Log($"Using graphicsPipeline: {graphicsPipeline}.");            
             window.SetGraphicsPipeline(graphicsPipeline);
 
-            Log($"Creating empty scene...");
-            Scene.main = new Scene();
 
             if (File.Exists(gameSettings.CodePath))
             {
