@@ -47,7 +47,8 @@ namespace Runtime.Graphics.Renderers
 
         public void SetMesh(Mesh mesh)
         {
-            Upload(mesh);
+            if (mesh != null)
+               Upload(mesh);
             _mesh = mesh;
         }
 
@@ -101,7 +102,7 @@ namespace Runtime.Graphics.Renderers
                 // Tangents
                 tbo = GL.GenBuffer();
                 GL.BindBuffer(BufferTarget.ArrayBuffer, tbo);
-                GL.BufferData(BufferTarget.ArrayBuffer, mesh.tangents.Length * sizeof(float), mesh.uvs, BufferUsage.StaticDraw);
+                GL.BufferData(BufferTarget.ArrayBuffer, mesh.tangents.Length * sizeof(float), mesh.tangents, BufferUsage.StaticDraw);
                 GL.VertexAttribPointer(3, 4, VertexAttribPointerType.Float, false, 4 * sizeof(float), 0);
                 GL.EnableVertexAttribArray(3);
             }
