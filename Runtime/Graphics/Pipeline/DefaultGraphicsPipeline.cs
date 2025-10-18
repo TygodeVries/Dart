@@ -27,7 +27,6 @@ namespace Runtime.Graphics.Pipeline
 
             customRenderPasses.Add(new ImGuiRenderPass());
 
-
             EnableCap[] caps = new EnableCap[]
             {
                 EnableCap.LineSmooth,

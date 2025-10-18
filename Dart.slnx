@@ -1,4 +1,3 @@
 <Solution>
-  <Project Path="SampleProject/SampleProject.csproj" Id="44367147-4a78-4e00-94bc-6b2259b07406" />
-  <Project Path="SheepEngine/Runtime.csproj" />
+  <Project Path="Runtime/Runtime.csproj" />
 </Solution>
