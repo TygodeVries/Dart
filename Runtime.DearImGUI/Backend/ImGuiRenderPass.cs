@@ -1,8 +1,10 @@
 ﻿
 using ImGuiNET;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.Vulkan;
 using OpenTK.Mathematics;
 using Runtime;
+using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
 using Runtime.Graphics.Pipeline;
 using Runtime.Input;
@@ -17,6 +19,10 @@ namespace Runtime.DearImGUI.Backend
         nint context;
         public override void Start()
         {
+            instance = this;
+
+            GuiWindow.Enable(new GuiDemoWindow());
+
             Debug.Log("Start");
             GL.Enable(EnableCap.DebugOutput);
             GL.Enable(EnableCap.DebugOutputSynchronous);
@@ -53,14 +59,18 @@ namespace Runtime.DearImGUI.Backend
             );
         }
 
+        public static ImGuiRenderPass? instance;
+        public List<GuiWindow> guiWindows = new List<GuiWindow>();
         public override void Pass()
         {
 
             ImguiImplOpenGL3.NewFrame();
             ImGui.NewFrame();
 
-
-            ImGui.ShowDemoWindow();
+            foreach(GuiWindow window in guiWindows)
+            {
+                window.Render();
+            }
 
             ImGui.Render();
             GL.Viewport(0, 0, RenderCanvas.main!.FramebufferSize.X, RenderCanvas.main!.FramebufferSize.Y);

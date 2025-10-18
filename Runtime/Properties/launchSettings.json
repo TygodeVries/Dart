@@ -3,9 +3,6 @@
     "Runtime": {
       "commandName": "Project",
       "workingDirectory": "$(SolutionDir)"
-    },
-    "Profile 1": {
-      "commandName": "Project"
     }
   }
 }
