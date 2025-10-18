@@ -13,5 +13,6 @@ namespace Runtime.Data
     {
         public string WindowTitle { get; set; } = "Untitled Game";
         public string CodePath { get; set; } = "null";
+        public string [] Plugins { get; set; } = new string [0];
     }
 }

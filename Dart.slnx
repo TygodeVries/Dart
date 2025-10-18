@@ -4,7 +4,7 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="SampleProject\SampleProject.csproj" />
-  <Project Path="SheepEngine\Runtime.csproj" />
-</Solution>Path="WindowsNativeAudio\WindowsNativeAudio.vcxproj" />
+  <Project Path="Runtime.DearImGUI\Runtime.DearImGUI.csproj" />
+  <Project Path="Runtime\Runtime.csproj" />
+  <Project Path="WindowsNative\WindowsNative.vcxproj" />
 </Solution>

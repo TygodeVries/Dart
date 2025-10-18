@@ -60,6 +60,11 @@ namespace Runtime
                 Error($"Could not load user code from path {gameSettings!.CodePath}. File not found!");
             }
 
+            foreach (string plugin in gameSettings!.Plugins)
+            {
+               AssemblyLoader.LoadExternal(plugin);
+            }
+
             onReady?.Invoke(null, null);
             Log($"Opening window...");
             window.Run(); // Keeps the thread blocked until closed.
