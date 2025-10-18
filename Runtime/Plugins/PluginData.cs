@@ -11,5 +11,6 @@ namespace Runtime.Plugins
         public string MainClass { get; set; } = "none";
         public string CoreDll { get; set; } = "none";
         public string[] Dependencies { get; set; } = new string[0];
+        public string DllFolder { get; set; } = "";
     }
 }

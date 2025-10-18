@@ -1,5 +1,6 @@
 {
     "MainClass": "Runtime.DearImGUI.Main",
     "CoreDll": "Runtime.DearImGUI.dll",
-    "Dependencies": [] 
+    "Dependencies": [],
+    "DllFolder": "net8.0"
 }
