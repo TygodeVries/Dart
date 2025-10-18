@@ -37,12 +37,19 @@ namespace Runtime.Plugins
         public static Assembly? LoadExternal(string filename)
         {
             Debug.Log($"Loading assembly from {filename}");
-            Assembly ass = Assembly.LoadFrom(Path.Join(Directory.GetCurrentDirectory(), filename));
-            if (ass == null)
+            Assembly? ass = null;
+            try
             {
-                Debug.Error($"Failed to load assembly from {filename}. Null!");
+               ass = Assembly.LoadFrom(Path.Join(Directory.GetCurrentDirectory(), filename));
+               if (ass == null)
+               {
+                  Debug.Error($"Failed to load assembly from {filename}. Null!");
+               }
             }
-
+            catch (Exception ex)
+            {
+               Debug.Error($"Failed to load assembly: {ex.Message}");
+            }
             return ass;
         }
 
