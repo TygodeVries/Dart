@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Runtime.Input
 {
-    internal class Mouse
+    public class Mouse
     {
         public static Mouse current = new Mouse();
         private Mouse()

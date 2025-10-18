@@ -12,9 +12,8 @@ using Runtime.Objects;
 using Runtime.Component.Test;
 using OpenTK.Graphics.Vulkan.VulkanVideoCodecH264stdEncode;
 using Runtime.Component.Lighting;
-using Editor.ImGuiEditor;
-using Runtime.Asm;
 using System.Reflection;
+using Runtime.Plugins;
 
 namespace Runtime.Graphics.Pipeline
 {
@@ -22,22 +21,20 @@ namespace Runtime.Graphics.Pipeline
     {  
         public void Initialize()
         {
+            AssemblyLoader.LoadPlugin("dearimgui");
+
             Debug.Log("Initializing...");
             GL.ClearColor(0, 0, 0, 0);
 
-            customRenderPasses.Add(new ImGuiRenderPass());
-
             EnableCap[] caps = new EnableCap[]
             {
-                EnableCap.LineSmooth,
-                EnableCap.PolygonSmooth,
                 EnableCap.Multisample
             };
             Debug.Log("Turning on OpenGL features...");
             string features = "";
             foreach(EnableCap enableCap in caps)
             {
-                features += enableCap;
+                features += $"- {enableCap}";
                 GL.Enable(enableCap);
             }
 
@@ -102,7 +99,12 @@ namespace Runtime.Graphics.Pipeline
         List<Renderer> renderers = new List<Renderer>();
 
         // Any custom passes we might need to do (ui?)
-        public List<RenderPass> customRenderPasses = new List<RenderPass>();
+        List<RenderPass> customRenderPasses = new List<RenderPass>();
+
+        public void AddRenderPass(RenderPass renderPass)
+        {
+            customRenderPasses.Add(renderPass);
+        }
 
         bool sendNoCameraIssue;
         public void Render()

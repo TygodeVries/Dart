@@ -12,5 +12,7 @@ namespace Runtime.Graphics.Pipeline
         void Render();
         void Initialize() { }
         void AddRenderer(Renderer renderer) { }
+
+        void AddRenderPass(RenderPass pass) { }
     }
 }
