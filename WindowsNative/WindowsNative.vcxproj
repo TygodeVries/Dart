@@ -149,6 +149,11 @@
     </ClCompile>
     <ClCompile Include="WindowsNativeAudio.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Runtime\Runtime.csproj">
+      <Project>{62f9fc95-5ac2-8716-255d-214a087c175b}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
