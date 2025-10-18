@@ -1,4 +1,11 @@
 <Solution>
-  <Project Path="Runtime.DearImGUI/Runtime.DearImGUI.csproj" Id="637ffd0d-6bd8-4e74-b752-06f16a4d384d" />
-  <Project Path="Runtime/Runtime.csproj" />
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Editor/Editor.csproj" Id="041e69f1-49da-4d8f-bb2c-5ea6fb2679b6" />
+  <Project Path="Runtime.DearImGUI\Runtime.DearImGUI.csproj" />
+  <Project Path="Runtime\Runtime.csproj" />
+  <Project Path="WindowsNative\WindowsNative.vcxproj" />
 </Solution>
