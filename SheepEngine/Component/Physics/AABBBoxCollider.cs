@@ -10,15 +10,17 @@ using System.Threading.Tasks;
 
 namespace Runtime.Component.Physics
 {
+
+    /// <summary>
+    /// An axis allinged bounding box
+    /// </summary>
     public class AABBBoxCollider : ICollider
     {
-        public override void OnLoad()
-        {
-            Scene.main?.physicsSolver.colliders.Add(this);
-            base.OnLoad();
-        }
 
-
+        /// <summary>
+        /// The center of the bounding box
+        /// </summary>
+        /// <returns></returns>
         public Vector3 GetCenter()
         {
             Transform? transform = GetComponent<Transform>();
@@ -27,8 +29,16 @@ namespace Runtime.Component.Physics
             return Vector3.Zero;
         }
 
+        /// <summary>
+        /// The size of the bouding box
+        /// </summary>
         public Vector3 Size;
 
+        /// <summary>
+        /// If a spesific point overlaps the collider
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
         public override bool HasOverlap(Vector3 point)
         {
             Vector3 center = GetCenter();
@@ -37,6 +47,11 @@ namespace Runtime.Component.Physics
                 point.Z < center.Z + Size.Z * 0.5f && point.Z > center.Z - Size.Z * 0.5f;
         }
 
+        /// <summary>
+        /// Check if another collider is overlapping
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public override bool HasOverlap(ICollider other)
         {
             Vector3 centerA = GetCenter();

@@ -9,8 +9,15 @@ using static OpenTK.Graphics.OpenGLES2.GL;
 
 namespace Runtime.Asm
 {
+
+    /// <summary>
+    /// Load external user code into the project
+    /// </summary>
     public class AssemblyLoader
     {
+        /// <summary>
+        /// Display all loaded assemblies
+        /// </summary>
         public static void LogLoaded()
         {
             Debug.Log("The following assemblies are loaded:");
@@ -20,6 +27,10 @@ namespace Runtime.Asm
             }
         }
 
+        /// <summary>
+        /// Load an external DLL into the project based on the file name.
+        /// </summary>
+        /// <param name="filename"></param>
         public static void LoadExternal(string filename)
         {
             Debug.Log($"Loading assembly from {filename}");

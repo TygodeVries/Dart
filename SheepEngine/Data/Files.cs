@@ -7,8 +7,13 @@ using System.Threading.Tasks;
 
 namespace Runtime.Data
 {
+
+    /// <summary>
+    /// Simple wrapper for the text.json, just in case we need to replace this one day with something else
+    /// </summary>
     public class Files
     {
+
         public static T? Load<T>(string file)
         {
             if (!File.Exists(file))
