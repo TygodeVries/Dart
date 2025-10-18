@@ -62,7 +62,7 @@ namespace Runtime
 
             foreach (string plugin in gameSettings!.Plugins)
             {
-               AssemblyLoader.LoadExternal(plugin);
+               AssemblyLoader.LoadPlugin(plugin);
             }
 
             onReady?.Invoke(null, null);
