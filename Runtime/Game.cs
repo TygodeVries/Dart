@@ -78,7 +78,7 @@ namespace Runtime
     {
         public static void Main(string[] args)
         {
-            Game.Start("TestProject");
+            Game.Start("Dart Editor");
         }
     }
 }
