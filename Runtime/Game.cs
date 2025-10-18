@@ -34,7 +34,7 @@ namespace Runtime
             DedicatedSwitch.Switch();
 
             Log($"Creating window of size {width}, {height}");
-            Log($"Setting window title to {gameSettings?.WindowTitle}");
+            Log($"Setting window title to {gameSettings!.WindowTitle}");
             var nativeWindowSettings = new NativeWindowSettings()
             {
                 ClientSize = new Vector2i(width, height),
@@ -50,14 +50,19 @@ namespace Runtime
             Log($"Using graphicsPipeline: {graphicsPipeline}.");            
             window.SetGraphicsPipeline(graphicsPipeline);
             
-            if (File.Exists(gameSettings.CodePath))
+            if (File.Exists(gameSettings!.CodePath))
             {
                 Log($"Loading user code from {gameSettings.CodePath}");
                 AssemblyLoader.LoadExternal(gameSettings.CodePath);
             }
             else
             {
-                Error($"Could not load user code from path {gameSettings.CodePath}. File not found!");
+                Error($"Could not load user code from path {gameSettings!.CodePath}. File not found!");
+            }
+
+            foreach (string plugin in gameSettings!.Plugins)
+            {
+               AssemblyLoader.LoadExternal(plugin);
             }
 
             onReady?.Invoke(null, null);

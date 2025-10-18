@@ -37,12 +37,19 @@ namespace Runtime.Plugins
         public static Assembly? LoadExternal(string filename)
         {
             Debug.Log($"Loading assembly from {filename}");
-            Assembly ass = Assembly.LoadFrom(Path.Join(Directory.GetCurrentDirectory(), filename));
-            if (ass == null)
+            Assembly? ass = null;
+            try
             {
-                Debug.Error($"Failed to load assembly from {filename}. Null!");
+               ass = Assembly.LoadFrom(Path.Join(Directory.GetCurrentDirectory(), filename));
+               if (ass == null)
+               {
+                  Debug.Error($"Failed to load assembly from {filename}. Null!");
+               }
             }
-
+            catch (Exception ex)
+            {
+               Debug.Error($"Failed to load assembly: {ex.Message}");
+            }
             return ass;
         }
 
@@ -58,6 +65,7 @@ namespace Runtime.Plugins
             string coreDll = pluginData.CoreDll;
             string mainClass = pluginData.MainClass;
             string[] dependencies = pluginData.Dependencies;
+            string dllFolder = pluginData.DllFolder;
 
             foreach (string dependency in dependencies)
             {
@@ -66,7 +74,7 @@ namespace Runtime.Plugins
             }
 
             Assembly? assemblyDef = null;
-            string[] dllFiles = Directory.GetFiles($"plugins/{plugin}/net8.0");
+            string[] dllFiles = Directory.GetFiles($"plugins/{plugin}/{dllFolder}");
             foreach (string dll in dllFiles)
             {
                 if (dll.EndsWith(".dll"))
@@ -80,14 +88,18 @@ namespace Runtime.Plugins
             }
 
             // Loading native dlls
-            string platformFolder = $"plugins/{plugin}/net8.0/runtimes/{GetRuntimeIdentifier()}/native";
-            Debug.Log($"Loading dll for platform from: {platformFolder}");
-            dllFiles = Directory.GetFiles(platformFolder);
-            foreach (string dll in dllFiles)
+            string platformFolder = $"plugins/{plugin}/{dllFolder}/runtimes/{GetRuntimeIdentifier()}/native";
+            bool hasNative = Directory.Exists(platformFolder);
+            if (hasNative)
             {
-                if (dll.EndsWith(".dll"))
+                Debug.Log($"Loading native dll for platform from: {platformFolder}");
+                dllFiles = Directory.GetFiles(platformFolder);
+                foreach (string dll in dllFiles)
                 {
-                    NativeLibrary.Load(dll);
+                    if (dll.EndsWith(".dll"))
+                    {
+                        NativeLibrary.Load(dll);
+                    }
                 }
             }
 
