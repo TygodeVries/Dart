@@ -8,43 +8,78 @@ using System.Threading.Tasks;
 
 namespace Runtime.Input
 {
-    internal class Keyboard
+    public class Keyboard
     {
         public static Keyboard current = new Keyboard();
+
         private Keyboard()
         {
             Debug.Log("Activated keyboard!");
         }
 
-        Dictionary<Keys, bool> keyStates = new Dictionary<Keys, bool>();
-        List<Keys> keyPressed = new List<Keys>();
+        private Dictionary<Keys, bool> keyStates = new Dictionary<Keys, bool>();
+
+        // Keys pressed during this frame
+        private List<Keys> keysPressedThisFrame = new List<Keys>();
+
+        // Keys released during this frame
+        private List<Keys> keysReleasedThisFrame = new List<Keys>();
+
+        /// <summary>
+        /// Update key state and track presses/releases per frame
+        /// </summary>
         public void SetKeyState(Keys key, bool pressed)
         {
-            if (keyStates.ContainsKey(key))
-                keyStates[key] = pressed;
-            else
+            bool wasPressed = keyStates.ContainsKey(key) && keyStates[key];
+
+            keyStates[key] = pressed;
+
+            if (pressed && !wasPressed)
             {
-                keyStates.Add(key, pressed);
+                // Key went down this frame
+                if (!keysPressedThisFrame.Contains(key))
+                    keysPressedThisFrame.Add(key);
             }
-            if (pressed && !keyPressed.Contains(key))
-               keyPressed.Add(key);
+            else if (!pressed && wasPressed)
+            {
+                // Key was released this frame
+                if (!keysReleasedThisFrame.Contains(key))
+                    keysReleasedThisFrame.Add(key);
+            }
         }
-         /// <summary>
-         /// Cleanup at the end of a frame
-         /// </summary>
-         public void EndOfFrame()
-         {
-            keyPressed.Clear();
-         }
+
+        /// <summary>
+        /// Cleanup pressed/released states at end of frame
+        /// </summary>
+        public void EndOfFrame()
+        {
+            keysPressedThisFrame.Clear();
+            keysReleasedThisFrame.Clear();
+        }
+
+        /// <summary>
+        /// Is key currently pressed?
+        /// </summary>
         public bool IsPressed(Keys key)
         {
-            if (!keyStates.ContainsKey(key))
-                return false;
-            return keyStates[key];
+            return keyStates.ContainsKey(key) && keyStates[key];
         }
-         public bool IsPressedThisFrame(Keys key)
-         {
-            return keyPressed.Contains(key);
-         }
+
+        /// <summary>
+        /// Was key pressed this frame?
+        /// </summary>
+        public bool IsPressedThisFrame(Keys key)
+        {
+            return keysPressedThisFrame.Contains(key);
+        }
+
+        /// <summary>
+        /// Was key released this frame?
+        /// </summary>
+        public bool IsReleasedThisFrame(Keys key)
+        {
+            return keysReleasedThisFrame.Contains(key);
+        }
     }
+
 }

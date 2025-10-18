@@ -9,6 +9,8 @@ namespace Runtime.DearImGUI.Gui
 {
     internal class GuiDemoWindow : GuiWindow
     {
+
+        string val = "Test";
         public override void Render()
         {
             ImGui.Begin("Demo Window");
@@ -18,6 +20,7 @@ namespace Runtime.DearImGUI.Gui
                 ImGui.Text("Hello!");
             }
 
+            ImGui.InputText("Lable", ref val, 100);
             ImGui.End();
         }
     }
