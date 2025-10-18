@@ -5,19 +5,22 @@ using OpenTK.Mathematics;
 using Runtime;
 using Runtime.Graphics;
 using Runtime.Graphics.Pipeline;
+using Runtime.Input;
 using Runtime.Logging;
+using System.Reflection;
 
 namespace Editor.ImGuiEditor
 {
     public class ImGuiRenderPass : RenderPass
     {
+        nint context;
         public override void Start()
         {
             Debug.Log("Start");
             GL.Enable(EnableCap.DebugOutput);
             GL.Enable(EnableCap.DebugOutputSynchronous);
 
-            ImGui.CreateContext();
+            context = ImGui.CreateContext();
             ImGuiIOPtr io = ImGui.GetIO();
             io.ConfigFlags |= ImGuiConfigFlags.NavEnableKeyboard;
             io.ConfigFlags |= ImGuiConfigFlags.NavEnableGamepad;
@@ -30,7 +33,7 @@ namespace Editor.ImGuiEditor
             ImGuiStylePtr style = ImGui.GetStyle();
             if ((io.ConfigFlags & ImGuiConfigFlags.ViewportsEnable) != 0)
             {
-                style.WindowRounding = 0.0f;
+                style.WindowRounding = 1.0f;
                 style.Colors[(int)ImGuiCol.WindowBg].W = 1.0f;
             }
 
@@ -55,7 +58,25 @@ namespace Editor.ImGuiEditor
             {
                 ImGui.UpdatePlatformWindows();
                 ImGui.RenderPlatformWindowsDefault();
+
+                ImGui.SetCurrentContext(context);
             }
+
+            InputData();
+            // (Do the same for keyboard if needed)
+        }
+
+        void InputData()
+        {
+            ImGuiIOPtr io = ImGui.GetIO();
+
+            // Mouse Position
+            Vector2 mousePos = Mouse.current.position;
+            io.MousePos = new System.Numerics.Vector2(mousePos.X, mousePos.Y);
+
+            io.MouseDown[0] = Mouse.current.leftPressed;
+            io.MouseDown[1] = Mouse.current.rightPressed;
+            io.MouseDown[2] = Mouse.current.middlePressed;
         }
     }
 }

@@ -13,6 +13,8 @@ using Runtime.Component.Test;
 using OpenTK.Graphics.Vulkan.VulkanVideoCodecH264stdEncode;
 using Runtime.Component.Lighting;
 using Editor.ImGuiEditor;
+using Runtime.Asm;
+using System.Reflection;
 
 namespace Runtime.Graphics.Pipeline
 {

@@ -23,5 +23,10 @@ namespace Runtime.Input
 		      mouseDelta = Vector2.Zero;
          }
         public Vector2 mouseDelta;
+        public Vector2 position;
+
+        public bool leftPressed;
+        public bool rightPressed;
+        public bool middlePressed;
     }
 }

@@ -52,12 +52,33 @@ namespace Runtime.Graphics
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
-          //  this.CursorState = CursorState.Grabbed;
+            if (e.Button == OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Left)
+                Mouse.current.leftPressed = true;
+
+            if (e.Button == OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Right)
+                Mouse.current.rightPressed = true;
+
+            if (e.Button == OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Middle)
+                Mouse.current.middlePressed = true;
         }
+
+        protected override void OnMouseUp(MouseButtonEventArgs e)
+        {
+            if (e.Button == OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Left)
+                Mouse.current.leftPressed = false;
+
+            if (e.Button == OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Right)
+                Mouse.current.rightPressed = false;
+
+            if (e.Button == OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Middle)
+                Mouse.current.middlePressed = false;
+        }
+
 
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
             Mouse.current.mouseDelta = e.Delta;
+            Mouse.current.position = e.Position;
         }
 
         protected override void OnResize(ResizeEventArgs e)
@@ -77,7 +98,7 @@ namespace Runtime.Graphics
         protected override void OnKeyUp(KeyboardKeyEventArgs e)
         {
             Keyboard.current.SetKeyState(e.Key, false);
-            base.OnKeyDown(e);
+            base.OnKeyUp(e);
         }
 
         protected override void OnUpdateFrame(FrameEventArgs args)

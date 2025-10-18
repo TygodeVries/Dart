@@ -31,7 +31,7 @@ namespace Runtime.Asm
         /// Load an external DLL into the project based on the file name.
         /// </summary>
         /// <param name="filename"></param>
-        public static void LoadExternal(string filename)
+        public static Assembly? LoadExternal(string filename)
         {
             Debug.Log($"Loading assembly from {filename}");
             Assembly ass = Assembly.LoadFrom(Path.Join(Directory.GetCurrentDirectory(), filename));
@@ -40,7 +40,26 @@ namespace Runtime.Asm
                 Debug.Error($"Failed to load assembly from {filename}. Null!");
             }
 
-            Activator.CreateInstance("Editor", "Editor.TestKick");
+            return ass;
+        }
+
+        public static Assembly? LoadPlugin(string plugin, string mainDll)
+        {
+            Assembly? returnValue = null;
+            string[] files = Directory.GetFiles($"plugins/{plugin}/net8.0");
+            foreach(string file in files)
+            {
+                if (file.EndsWith(".dll"))
+                {
+                    Assembly? ass = LoadExternal(file);
+                    if(Path.GetFileNameWithoutExtension(file) == mainDll)
+                    {
+                        returnValue = ass;
+                    }
+                }
+            }
+
+            return returnValue;
         }
     }
 }
