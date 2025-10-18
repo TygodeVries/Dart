@@ -46,10 +46,6 @@ namespace Runtime
 
             RenderCanvas window = new RenderCanvas(nativeWindowSettings);
 
-            IGraphicsPipeline graphicsPipeline = new DefaultGraphicsPipeline();
-            Log($"Using graphicsPipeline: {graphicsPipeline}.");            
-            window.SetGraphicsPipeline(graphicsPipeline);
-            
             if (File.Exists(gameSettings!.CodePath))
             {
                 Log($"Loading user code from {gameSettings.CodePath}");
@@ -64,8 +60,12 @@ namespace Runtime
             {
                AssemblyLoader.LoadPlugin(plugin);
             }
+   			IGraphicsPipeline graphicsPipeline = new DefaultGraphicsPipeline();
+   			Log($"Using graphicsPipeline: {graphicsPipeline}.");
+   			window.SetGraphicsPipeline(graphicsPipeline);
 
-            onReady?.Invoke(null, null);
+
+	   		onReady?.Invoke(null, null);
             Log($"Opening window...");
             window.Run(); // Keeps the thread blocked until closed.
             Log($"Cleaning up...");

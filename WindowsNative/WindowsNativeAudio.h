@@ -1,28 +1,31 @@
 #pragma once
 
-using namespace System;
 
 struct WindowsNativeAudioInternal;
 
 namespace Runtime
 {
-	public ref class WindowsNative
+	namespace WindowsNative
 	{
-		WindowsNative()
+		public ref class WindowsNative
 		{
-		}
-
-	};
-
-	namespace Audio
-	{
-		public ref class WindowsNativeAudioController
-		{
-			WindowsNativeAudioInternal* i;
+			WindowsNative()
+			{
+			}
 		public:
-			WindowsNativeAudioController();
-			~WindowsNativeAudioController();
-			bool Initialize();
+			static void Load();
 		};
+
+		namespace Audio
+		{
+			public ref class WindowsNativeAudioController
+			{
+				WindowsNativeAudioInternal* i;
+			public:
+				WindowsNativeAudioController();
+				~WindowsNativeAudioController();
+				bool Initialize();
+			};
+		}
 	}
 }

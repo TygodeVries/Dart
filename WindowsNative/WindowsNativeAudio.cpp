@@ -16,18 +16,18 @@ struct WindowsNativeAudioInternal
 	HWAVEOUT waveOut = 0;
 };
 
-::Runtime::Audio::WindowsNativeAudioController::WindowsNativeAudioController()
+::Runtime::WindowsNative::Audio::WindowsNativeAudioController::WindowsNativeAudioController()
 {
 	i = new WindowsNativeAudioInternal;
 }
 
-::Runtime::Audio::WindowsNativeAudioController::~WindowsNativeAudioController()
+::Runtime::WindowsNative::Audio::WindowsNativeAudioController::~WindowsNativeAudioController()
 {
 	waveOutClose(i->waveOut);
 	delete i;
 }
 
-bool ::Runtime::Audio::WindowsNativeAudioController::Initialize()
+bool ::Runtime::WindowsNative::Audio::WindowsNativeAudioController::Initialize()
 {
 	WAVEFORMATEX format{};
 	format.wFormatTag = WAVE_FORMAT_PCM;
@@ -43,4 +43,9 @@ bool ::Runtime::Audio::WindowsNativeAudioController::Initialize()
 	MMSYSERR_BASE;
 	printf("Result: %i\n", result);
 	return !result;
+}
+
+void ::Runtime::WindowsNative::WindowsNative::Load()
+{
+	printf("Hello from C++\n");
 }

@@ -62,9 +62,10 @@ namespace Runtime.Plugins
 				return null;
 			}
 
-			string coreDll = pluginData.CoreDll;
-			string mainClass = pluginData.MainClass;
-			string[] dependencies = pluginData.Dependencies;
+            string coreDll = pluginData.CoreDll;
+            string mainClass = pluginData.MainClass;
+            string[] dependencies = pluginData.Dependencies;
+            string dllFolder = pluginData.DllFolder;
 
 			foreach (string dependency in dependencies)
 			{
@@ -72,30 +73,35 @@ namespace Runtime.Plugins
 				LoadPlugin(dependency);
 			}
 
-			Assembly? assemblyDef = null;
-			string[] dllFiles = Directory.GetFiles($"plugins/{plugin}/net8.0");
-			foreach (string dll in dllFiles)
-			{
-				if (dll.EndsWith(".dll"))
-				{
-					Assembly? ass = LoadExternal(dll);
-					if (coreDll != "none" && Path.GetFileName(dll) == coreDll)
-					{
-						assemblyDef = ass;
-					}
-				}
-			}
+            Assembly? assemblyDef = null;
+            string[] dllFiles = Directory.GetFiles($"plugins/{plugin}/{dllFolder}");
+            foreach (string dll in dllFiles)
+            {
+                if (dll.EndsWith(".dll"))
+                {
+                    Assembly? ass = LoadExternal(dll);
+                    if (coreDll != "none" && Path.GetFileName(dll) == coreDll)
+                    {
+                        assemblyDef = ass;
+                    }
+                }
+            }
 
-			string platformFolder = $"plugins/{plugin}/net8.0/runtimes/{GetRuntimeIdentifier()}/native";
-			Debug.Log($"Loading dll for platform from: {platformFolder}");
-			dllFiles = Directory.GetFiles(platformFolder);
-			foreach (string dll in dllFiles)
-			{
-				if (dll.EndsWith(".dll"))
-				{
-					NativeLibrary.Load(dll);
-				}
-			}
+            // Loading native dlls
+            string platformFolder = $"plugins/{plugin}/{dllFolder}/runtimes/{GetRuntimeIdentifier()}/native";
+            bool hasNative = Directory.Exists(platformFolder);
+            if (hasNative)
+            {
+                Debug.Log($"Loading native dll for platform from: {platformFolder}");
+                dllFiles = Directory.GetFiles(platformFolder);
+                foreach (string dll in dllFiles)
+                {
+                    if (dll.EndsWith(".dll"))
+                    {
+                        NativeLibrary.Load(dll);
+                    }
+                }
+            }
 
 
 			if (null == assemblyDef)
@@ -105,7 +111,7 @@ namespace Runtime.Plugins
 
 			// Loading native dlls
 
-			if (mainClass == "none")
+			if (mainClass == "none" || mainClass == "")
 			{
 				Debug.Log("No main class provided for plugin, nothing will load by itself.");
 				return assemblyDef;
