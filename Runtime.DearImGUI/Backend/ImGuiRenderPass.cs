@@ -28,7 +28,7 @@ namespace Runtime.DearImGUI.Backend
             io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
             io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;
 
-            io.DisplaySize = new System.Numerics.Vector2(RenderCanvas.main.FramebufferSize.X, RenderCanvas.main.FramebufferSize.Y);
+            io.DisplaySize = new System.Numerics.Vector2(RenderCanvas.main!.FramebufferSize.X, RenderCanvas.main!.FramebufferSize.Y);
             ImGui.StyleColorsDark();
 
             ImGuiStylePtr style = ImGui.GetStyle();
@@ -63,7 +63,7 @@ namespace Runtime.DearImGUI.Backend
             ImGui.ShowDemoWindow();
 
             ImGui.Render();
-            GL.Viewport(0, 0, RenderCanvas.main.FramebufferSize.X, RenderCanvas.main.FramebufferSize.Y);
+            GL.Viewport(0, 0, RenderCanvas.main!.FramebufferSize.X, RenderCanvas.main!.FramebufferSize.Y);
             
             ImguiImplOpenGL3.RenderDrawData(ImGui.GetDrawData());
 
