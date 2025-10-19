@@ -57,7 +57,7 @@ namespace Runtime
 			   if (File.Exists(gameSettings!.CodePath))
 			   {
 				   Log($"Loading user code from {gameSettings.CodePath}");
-				   AssemblyLoader.LoadExternal(gameSettings.CodePath);
+				   AssemblyLoader.LoadAndRun(gameSettings.CodePath);
 			   }
 			   else
 			   {

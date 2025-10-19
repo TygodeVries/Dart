@@ -36,7 +36,7 @@ struct WindowsNativeAudioInternal
 			short* output = (short*)header->lpData;
 			for (std::string& playbuffer : pHandler->playbuffers)
 			{
-				int size = min(playbuffer.size(), header->dwBufferLength);
+				int size = min((DWORD)playbuffer.size(), header->dwBufferLength);
 				short* input = (short *)playbuffer.data();
 				for (int cx = 0; cx < size / 2; cx++)
 				{

@@ -4,7 +4,9 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Project Path="FeatureTestProject\FeatureTestProject.csproj" Type="Classic C#" />
   <Project Path="Runtime.DearImGUI\Runtime.DearImGUI.csproj" />
   <Project Path="Runtime\Runtime.csproj" />
+  <Project Path="StartFeatureTestProject\StartFeatureTestProject.vcxproj" />
   <Project Path="WindowsNative\WindowsNative.vcxproj" />
 </Solution>

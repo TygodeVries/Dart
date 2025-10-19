@@ -39,6 +39,14 @@ namespace Runtime
 			}
 
 		public:
+			static WindowsNative^ GetInstance()
+			{
+				return instance;
+			}
+			static Audio::WindowsNativeAudioController^ GetAudio()
+			{
+				return instance->audio;
+			}
 			static void Load();
 		};
 
