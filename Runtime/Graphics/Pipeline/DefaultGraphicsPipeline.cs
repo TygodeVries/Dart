@@ -21,8 +21,6 @@ namespace Runtime.Graphics.Pipeline
     {  
         public void Initialize()
         {
-            AssemblyLoader.LoadPlugin("dearimgui");
-
             Debug.Log("Initializing...");
             GL.ClearColor(0, 0, 0, 0);
 

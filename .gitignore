@@ -416,3 +416,9 @@ FodyWeavers.xsd
 *.msm
 *.msp
 /TestProject/imgui.ini
+/TestProject/plugins/dearimgui/net8.0/Runtime.DearImGUI.dll
+/TestProject/plugins/dearimgui/net8.0/Runtime.dll
+/TestProject/plugins/dearimgui/net8.0/Runtime.exe
+/TestProject/plugins/WindowsNative/Runtime.dll
+/TestProject/plugins/WindowsNative/Runtime.exe
+/TestProject/plugins/WindowsNative/WindowsNative.dll
