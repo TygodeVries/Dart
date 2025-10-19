@@ -9,6 +9,15 @@ namespace Runtime
 	{
 		namespace Audio
 		{
+			public ref class Sample
+			{
+				cli::array<short>^ Data;
+			public:
+				Sample(const char* data, size_t length);
+				static Sample^ ReadSample(System::String^ path);
+				operator std::string();
+			};
+
 			public ref class WindowsNativeAudioController
 			{
 				WindowsNativeAudioInternal* i;
@@ -18,13 +27,7 @@ namespace Runtime
 				bool Initialize();
 				void Open();
 				void Close();
-			};
-			public ref class Sample
-			{
-				cli::array<short> ^Data;
-			public:
-				Sample(const char* data, size_t length);
-				static Sample^ ReadSample(System::String ^path);
+				void Play(Sample^ sample);
 			};
 		}
 		public ref class WindowsNative

@@ -4,6 +4,7 @@
 #include <vcclr.h>
 #include <stdio.h>
 #include <math.h>
+#include <vector>
 
 #include "WindowsNativeAudio.h"
 
@@ -15,6 +16,7 @@ using namespace Runtime::WindowsNative::Audio;
 struct WindowsNativeAudioInternal
 {
 	gcroot<::Runtime::WindowsNative::Audio::WindowsNativeAudioController^> parent;
+	std::vector<std::string> playbuffers;
 	WAVEFORMATEX format;
 	static void CallBack(HWAVEOUT handle, UINT uMsg, DWORD_PTR i, DWORD_PTR wParam, DWORD_PTR lParam)
 	{
@@ -30,7 +32,23 @@ struct WindowsNativeAudioInternal
 		case WOM_DONE:
 		{
 			WAVEHDR* header = (WAVEHDR*)wParam;
+			memset(header->lpData, 0, header->dwBufferLength);
+			short* output = (short*)header->lpData;
+			for (std::string& playbuffer : pHandler->playbuffers)
+			{
+				int size = min(playbuffer.size(), header->dwBufferLength);
+				short* input = (short *)playbuffer.data();
+				for (int cx = 0; cx < size / 2; cx++)
+				{
+					output[cx] += input[cx];
+				}
+				playbuffer = playbuffer.substr(size);
+			}
 			waveOutWrite(handle, header, sizeof(WAVEHDR));
+			for (std::vector<std::string>::iterator iter = pHandler->playbuffers.begin(); iter != pHandler->playbuffers.begin();)
+				if (!iter->size())
+					iter = pHandler->playbuffers.erase(iter);
+				else ++iter;
 		}
 		break;
 		}
@@ -65,7 +83,7 @@ struct WindowsNativeAudioInternal
 			char* buffer = new char[buffer_size];
 			signed short* samples = (signed short*)buffer;
 			for (int cy = 0; cy < buffer_size / 2; cy++)
-				samples[cy] = 0x100 * sin(110. * 2. * 3.14159265 * cy / format.nSamplesPerSec);
+				samples[cy] = 0;
 			headers[cx].dwBufferLength = buffer_size;
 			headers[cx].lpData = buffer;
 		
@@ -115,6 +133,11 @@ void Runtime::WindowsNative::Audio::WindowsNativeAudioController::Close()
 	Logging::Debug::Log("WindowsNativeAudioController stopped");
 }
 
+void Runtime::WindowsNative::Audio::WindowsNativeAudioController::Play(Sample^ sample)
+{
+	i->playbuffers.push_back(sample);
+}
+
 #include <mfapi.h>
 #include <mfidl.h>
 #include <mfreadwrite.h>
@@ -125,7 +148,6 @@ void ::Runtime::WindowsNative::WindowsNative::Load()
 	Logging::Debug::Log("Loading WindowsNative plugin");
 	instance = gcnew ::Runtime::WindowsNative::WindowsNative;
 	instance->audio = gcnew ::Runtime::WindowsNative::Audio::WindowsNativeAudioController;
-	Sample^ pinkPather = Sample::ReadSample(LR"URL(G:\Compressed Backup\mp3\Punk\Punk Covers - Pink panther (Ska Version).mp3)URL");
 	if (instance->audio->Initialize())
 	{
 		Logging::Debug::Log("Loading WindowsNativeAudio succeeded");
@@ -144,7 +166,7 @@ void ::Runtime::WindowsNative::WindowsNative::Load()
 
 Runtime::WindowsNative::Audio::Sample::Sample(const char* data, size_t length /* in bytes */)
 {
-	Data = gcnew cli::array<short>(length);
+	Data = gcnew cli::array<short>(length/2);
 	pin_ptr<short> dt = &Data[0];
 	memcpy(dt, data, length);
 }
@@ -211,4 +233,11 @@ Sample^ ::Runtime::WindowsNative::Audio::Sample::ReadSample(System::String^ path
 	Audio::Sample^ sample = gcnew Audio::Sample(samples.data(), samples.size());
 
 	return sample;
+}
+
+Runtime::WindowsNative::Audio::Sample::operator std::string()
+{
+	pin_ptr<short> pin(&Data[0]);
+	std::string q((const char*)pin, Data->Length * 2);
+	return q;
 }
