@@ -46,16 +46,6 @@ namespace Runtime
 
             RenderCanvas window = new RenderCanvas(nativeWindowSettings);
 
-            if (File.Exists(gameSettings!.CodePath))
-            {
-                Log($"Loading user code from {gameSettings.CodePath}");
-                AssemblyLoader.LoadExternal(gameSettings.CodePath);
-            }
-            else
-            {
-                Error($"Could not load user code from path {gameSettings!.CodePath}. File not found!");
-            }
-
             foreach (string plugin in gameSettings!.Plugins)
             {
                AssemblyLoader.LoadPlugin(plugin);
@@ -64,8 +54,18 @@ namespace Runtime
    			Log($"Using graphicsPipeline: {graphicsPipeline}.");
    			window.SetGraphicsPipeline(graphicsPipeline);
 
+			   if (File.Exists(gameSettings!.CodePath))
+			   {
+				   Log($"Loading user code from {gameSettings.CodePath}");
+				   AssemblyLoader.LoadAndRun(gameSettings.CodePath);
+			   }
+			   else
+			   {
+				   Error($"Could not load user code from path {gameSettings!.CodePath}. File not found!");
+			   }
 
-	   		onReady?.Invoke(null, null);
+
+   			onReady?.Invoke(null, null);
             Log($"Opening window...");
             window.Run(); // Keeps the thread blocked until closed.
             Log($"Cleaning up...");

@@ -52,7 +52,24 @@ namespace Runtime.Plugins
 			}
 			return ass;
 		}
-
+		public static Assembly? LoadAndRun(string filename)
+		{
+			Assembly? ass = LoadExternal(filename);
+			if (null != ass)
+			{
+				Type[] types = ass.GetTypes();
+				foreach (Type t in types)
+				{
+					Attribute? attr = t.GetCustomAttribute<DartEntryPointAttribute>();
+					if (attr is DartEntryPointAttribute da)
+					{
+						MethodInfo? mi = t.GetMethod(da.EntryPoint);
+						mi?.Invoke(null, null);
+					}
+				}
+			}
+			return ass;
+		}
 		public static Assembly? LoadPlugin(string plugin)
 		{
 			PluginData? pluginData = Files.Load<PluginData>($"plugins/{plugin}/info.plugin.json");
@@ -62,10 +79,10 @@ namespace Runtime.Plugins
 				return null;
 			}
 
-            string coreDll = pluginData.CoreDll;
-            string mainClass = pluginData.MainClass;
-            string[] dependencies = pluginData.Dependencies;
-            string dllFolder = pluginData.DllFolder;
+			string coreDll = pluginData.CoreDll;
+			string mainClass = pluginData.MainClass;
+			string[] dependencies = pluginData.Dependencies;
+			string dllFolder = pluginData.DllFolder;
 
 			foreach (string dependency in dependencies)
 			{
@@ -73,35 +90,35 @@ namespace Runtime.Plugins
 				LoadPlugin(dependency);
 			}
 
-            Assembly? assemblyDef = null;
-            string[] dllFiles = Directory.GetFiles($"plugins/{plugin}/{dllFolder}");
-            foreach (string dll in dllFiles)
-            {
-                if (dll.EndsWith(".dll"))
-                {
-                    Assembly? ass = LoadExternal(dll);
-                    if (coreDll != "none" && Path.GetFileName(dll) == coreDll)
-                    {
-                        assemblyDef = ass;
-                    }
-                }
-            }
+			Assembly? assemblyDef = null;
+			string[] dllFiles = Directory.GetFiles($"plugins/{plugin}/{dllFolder}");
+			foreach (string dll in dllFiles)
+			{
+				if (dll.EndsWith(".dll"))
+				{
+					Assembly? ass = LoadExternal(dll);
+					if (coreDll != "none" && Path.GetFileName(dll) == coreDll)
+					{
+						assemblyDef = ass;
+					}
+				}
+			}
 
-            // Loading native dlls
-            string platformFolder = $"plugins/{plugin}/{dllFolder}/runtimes/{GetRuntimeIdentifier()}/native";
-            bool hasNative = Directory.Exists(platformFolder);
-            if (hasNative)
-            {
-                Debug.Log($"Loading native dll for platform from: {platformFolder}");
-                dllFiles = Directory.GetFiles(platformFolder);
-                foreach (string dll in dllFiles)
-                {
-                    if (dll.EndsWith(".dll"))
-                    {
-                        NativeLibrary.Load(dll);
-                    }
-                }
-            }
+			// Loading native dlls
+			string platformFolder = $"plugins/{plugin}/{dllFolder}/runtimes/{GetRuntimeIdentifier()}/native";
+			bool hasNative = Directory.Exists(platformFolder);
+			if (hasNative)
+			{
+				Debug.Log($"Loading native dll for platform from: {platformFolder}");
+				dllFiles = Directory.GetFiles(platformFolder);
+				foreach (string dll in dllFiles)
+				{
+					if (dll.EndsWith(".dll"))
+					{
+						NativeLibrary.Load(dll);
+					}
+				}
+			}
 
 
 			if (null == assemblyDef)
@@ -154,6 +171,15 @@ namespace Runtime.Plugins
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
 				return "osx";
 			return "unknown";
+		}
+	}
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple =false, Inherited = false)]
+	public class DartEntryPointAttribute : Attribute
+	{
+		public string EntryPoint { get; } = "Main";
+		public DartEntryPointAttribute(string EP)
+		{
+			EntryPoint = EP;
 		}
 	}
 }

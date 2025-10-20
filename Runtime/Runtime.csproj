@@ -13,4 +13,8 @@
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /y /e $(ProjectDir)$(OutputPath)* $(SolutionDir)TestProject\bin" />
+  </Target>
+
 </Project>
