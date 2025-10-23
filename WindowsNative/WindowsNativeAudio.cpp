@@ -1,4 +1,3 @@
-#include "pch.h"
 #include <string>
 #include <Windows.h>
 #include <vcclr.h>
@@ -10,6 +9,7 @@
 
 #pragma comment(lib, "winmm")
 using namespace Runtime;
+using namespace Runtime::Audio;
 using namespace Runtime::WindowsNative;
 using namespace Runtime::WindowsNative::Audio;
 
@@ -142,6 +142,20 @@ void Runtime::WindowsNative::Audio::WindowsNativeAudioController::Play(Sample^ s
 #include <mfidl.h>
 #include <mfreadwrite.h>
 
+Runtime::WindowsNative::WindowsNative::WindowsNative()
+{
+}
+
+Runtime::WindowsNative::WindowsNative^ Runtime::WindowsNative::WindowsNative::GetInstance()
+{
+	return instance;
+}
+
+Runtime::WindowsNative::Audio::WindowsNativeAudioController^ Runtime::WindowsNative::WindowsNative::GetAudio()
+{
+	return instance->audio;
+}
+
 void ::Runtime::WindowsNative::WindowsNative::Load()
 {
 	MFStartup(MF_VERSION);
@@ -164,14 +178,19 @@ void ::Runtime::WindowsNative::WindowsNative::Load()
 #pragma comment(lib, "mfuuid")
 #pragma comment(lib, "mfreadwrite")
 
-Runtime::WindowsNative::Audio::Sample::Sample(const char* data, size_t length /* in bytes */)
+Runtime::WindowsNative::Audio::NativeSample::NativeSample(const char* data, size_t length /* in bytes */)
 {
-	Data = gcnew cli::array<short>(length/2);
+	Data = gcnew cli::array<short>((int)length/2);
 	pin_ptr<short> dt = &Data[0];
 	memcpy(dt, data, length);
 }
 
-Sample^ ::Runtime::WindowsNative::Audio::Sample::ReadSample(System::String^ path)
+cli::array<short>^ Runtime::WindowsNative::Audio::NativeSample::GetRawData()
+{
+	return Data;
+}
+
+Sample^ ::Runtime::WindowsNative::Audio::NativeSample::ReadSample(System::String^ path)
 {
 	pin_ptr<const wchar_t> lpath = PtrToStringChars(path);
 	IMFSourceReader* reader;
@@ -230,13 +249,14 @@ Sample^ ::Runtime::WindowsNative::Audio::Sample::ReadSample(System::String^ path
 		buffer->Release();
 		Sample->Release();
 	}
-	Audio::Sample^ sample = gcnew Audio::Sample(samples.data(), samples.size());
+	::Runtime::Audio::Sample^ sample = gcnew Audio::NativeSample(samples.data(), samples.size());
 
 	return sample;
 }
 
-Runtime::WindowsNative::Audio::Sample::operator std::string()
+Runtime::Audio::Sample::operator std::string()
 {
+	cli::array<short>^ Data = GetRawData();
 	pin_ptr<short> pin(&Data[0]);
 	std::string q((const char*)pin, Data->Length * 2);
 	return q;

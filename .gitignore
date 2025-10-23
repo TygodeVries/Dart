@@ -422,3 +422,7 @@ FodyWeavers.xsd
 /TestProject/plugins/WindowsNative/Runtime.dll
 /TestProject/plugins/WindowsNative/Runtime.exe
 /TestProject/plugins/WindowsNative/WindowsNative.dll
+/TestProject/FeatureTestProject.dll
+/TestProject/plugins/dearimgui/net8.0/Runtime.runtimeconfig.json
+/TestProject/plugins/WindowsNative/Runtime.runtimeconfig.json
+/TestProject/plugins/WindowsNative/WindowsNative.runtimeconfig.json
