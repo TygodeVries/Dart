@@ -1,10 +1,12 @@
 ﻿
 using Runtime;
+using Runtime.DearImGUI.Gui;
+using Runtime.Plugins;
 using System.Runtime.CompilerServices;
 
 namespace FeatureTestProject
 {
-	[Runtime.Plugins.DartEntryPoint("Main")]
+	[DartEntryPoint("Main")]
 	public class EntryPoint
 	{
 		public EntryPoint()
@@ -13,9 +15,7 @@ namespace FeatureTestProject
 		}
 		public static void Main()
 		{
-			Runtime.Logging.Debug.Log("Entrypoint");
-			Runtime.WindowsNative.Audio.Sample sample = Runtime.WindowsNative.Audio.Sample.ReadSample("assets\\sounds\\gurgle.wav");
-			Runtime.WindowsNative.WindowsNative.GetAudio().Play(sample);
+			GuiWindow.Enable(new AudioTestWindow());
 		}
 	}
 }

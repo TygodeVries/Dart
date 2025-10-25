@@ -18,8 +18,6 @@ namespace Runtime.DearImGUI.Backend
         {
             instance = this;
 
-            GuiWindow.Enable(new GuiDemoWindow());
-
             Debug.Log("Start");
             GL.Enable(EnableCap.DebugOutput);
             GL.Enable(EnableCap.DebugOutputSynchronous);
@@ -57,7 +55,7 @@ namespace Runtime.DearImGUI.Backend
         }
 
         public static ImGuiRenderPass? instance;
-        public List<GuiWindow> guiWindows = new List<GuiWindow>();
+        public static List<GuiWindow> guiWindows = new List<GuiWindow>();
         public override void Pass()
         {
             InputData();
@@ -65,12 +63,14 @@ namespace Runtime.DearImGUI.Backend
             ImguiImplOpenGL3.NewFrame();
             ImGui.NewFrame();
 
-            foreach(GuiWindow window in guiWindows)
+            foreach(GuiWindow guiWindow in guiWindows)
             {
-                window.Render();
+                guiWindow.Render();
             }
 
             ImGui.Render();
+
+
             GL.Viewport(0, 0, RenderCanvas.main!.FramebufferSize.X, RenderCanvas.main!.FramebufferSize.Y);
             
             ImguiImplOpenGL3.RenderDrawData(ImGui.GetDrawData());

@@ -11,7 +11,7 @@ namespace Runtime.DearImGUI.Gui
     {
         public static void Enable(GuiWindow window)
         {
-            ImGuiRenderPass.instance!.guiWindows.Add(window);
+            ImGuiRenderPass.guiWindows.Add(window);
         }
         public abstract void Render();
     }
