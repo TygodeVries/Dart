@@ -16,9 +16,9 @@ namespace FeatureTestProject
 
         public override void Render()
         {
-            ImGui.Begin("Hello");
+            ImGui.Begin("Audio Test Window");
             
-            if(ImGui.Button("Press me!"))
+            if(ImGui.Button("Play Test Sample!"))
             {
                 WindowsNative.GetAudio().Play(sample);
             }
