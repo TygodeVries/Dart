@@ -9,11 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 namespace Runtime.Graphics
 {
-    public class DefaultLightManager
+    public class LightManager
     {
 
         List<Material> materials = new List<Material>();
-        public DefaultLightManager()
+        public LightManager()
         {
         }
 
@@ -27,7 +27,11 @@ namespace Runtime.Graphics
         }
 
 
-        public List<PointLight> pointLights = new List<PointLight>();
+        List<PointLight> pointLights = new List<PointLight>();
+        public List<PointLight> GetPointLights()
+        {
+            return pointLights;
+        }
 
         public void UploadAll()
         {
@@ -68,6 +72,8 @@ namespace Runtime.Graphics
         {
             this.sunLight = sunLight; 
         }
+
+
     }
 
 

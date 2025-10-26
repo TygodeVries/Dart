@@ -16,6 +16,7 @@ namespace FeatureTestProject
 		public static void Main()
 		{
 			GuiWindow.Enable(new AudioTestWindow());
+			GuiWindow.Enable(new GUIPerformanceWindow());
 		}
 	}
 }

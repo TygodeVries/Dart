@@ -20,10 +20,10 @@ namespace Runtime.Component.Lighting
         public override void OnLoad()
         {
             // Try to add ourselfs to the scene's light manager, we need to keep track of this to send this data to our renderers.
-            DefaultLightManager defaultLightManager = Scene.main.GetLightManager() as DefaultLightManager;
+            LightManager defaultLightManager = Scene.main.GetLightManager() as LightManager;
             if (null != defaultLightManager)
             {
-               defaultLightManager.pointLights.Add(this);
+               defaultLightManager.GetPointLights().Add(this);
             }
             else
                Debug.Log("PointLight used without DefaultLightManager");

@@ -19,8 +19,8 @@ namespace Runtime.Scenes
             game.OnLoad();
         }
 
-        DefaultLightManager defaultLightManager = new DefaultLightManager();
-        public DefaultLightManager GetLightManager()
+        LightManager defaultLightManager = new LightManager();
+        public LightManager GetLightManager()
         {
             return defaultLightManager;
         }

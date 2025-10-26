@@ -93,6 +93,11 @@ namespace Runtime.Graphics.Pipeline
             Debug.Log("Added renderer: " + renderers.Count);
         }
 
+        public int GetRendererCount()
+        {
+            return renderers.Count;
+        }
+
         // Anything that needs to be renderered by this graphics pipeline
         List<Renderer> renderers = new List<Renderer>();
 
