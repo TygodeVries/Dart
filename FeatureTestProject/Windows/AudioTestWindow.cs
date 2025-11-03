@@ -12,7 +12,7 @@ namespace FeatureTestProject
 {
     internal class AudioTestWindow : GuiWindow
     {
-        Sample sample = Sample.ReadSample("assets\\sounds\\gurgle.wav");
+        Sample sample = Sample.ReadSample("assets\\sounds\\portal.wav");
 
         public override void Render()
         {
