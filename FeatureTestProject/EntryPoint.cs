@@ -5,6 +5,7 @@ using OpenTK.Windowing.Desktop;
 using Runtime;
 using Runtime.Component.Core;
 using Runtime.Component.Lighting;
+using Runtime.Component.Physics;
 using Runtime.Component.Test;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
@@ -84,16 +85,31 @@ namespace FeatureTestProject
                 {
                     position = new Vector3(0, -2, 0)
                 })
+                .AddComponent(new AABBBoxCollider() {
+                    Size = new Vector3(1, 1, 1)    
+                })
                 .Build());
 
             // Create a light
             Scene.main.Instantiate(new GameObjectFactory()
+                .AddComponent(new Transform())
                 .AddComponent(new PointLight()
                 {
                     intensity = 2,
                     color = new Vector3(1, 1, 1)
                 })
                 .Build());
+
+            Scene.main.Instantiate(new GameObjectFactory()
+                .AddComponent(new Transform())
+                .AddComponent(new MeshRenderer(mossMaterial, sphereMesh))
+                .AddComponent(new Rigidbody())
+                .AddComponent(new AABBBoxCollider()
+                {
+                    Size = new Vector3(1, 1, 1)
+                })
+                .AddComponent(new ExampleWave()
+                ).Build());
 
         }
 	}
