@@ -43,48 +43,6 @@ namespace Runtime.Graphics.Pipeline
             {
                 renderPass.Start();
             }
-
-            Mesh mesh = Mesh.FromFileObj("assets/Sphere.obj");
-
-            ShaderProgram shaderProgram = ShaderProgram.FromFile("assets/shaders/lit.vert", "assets/shaders/lit.frag");
-            
-            Material material = new Material(shaderProgram);
-
-            material.SetTexture("u_Texture", new Texture("assets/textures/moss/color.png"), 0);
-            material.SetTexture("u_NormalMap", new Texture("assets/textures/moss/normal.png"), 1);
-            material.SetTexture("u_Rough", new Texture("assets/textures/moss/rough.png"), 2);
-
-            material.EnableLightData();
-
-            Scene.main.Instantiate(new GameObjectFactory()
-                .AddComponent(new TextRenderer("What is your point?\nA triangle has 3.", TextSpace.World))
-                .AddComponent(new Transform()
-                {
-                    position = new Vector3(-0.5f, 0.8f, 0)
-                })
-                .Build());
-
-            Scene.main.Instantiate(new GameObjectFactory()
-                .AddComponent(new Camera())
-                .AddComponent(new Transform())
-                .AddComponent(new TestCameraControls())
-                .Build());
-
-            Scene.main.Instantiate(new GameObjectFactory()
-                .AddComponent(new MeshRenderer(material, mesh))
-                .AddComponent(new Transform()
-                {
-                    position = new Vector3(0, -2, 0)
-                })
-                .Build());
-
-            Scene.main.Instantiate(new GameObjectFactory()
-                .AddComponent(new PointLight()
-                {
-                    intensity = 2,
-                    color = new Vector3(1, 1, 1)
-                })
-                .Build());
         }
        
         public void AddRenderer(Renderer renderer)

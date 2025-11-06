@@ -427,3 +427,4 @@ FodyWeavers.xsd
 /TestProject/plugins/WindowsNative/Runtime.deps.json
 /TestProject/plugins/dearimgui/net8.0/Runtime.deps.json
 /TestProject/plugins/dearimgui/net8.0/Runtime.DearImGUI.deps.json
+/TestProject/plugins/WindowsNative/WindowsNative.deps.json

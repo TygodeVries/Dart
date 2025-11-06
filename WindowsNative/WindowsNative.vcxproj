@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
-    <EnableManagedPackageReferenceSupport>true</EnableManagedPackageReferenceSupport>
+    <EnableManagedPackageReferenceSupport>false</EnableManagedPackageReferenceSupport>
     <ProjectGuid>{8AE979E0-6BB6-485F-BCBB-E41A98B002DC}</ProjectGuid>
     <Keyword>NetCoreCProj</Keyword>
     <RootNamespace>WindowsNativeAudio</RootNamespace>
