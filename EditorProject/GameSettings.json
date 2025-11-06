@@ -1,0 +1,5 @@
+{
+	"CodePath": "Editor.dll",
+	"WindowTitle": "Dart Editor",
+	"Plugins": [  "dearimgui"]
+}

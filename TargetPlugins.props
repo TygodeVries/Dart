@@ -1,0 +1,18 @@
+﻿<Project>
+  <!--
+  Add the projects where the plugins should be copied to here: -->
+  <ItemGroup>
+    <TargetPlugins Include="TestProject"/>
+    <TargetPlugins Include="EditorProject"/>
+  </ItemGroup>
+  
+  <!--
+  Add this line to the csproj file of plugins:
+    <Import Project="$(SolutionDir)TargetPlugins.props"/>
+before the </Project> tag
+  -->
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="mkdir $(SolutionDir)%(TargetPlugins.Identity)\plugins\$(ProjectName) &#xa;&#xd; xcopy /e /i /q /y $(TargetDir) $(SolutionDir)%(TargetPlugins.Identity)\plugins\$(ProjectName)"/>
+  </Target>
+
+</Project>

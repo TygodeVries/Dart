@@ -5,7 +5,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-	  <OutputPath>..\TestProject\plugins\dearimgui</OutputPath>
 	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
@@ -17,4 +16,7 @@
     <ProjectReference Include="..\Runtime\Runtime.csproj" />
   </ItemGroup>
 
+  <Import Project="$(SolutionDir)TargetPlugins.props"/>
+
+  
 </Project>
