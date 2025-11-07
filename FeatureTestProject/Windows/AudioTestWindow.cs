@@ -2,6 +2,7 @@
 using Runtime.DearImGUI.Gui;
 using Runtime.WindowsNative;
 using Runtime.WindowsNative.Audio;
+using Runtime.Audio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace FeatureTestProject
 {
     internal class AudioTestWindow : GuiWindow
     {
-        Sample sample = Sample.ReadSample("assets\\sounds\\portal.wav");
+        Sample sample = NativeSample.ReadSample("assets\\sounds\\portal.wav");
 
         public override void Render()
         {

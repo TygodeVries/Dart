@@ -135,7 +135,10 @@ void Runtime::WindowsNative::Audio::WindowsNativeAudioController::Close()
 
 void Runtime::WindowsNative::Audio::WindowsNativeAudioController::Play(Sample^ sample)
 {
-	i->playbuffers.push_back(sample);
+	if (sample)
+		i->playbuffers.push_back(sample);
+	else
+		Logging::Debug::Error("Runtime::WindowsNative::Audio::WindowsNativeAudioController::Play called with null sample");
 }
 
 #include <mfapi.h>

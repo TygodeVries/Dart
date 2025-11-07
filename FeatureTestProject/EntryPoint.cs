@@ -14,7 +14,7 @@ namespace FeatureTestProject
 		public static void Main()
 		{
 			Runtime.Logging.Debug.Log("Entrypoint");
-			Runtime.Audio.Sample sample = Runtime.WindowsNative.Audio.NativeSample.ReadSample("assets\\sounds\\gurgle.wav");
+			Runtime.Audio.Sample sample = Runtime.WindowsNative.Audio.NativeSample.ReadSample("assets\\sounds\\portal.wav");
 			Runtime.WindowsNative.WindowsNative.GetAudio().Play(sample);
 		}
 	}
