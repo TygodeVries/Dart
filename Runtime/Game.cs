@@ -9,7 +9,9 @@ using static Runtime.Logging.Debug;
 
 namespace Runtime
 {
-    public class Game
+	public delegate void DartEventHandler();
+
+	public class Game
     {
         public static int width = 640 * 2;
         public static int height = 480 * 2;
@@ -62,14 +64,13 @@ namespace Runtime
 				   Error($"Could not load user code from path {gameSettings!.CodePath}. File not found!");
 			   }
 
-
-   			onReady?.Invoke(null, null);
+   			onReady?.Invoke();
             Log($"Opening window...");
             window.Run(); // Keeps the thread blocked until closed.
             Log($"Cleaning up...");
         }
 
-        public static event EventHandler onReady;
+        public static event DartEventHandler? onReady;
     }
 
     class Program

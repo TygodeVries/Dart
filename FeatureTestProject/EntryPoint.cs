@@ -1,5 +1,9 @@
 ﻿
 using Runtime;
+using Runtime.Component.Core;
+using Runtime.DearImGUI.Gui;
+using Runtime.Objects;
+using Runtime.Plugins;
 using System.Runtime.CompilerServices;
 
 namespace FeatureTestProject
@@ -7,15 +11,28 @@ namespace FeatureTestProject
 	[Runtime.Plugins.DartEntryPoint("Main")]
 	public class EntryPoint
 	{
-		public EntryPoint()
+		static EntryPoint ep;
+		
+		static EntryPoint()
 		{
-
+			ep = new EntryPoint();
 		}
 		public static void Main()
 		{
-			Runtime.Logging.Debug.Log("Entrypoint");
-			Runtime.Audio.Sample sample = Runtime.WindowsNative.Audio.NativeSample.ReadSample("assets\\sounds\\portal.wav");
-			Runtime.WindowsNative.WindowsNative.GetAudio().Play(sample);
+			GuiWindow.Enable(new AudioTestWindow());
+			GuiWindow.Enable(new GUIPerformanceWindow());
+			ep = new EntryPoint();
+
+			Runtime.Scenes.Scene.main.Instantiate(
+				new GameObjectFactory().AddComponent<Camera>().Build());
+
+			Runtime.Scenes.Scene.main.Instantiate(
+				new GameObjectFactory()
+					.AddComponent<Box2D>()
+					.AddComponent<Box2DRenderer>()
+					.AddComponent<Box2DCollider>()
+					.Build()
+			);
 		}
 	}
 }

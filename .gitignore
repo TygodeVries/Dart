@@ -504,3 +504,4 @@ FodyWeavers.xsd
 /TestProject/plugins/WindowsNative/WindowsNativeAudio.deps.json
 /TestProject/plugins/WindowsNative/WindowsNativeAudio.dll
 /TestProject/plugins/WindowsNative/WindowsNativeAudio.runtimeconfig.json
+/TestProject/plugins/Runtime.WindowsNative/Runtime.WindowsNative.dll

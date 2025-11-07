@@ -98,6 +98,10 @@
     <Link>
       <AdditionalDependencies />
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir $(SolutionDir)TestProject\plugins\$(ProjectName)
+copy $(TargetPath) $(SolutionDir)TestProject\plugins\$(ProjectName)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -109,6 +113,10 @@
     <Link>
       <AdditionalDependencies />
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir $(SolutionDir)TestProject\plugins\$(ProjectName)
+copy $(TargetPath) $(SolutionDir)TestProject\plugins\$(ProjectName)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -120,6 +128,10 @@
     <Link>
       <AdditionalDependencies />
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir $(SolutionDir)TestProject\plugins\$(ProjectName)
+copy $(TargetPath) $(SolutionDir)TestProject\plugins\$(ProjectName)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -131,6 +143,10 @@
     <Link>
       <AdditionalDependencies />
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir $(SolutionDir)TestProject\plugins\$(ProjectName)
+copy $(TargetPath) $(SolutionDir)TestProject\plugins\$(ProjectName)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h" />

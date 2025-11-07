@@ -134,14 +134,14 @@ namespace Runtime.Plugins
 				return assemblyDef;
 			}
 
-			MethodInfo? info = assemblyDef.GetType(mainClass).GetMethod("Load");
+			MethodInfo? info = assemblyDef!.GetType(mainClass).GetMethod("Load");
 			if (null != info && info.IsStatic)
 			{
 				info.Invoke(null, null);
 			}
 			else
 			{
-				object? obj = Activator.CreateInstance(assemblyDef.GetType(mainClass));
+				object? obj = Activator.CreateInstance(assemblyDef!.GetType(mainClass));
 
 				if (obj is Plugin pluginInstance)
 				{
@@ -149,7 +149,10 @@ namespace Runtime.Plugins
 				}
 				else
 				{
-					Debug.Error($"{obj.GetType().AssemblyQualifiedName} is not implementing 'Plugin'. Thus, it can not be used as a start point.");
+					if (null != obj)
+						Debug.Error($"{obj!.GetType().AssemblyQualifiedName} is not implementing 'Plugin'. Thus, it can not be used as a start point.");
+					else
+						Debug.Error("Could not instatiate main class of plugin");
 				}
 			}
 			return assemblyDef;

@@ -22,11 +22,11 @@ namespace Runtime.Graphics
         public void SetGraphicsPipeline(IGraphicsPipeline graphicsPipeline)
         {
             this.graphicsPipeline = graphicsPipeline;
-            RenderPipelineSet.Invoke();
+            RenderPipelineSet?.Invoke();
             this.graphicsPipeline.Initialize();
         }
 
-        public Action RenderPipelineSet;
+        public Action? RenderPipelineSet;
 
         public IGraphicsPipeline? GetGraphicsPipeline()
         {

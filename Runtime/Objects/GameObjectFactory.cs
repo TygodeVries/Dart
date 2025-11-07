@@ -18,6 +18,11 @@ namespace Runtime.Objects
             gameObject.AddComponent(component);
             return this;
         }
+         public GameObjectFactory AddComponent<T>() where T : IComponent, new()
+         {
+            gameObject.AddComponent(new T());
+            return this;
+         }
 
         public GameObject Build()
         {

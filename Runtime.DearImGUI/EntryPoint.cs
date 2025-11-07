@@ -20,8 +20,8 @@ namespace Runtime.DearImGUI
             RenderCanvas.main!.RenderPipelineSet += () =>
             {
                 Debug.Log("Loaded into render pipeline...");
-                IGraphicsPipeline gp = RenderCanvas.main!.GetGraphicsPipeline();
-                gp.AddRenderPass(new ImGuiRenderPass());
+                IGraphicsPipeline? gp = RenderCanvas.main!.GetGraphicsPipeline();
+                gp?.AddRenderPass(new ImGuiRenderPass());
             };
         }
     }
