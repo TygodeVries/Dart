@@ -5,17 +5,26 @@ struct WindowsNativeAudioInternal;
 
 namespace Runtime
 {
+	namespace Audio
+	{
+		public ref class Sample abstract
+		{
+		public:
+			virtual cli::array<short>^ GetRawData() = 0;
+			operator std::string();
+		};
+	}
 	namespace WindowsNative
 	{
 		namespace Audio
 		{
-			public ref class Sample
+			public ref class NativeSample: public Runtime::Audio::Sample
 			{
 				cli::array<short>^ Data;
 			public:
-				Sample(const char* data, size_t length);
+				NativeSample(const char* data, size_t length);
+				virtual cli::array<short>^ GetRawData() override;
 				static Sample^ ReadSample(System::String^ path);
-				operator std::string();
 			};
 
 			public ref class WindowsNativeAudioController
@@ -27,26 +36,18 @@ namespace Runtime
 				bool Initialize();
 				void Open();
 				void Close();
-				void Play(Sample^ sample);
+				void Play(Runtime::Audio::Sample^ sample);
 			};
 		}
 		public ref class WindowsNative
 		{
 			Audio::WindowsNativeAudioController^ audio;
 			static WindowsNative^ instance;
-			WindowsNative()
-			{
-			}
+			WindowsNative();
 
 		public:
-			static WindowsNative^ GetInstance()
-			{
-				return instance;
-			}
-			static Audio::WindowsNativeAudioController^ GetAudio()
-			{
-				return instance->audio;
-			}
+			static WindowsNative^ GetInstance();
+			static Audio::WindowsNativeAudioController^ GetAudio();
 			static void Load();
 		};
 
