@@ -13,8 +13,6 @@
     <ProjectReference Include="..\WindowsNative\WindowsNative.vcxproj" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy $(ProjectDir)$(OutDir)$(AssemblyName).dll $(SolutionDir)TestProject&#xD;&#xA;" />
-  </Target>
-
+  <Import Project="$(SolutionDir)TargetProjects.props"/>
+  
 </Project>
