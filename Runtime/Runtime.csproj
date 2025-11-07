@@ -13,10 +13,8 @@
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
   </ItemGroup>
 
-  <Import Project="$(SolutionDir)TargetProjects.props"/>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="mkdir $(SolutionDir)%(TargetProjects.Identity)\bin&#xD;&#xA;xcopy /y /e $(ProjectDir)$(OutputPath)* $(SolutionDir)%(TargetProjects.Identity)\bin" />
+    <Exec Command="mkdir $(SolutionDir)TestProject\bin&#xD;&#xA;xcopy /y /e $(ProjectDir)$(OutputPath)* $(SolutionDir)TestProject\bin" />
   </Target>
 
 </Project>
