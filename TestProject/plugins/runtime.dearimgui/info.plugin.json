@@ -1,0 +1,6 @@
+{
+    "MainClass": "Runtime.DearImGUI.Main",
+    "CoreDll": "Runtime.DearImGUI.dll",
+  "Dependencies": []
+
+}
