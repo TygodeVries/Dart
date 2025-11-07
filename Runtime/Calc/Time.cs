@@ -16,5 +16,7 @@ namespace Runtime.Calc
         /// The time since the last frame, in seconds.
         /// </summary>
         public static double deltaTime = 0;
+
+        public static double frameRate = 0;
     }
 }

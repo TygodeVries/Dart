@@ -22,8 +22,11 @@ namespace Runtime.Graphics
         public void SetGraphicsPipeline(IGraphicsPipeline graphicsPipeline)
         {
             this.graphicsPipeline = graphicsPipeline;
+            RenderPipelineSet.Invoke();
             this.graphicsPipeline.Initialize();
         }
+
+        public Action RenderPipelineSet;
 
         public IGraphicsPipeline? GetGraphicsPipeline()
         {
@@ -137,8 +140,8 @@ namespace Runtime.Graphics
                 }
 
                 avr /= frames.Length;
-                
-               // Console.WriteLine($"{Math.Round(1.0 / avr)} FPS");
+
+                Time.frameRate = 1.0 / avr;
                 i = 0;
             }
 

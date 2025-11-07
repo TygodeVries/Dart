@@ -18,7 +18,7 @@ namespace Runtime.Graphics.Renderers
         {
 
         }
-
+        
         public MeshRenderer(Material material)
         {
             this.material = material;
@@ -77,7 +77,7 @@ namespace Runtime.Graphics.Renderers
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
 
-            // Normals
+            // Normal
             if (mesh.normals != null)
             {
                 nbo = GL.GenBuffer();
@@ -135,7 +135,7 @@ namespace Runtime.Graphics.Renderers
             GL.DrawElements(PrimitiveType.Triangles, indexCount, DrawElementsType.UnsignedInt, 0);
         }
 
-        public void RenderOveride(ShaderProgram program)
+        public void RenderOverride(ShaderProgram program)
         {
             program.Use();
             GL.BindVertexArray(vao);

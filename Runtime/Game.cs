@@ -1,6 +1,4 @@
-﻿
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using Runtime.Data;
 using Runtime.Graphics;

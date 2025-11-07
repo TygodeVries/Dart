@@ -19,7 +19,7 @@ namespace Runtime.Component.Lighting
         public override void OnLoad()
         {
             // Just like the point light, we need to keep track of ourselfs
-            DefaultLightManager? lightManager = Scene.main.GetLightManager() as DefaultLightManager;
+            LightManager? lightManager = Scene.main.GetLightManager() as LightManager;
             if (lightManager == null)
             {
                 Console.WriteLine("The SunLight component can not be used without the DefaultLightManager!");
