@@ -4,20 +4,9 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Folder Name="/Solution Items/">
-    <File Path="TargetPlugins.props" />
-    <File Path="TargetProjects.props" />
-  </Folder>
   <Project Path="FeatureTestProject\FeatureTestProject.csproj" />
   <Project Path="Runtime.DearImGUI\Runtime.DearImGUI.csproj" />
   <Project Path="Runtime\Runtime.csproj" />
-  <Project Path="StartFeatureTestProject\StartFeatureTestProject.vcxproj" Id="0c208e99-e84c-4e38-b465-e6fcfa1b417f">
-    <BuildDependency Project="FeatureTestProject\FeatureTestProject.csproj" />
-    <BuildDependency Project="Runtime.DearImGUI\Runtime.DearImGUI.csproj" />
-    <BuildDependency Project="Runtime\Runtime.csproj" />
-    <BuildDependency Project="WindowsNative\WindowsNative.vcxproj" />
-  </Project>
-  <Project Path="WindowsNative\WindowsNative.vcxproj" Id="8ae979e0-6bb6-485f-bcbb-e41a98b002dc">
-    <BuildDependency Project="Runtime\Runtime.csproj" />
-  </Project>
+  <Project Path="StartFeatureTestProject\StartFeatureTestProject.vcxproj" Id="0c208e99-e84c-4e38-b465-e6fcfa1b417f" />
+  <Project Path="WindowsNative\WindowsNative.vcxproj" Id="8ae979e0-6bb6-485f-bcbb-e41a98b002dc" />
 </Solution>
