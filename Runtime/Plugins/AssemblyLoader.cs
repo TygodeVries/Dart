@@ -68,6 +68,9 @@ namespace Runtime.Plugins
 					}
 				}
 			}
+			else
+				Logging.Debug.Error($"Could not load {filename}");
+
 			return ass;
 		}
 		public static Assembly? LoadPlugin(string plugin)

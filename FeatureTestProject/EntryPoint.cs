@@ -11,17 +11,14 @@ namespace FeatureTestProject
 	[Runtime.Plugins.DartEntryPoint("Main")]
 	public class EntryPoint
 	{
-		static EntryPoint ep;
-		
+	
 		static EntryPoint()
 		{
-			ep = new EntryPoint();
 		}
 		public static void Main()
 		{
 			GuiWindow.Enable(new AudioTestWindow());
 			GuiWindow.Enable(new GUIPerformanceWindow());
-			ep = new EntryPoint();
 
 			Runtime.Scenes.Scene.main.Instantiate(
 				new GameObjectFactory().AddComponent<Camera>().Build());

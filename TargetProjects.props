@@ -5,7 +5,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy $(TargetPath) $(SolutionDir)%(TargetProjects.Identity)"/>
+    <Exec Command="xcopy  /e /i /y $(TargetPath) $(SolutionDir)%(TargetProjects.Identity)"/>
   </Target>
 
 </Project>

@@ -15,11 +15,4 @@
     <BuildDependency Project="FeatureTestProject\FeatureTestProject.csproj" />
   </Project>
   <Project Path="WindowsNative\WindowsNative.vcxproj" />
-</Solution>rImGUI\Runtime.DearImGUI.csproj" />
-    <BuildDependency Project="Runtime\Runtime.csproj" />
-    <BuildDependency Project="WindowsNative\WindowsNative.vcxproj" />
-  </Project>
-  <Project Path="WindowsNative\WindowsNative.vcxproj" Id="8ae979e0-6bb6-485f-bcbb-e41a98b002dc">
-    <BuildDependency Project="Runtime\Runtime.csproj" />
-  </Project>
 </Solution>
