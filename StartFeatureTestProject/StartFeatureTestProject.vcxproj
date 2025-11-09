@@ -127,6 +127,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Editor\Editor.csproj">
+      <Project>{c18f7059-8cc8-445c-bcae-ad99b35ee9e6}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\FeatureTestProject\FeatureTestProject.csproj">
       <Project>{a12df5d6-1786-4183-895e-d20063568be7}</Project>
     </ProjectReference>
