@@ -511,3 +511,9 @@ FodyWeavers.xsd
 /TestProject/plugins/WindowsNative/WindowsNativeAudio.runtimeconfig.json
 /TestProject/plugins/Runtime.WindowsNative/Runtime.WindowsNative.dll
 Assets.Example/imgui.ini
+Assets.Editor/plugins/Plugin.Windows.Audio/Runtime.dll
+Assets.Editor/plugins/Plugin.Windows.Audio/Plugin.Windows.Audio.dll
+Assets.Editor/plugins/Plugin.Windows.Audio/Ijwhost.dll
+Assets.Editor/plugins/Plugin.DearImGui/Runtime.dll
+Assets.Editor/plugins/Plugin.DearImGui/Plugin.DearImGui.dll
+Assets.Editor/imgui.ini

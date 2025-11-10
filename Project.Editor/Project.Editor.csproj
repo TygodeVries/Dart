@@ -11,4 +11,6 @@
     <ProjectReference Include="..\Runtime\Runtime.csproj" />
   </ItemGroup>
 
+	<Import Project="$(SolutionDir)TargetProjects.props" />
+
 </Project>

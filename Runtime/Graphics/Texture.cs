@@ -26,7 +26,7 @@ namespace Runtime.Graphics
         public Texture(string path)
         {
             Image<Rgba32> image = Image.Load<Rgba32>(path);
-            image.Mutate(x => x.Flip(FlipMode.Vertical));
+           
             pixels = new byte[4 * image.Width * image.Height];
             image.CopyPixelDataTo(pixels);
 
