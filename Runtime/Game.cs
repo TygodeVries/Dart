@@ -77,7 +77,14 @@ namespace Runtime
     {
         public static void Main(string[] args)
         {
-            Game.Start("Assets.Example");
+            if (0 != args.Length)
+            {
+               Game.Start(args[0]);
+            }
+            else
+            {
+               Logging.Debug.Error("(FATALITY) No project given");
+            }
         }
     }
 }

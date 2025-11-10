@@ -17,7 +17,10 @@ namespace Runtime.Data
         public static T? Load<T>(string file)
         {
             if (!File.Exists(file))
-                throw new FileNotFoundException($"The file '{file}' does not exist.");
+            {
+               Logging.Debug.Error($"The file: {file} does not exist");
+               return default(T);
+            }
 
             string json = File.ReadAllText(file);
             return JsonSerializer.Deserialize<T>(json);
