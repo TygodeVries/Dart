@@ -42,7 +42,7 @@ namespace Runtime.Component.Core
             float y = -MathF.Sin(pitch);
             float z = MathF.Cos(pitch) * MathF.Cos(yaw);
 
-            return new Vector3(x, y, z).Normalized();
+            return new Vector3(x, y, z);
         }
 
         /// <summary>

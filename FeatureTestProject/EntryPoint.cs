@@ -28,6 +28,7 @@ namespace FeatureTestProject
 					.AddComponent<Box2D>()
 					.AddComponent<Box2DRenderer>()
 					.AddComponent<Box2DCollider>()
+					.AddComponent<Box2DRigidBody>()
 					.Build()
 			);
 		}

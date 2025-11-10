@@ -14,24 +14,39 @@ namespace FeatureTestProject
 {
 	public class Box2D: IComponent
 	{
-		public Vector2 velocity;
 		public Vector2 position;
 		public Vector2 size;
 		public float angle;
 		public Vector3 color;
 		public override void OnLoad()
 		{
-			base.OnLoad();
 			position = new Vector2(0, 0);
 			size = new Vector2(0.2f, 0.3f);
 			color = new Vector3(1, 0.5f, 1);
-			velocity = new Vector2(0, 0.001f);
 			angle = 0;
 		}
 		public override void Update()
 		{
-			angle += (float)Runtime.Calc.Time.deltaTime;
-			position += (float)Runtime.Calc.Time.deltaTime * velocity;
+		}
+	}
+	public class Box2DRigidBody : IComponent
+	{
+		public Box2D? box;
+		public Vector2 linear_velocity;
+		public float angular_velocity;
+		public override void OnLoad()
+		{
+			linear_velocity = new Vector2(0, 0.1f);
+			angular_velocity = 0;
+			box = GetComponent<Box2D>();
+		}
+		public override void Update()
+		{
+			if (null != box)
+			{
+				box.position += (float)Runtime.Calc.Time.deltaTime * linear_velocity;
+				box.angle += (float)Runtime.Calc.Time.deltaTime * angular_velocity;
+			}
 		}
 	}
 	public class Box2DCollider: IComponent
