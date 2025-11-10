@@ -24,6 +24,7 @@
     <ProjectGuid>{0c208e99-e84c-4e38-b465-e6fcfa1b417f}</ProjectGuid>
     <RootNamespace>StartFeatureTestProject</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Start.Example</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -132,9 +133,6 @@
     </ProjectReference>
     <ProjectReference Include="..\FeatureTestProject\FeatureTestProject.csproj">
       <Project>{a12df5d6-1786-4183-895e-d20063568be7}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Runtime.DearImGUI\Runtime.DearImGUI.csproj">
-      <Project>{8075c721-1691-a970-0e28-acb77e1eec7f}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Runtime\Runtime.csproj">
       <Project>{62f9fc95-5ac2-8716-255d-214a087c175b}</Project>

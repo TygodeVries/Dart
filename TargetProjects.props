@@ -1,7 +1,7 @@
 ﻿<Project>
   <ItemGroup>
-    <TargetProjects Include="TestProject"/>
-    <TargetProjects Include="EditorProject"/>
+    <TargetProjects Include="Assets.Example"/>
+    <TargetProjects Include="Assets.Editor"/>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

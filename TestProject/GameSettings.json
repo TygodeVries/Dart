@@ -1,5 +1,0 @@
-{
-	"CodePath": "FeatureTestProject.dll",
-	"WindowTitle": "Dart Test Project",
-	"Plugins": [  "WindowsNative", "Runtime.dearimgui"]
-}

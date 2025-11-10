@@ -2,8 +2,8 @@
   <!--
   Add the projects where the plugins should be copied to here: -->
   <ItemGroup>
-    <TargetPlugins Include="TestProject"/>
-    <TargetPlugins Include="EditorProject"/>
+    <TargetPlugins Include="Assets.Example"/>
+    <TargetPlugins Include="Assets.Editor"/>
   </ItemGroup>
   
   <!--

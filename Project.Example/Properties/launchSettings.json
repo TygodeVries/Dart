@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "FeatureTestProject": {
+      "commandName": "Project",
+      "workingDirectory": "$(SolutionDir)TestProject",
+      "nativeDebugging": true
+    }
+  }
+}

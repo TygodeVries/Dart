@@ -1,6 +1,0 @@
-{
-    "MainClass": "Runtime.WindowsNative.WindowsNative",
-    "CoreDll": "WindowsNative.dll",
-  "Dependencies": []
-
-}
