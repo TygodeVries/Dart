@@ -1,6 +1,6 @@
 {
     "MainClass": "Runtime.WindowsNative.WindowsNative",
-    "CoreDll": "WindowsNative.dll",
+    "CoreDll": "Plugin.Windows.Audio.dll",
   "Dependencies": []
 
 }

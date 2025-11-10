@@ -8,14 +8,10 @@ using Runtime.Plugins;
 
 namespace Runtime.DearImGUI
 {
-    public class Main : Plugin
+    [Runtime.Plugins.DartEntryPoint("Main")]
+    public class EntryPoint
     {
-        public Main()
-        {
-
-        }
-
-        public override void Load()
+        public static void Main()
         {
             RenderCanvas.main!.RenderPipelineSet += () =>
             {

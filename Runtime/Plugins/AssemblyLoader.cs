@@ -129,36 +129,23 @@ namespace Runtime.Plugins
 				return null;
 			}
 
-			// Loading native dlls
+            if (null != assemblyDef)
+            {
+                Type[] types = assemblyDef.GetTypes();
+                foreach (Type t in types)
+                {
+                    Attribute? attr = t.GetCustomAttribute<DartEntryPointAttribute>();
+                    if (attr is DartEntryPointAttribute da)
+                    {
+                        MethodInfo? mi = t.GetMethod(da.EntryPoint);
+                        mi?.Invoke(null, null);
+                    }
+                }
+            }
+            else
+                Logging.Debug.Error($"Could not load {plugin}");
 
-			if (mainClass == "none" || mainClass == "")
-			{
-				Debug.Log("No main class provided for plugin, nothing will load by itself.");
-				return assemblyDef;
-			}
-
-			MethodInfo? info = assemblyDef!.GetType(mainClass).GetMethod("Load");
-			if (null != info && info.IsStatic)
-			{
-				info.Invoke(null, null);
-			}
-			else
-			{
-				object? obj = Activator.CreateInstance(assemblyDef!.GetType(mainClass));
-
-				if (obj is Plugin pluginInstance)
-				{
-					pluginInstance.Load();
-				}
-				else
-				{
-					if (null != obj)
-						Debug.Error($"{obj!.GetType().AssemblyQualifiedName} is not implementing 'Plugin'. Thus, it can not be used as a start point.");
-					else
-						Debug.Error("Could not instatiate main class of plugin");
-				}
-			}
-			return assemblyDef;
+            return assemblyDef;
 		}
 
 		static string GetRuntimeIdentifier()
