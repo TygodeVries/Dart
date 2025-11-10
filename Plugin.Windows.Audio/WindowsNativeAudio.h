@@ -39,6 +39,7 @@ namespace Runtime
 				void Play(Runtime::Audio::Sample^ sample);
 			};
 		}
+		[Runtime::Plugins::DartEntryPointAttribute("Load")]
 		public ref class WindowsNative
 		{
 			Audio::WindowsNativeAudioController^ audio;
