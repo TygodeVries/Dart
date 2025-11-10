@@ -73,43 +73,38 @@ namespace Runtime.Plugins
 
 			return ass;
 		}
-		public static Assembly? LoadPlugin(string plugin)
+		public static void LoadPlugin(string plugin)
 		{
 			PluginData? pluginData = Files.Load<PluginData>($"plugins/{plugin}/info.plugin.json");
 			if (pluginData == null)
 			{
 				Debug.Error($"Could not find 'info.plugin.json' in plugin: {plugin}!");
-				return null;
+				return;
 			}
 
-			string coreDll = pluginData.CoreDll;
-			string mainClass = pluginData.MainClass;
-			string[] dependencies = pluginData.Dependencies;
-			string dllFolder = pluginData.DllFolder;
+			List<Assembly> assemblies = new List<Assembly>();
 
-			foreach (string dependency in dependencies)
-			{
-				Debug.Log($"First loading dependency {dependency}");
-				LoadPlugin(dependency);
-			}
-
-			Assembly? assemblyDef = null;
-			string[] dllFiles = Directory.GetFiles($"plugins/{plugin}/{dllFolder}");
+			string[] dllFiles = Directory.GetFiles($"plugins/{plugin}/");
 			foreach (string dll in dllFiles)
 			{
 				if (dll.EndsWith(".dll"))
 				{
 					Assembly? ass = LoadExternal(dll);
-					if (coreDll != "none" && Path.GetFileName(dll) == coreDll)
+					if (ass == null)
 					{
-						assemblyDef = ass;
+						// Idk do something about it?
+						Debug.Error($"DLL Could not be loaded: {dll}!");
+						continue;
 					}
-				}
+					
+					assemblies.Add(ass);
+                }
 			}
 
 			// Loading native dlls
-			string platformFolder = $"plugins/{plugin}/{dllFolder}/runtimes/{GetRuntimeIdentifier()}/native";
+			string platformFolder = $"plugins/{plugin}/runtimes/{GetRuntimeIdentifier()}/native";
 			bool hasNative = Directory.Exists(platformFolder);
+			// Check if there are any native DLLs to load...
 			if (hasNative)
 			{
 				Debug.Log($"Loading native dll for platform from: {platformFolder}");
@@ -124,28 +119,29 @@ namespace Runtime.Plugins
 			}
 
 
-			if (null == assemblyDef)
+			if (assemblies.Count == 0)
 			{
-				return null;
+				Debug.Error($"Could not load the plugin {plugin} (assemblies count is 0!)");
+				return;
 			}
 
-            if (null != assemblyDef)
-            {
-                Type[] types = assemblyDef.GetTypes();
-                foreach (Type t in types)
-                {
-                    Attribute? attr = t.GetCustomAttribute<DartEntryPointAttribute>();
-                    if (attr is DartEntryPointAttribute da)
-                    {
-                        MethodInfo? mi = t.GetMethod(da.EntryPoint);
-                        mi?.Invoke(null, null);
-                    }
-                }
-            }
-            else
-                Logging.Debug.Error($"Could not load {plugin}");
+			/* 
+			 * Kick start any classes with the DartEntryPointAttribute
+			 */
 
-            return assemblyDef;
+			foreach (Assembly assembly in assemblies)
+			{
+				Type[] types = assembly.GetTypes();
+				foreach (Type t in types)
+				{
+					Attribute? attr = t.GetCustomAttribute<DartEntryPointAttribute>();
+					if (attr is DartEntryPointAttribute da)
+					{
+						MethodInfo? mi = t.GetMethod(da.EntryPoint);
+						mi?.Invoke(null, null);
+					}
+				}
+			}
 		}
 
 		static string GetRuntimeIdentifier()
