@@ -18,5 +18,4 @@
   </Folder>
   <Project Path="Runtime\Runtime.csproj" />
   <Project Path="Start.Example\Start.Example.vcxproj" />
-</Solution>art.Example" />
 </Solution>
