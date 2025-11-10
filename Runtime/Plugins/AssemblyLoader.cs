@@ -75,13 +75,6 @@ namespace Runtime.Plugins
 		}
 		public static void LoadPlugin(string plugin)
 		{
-			PluginData? pluginData = Files.Load<PluginData>($"plugins/{plugin}/info.plugin.json");
-			if (pluginData == null)
-			{
-				Debug.Error($"Could not find 'info.plugin.json' in plugin: {plugin}!");
-				return;
-			}
-
 			List<Assembly> assemblies = new List<Assembly>();
 
 			string[] dllFiles = Directory.GetFiles($"plugins/{plugin}/");
