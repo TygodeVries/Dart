@@ -37,6 +37,9 @@ bld/
 Assets.Editor/Plugins
 Assets.Example/Plugins
 
+Assets.Editor/*.dll
+Assets.Example/*.dll
+
 # Build results on 'Bin' directories
 **/[Bb]in/*
 # Uncomment if you have tasks that rely on *.refresh files to move binaries
