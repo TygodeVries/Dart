@@ -128,11 +128,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Editor\Editor.csproj">
-      <Project>{c18f7059-8cc8-445c-bcae-ad99b35ee9e6}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\FeatureTestProject\FeatureTestProject.csproj">
-      <Project>{a12df5d6-1786-4183-895e-d20063568be7}</Project>
+    <ProjectReference Include="..\Project.Example\Project.Example.csproj">
+      <Project>{f2d1b1d7-83c2-c005-c2a3-f64de2c2bd21}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Runtime\Runtime.csproj">
       <Project>{62f9fc95-5ac2-8716-255d-214a087c175b}</Project>

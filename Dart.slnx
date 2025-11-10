@@ -9,17 +9,14 @@
     <File Path="TargetProjects.props" />
   </Folder>
   <Folder Name="/Projects/">
-
     <Project Path="Project.Editor\Project.Editor.csproj" />
     <Project Path="Project.Example\Project.Example.csproj" />
-
   </Folder>
   <Folder Name="/Plugins/">
-
     <Project Path="Plugin.DearImGUI\Plugin.DearImGui.csproj" />
     <Project Path="Plugin.Windows.audio\Plugin.Windows.Audio.vcxproj" />
-
   </Folder>
   <Project Path="Runtime\Runtime.csproj" />
-  <Project Path="StartFeatureTestProject\StartFeatureTestProject.vcxproj" DisplayName="Start.Example" />
+  <Project Path="Start.Example\Start.Example.vcxproj" />
+</Solution>art.Example" />
 </Solution>
