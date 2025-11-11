@@ -33,11 +33,11 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
-Assets.Editor/[Pp]lugins/
-Assets.Example/[Pp]lugins/
+Assets.Editor/[Pp]lugins/**
+Assets.Example/[Pp]lugins/**
 
-Assets.Editor/*.dll
-Assets.Example/*.dll
+Assets.Editor/**/*.dll
+Assets.Example/**/*.dll
 
 # Build results on 'Bin' directories
 **/[Bb]in/*
