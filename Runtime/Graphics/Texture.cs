@@ -17,28 +17,52 @@ namespace Runtime.Graphics
 {
     public class Texture : IDisposable
     {
-
         byte[] pixels;
         public int width;
         public int height;
         public int Handle;
 
-        public Texture(string path)
+        public Texture(int width, int height, byte[] pixels)
         {
-            if(!File.Exists(path))
+            this.width = width;
+            this.height = height;
+            this.pixels = pixels;
+        }
+
+        public static Texture LoadFromPng(string path, int maxWidth = 8192, int maxHeight = 8192)
+        {
+            if (!File.Exists(path))
             {
                 Debug.Error($"Failed to load image from path {path}. File does not exist!");
-                return;
+                return null;
             }
 
             Image<Rgba32> image = Image.Load<Rgba32>(path);
-           
-            pixels = new byte[4 * image.Width * image.Height];
+            
+            int newWidth = image.Width;
+            int newHeight = image.Height;
+
+            if (image.Width > maxWidth || image.Height > maxHeight)
+            {
+                float ratioX = (float)maxWidth / image.Width;
+                float ratioY = (float)maxHeight / image.Height;
+                float ratio = Math.Min(ratioX, ratioY);
+
+                newWidth = (int)(image.Width * ratio);
+                newHeight = (int)(image.Height * ratio);
+
+                image.Mutate(x => x.Resize(newWidth, newHeight));
+                Debug.Log($"Resized image from {image.Width}x{image.Height} to {newWidth}x{newHeight}");
+            }
+
+            byte[] pixels = new byte[4 * image.Width * image.Height];
             image.CopyPixelDataTo(pixels);
 
-            width = image.Width;
-            height = image.Height;
-            Upload();
+            Texture texture = new Texture(image.Width, image.Height, pixels);
+            texture.Upload();
+
+            image.Dispose();
+            return texture;
         }
 
         public void Upload()

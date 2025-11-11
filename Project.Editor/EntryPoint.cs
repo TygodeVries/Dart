@@ -1,5 +1,6 @@
 ﻿using Project.Editor.UI;
 using Project.Editor.UI.FileSystem;
+using Project.Editor.UI.Inspectors;
 using Runtime.Component.Core;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics.Renderers;
@@ -22,6 +23,7 @@ namespace Editor
             Debug.Log("Loading Editor...");
             GuiWindow.Enable(new NavBarUI());
             GuiWindow.Enable(new ProjectWindow());
+            GuiWindow.Enable(new InspectorWindow());
 
             float backgroundGrayness = 30;
             Scene.main.Instantiate(new GameObjectFactory().

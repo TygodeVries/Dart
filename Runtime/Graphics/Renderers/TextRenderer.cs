@@ -20,7 +20,7 @@ namespace Runtime.Graphics.Renderers
             worldTextShader.Compile();
 
             worldTextMaterial = new Material(worldTextShader);
-            worldTextMaterial.SetTexture("u_Texture", new Texture("assets/fonts/download.png"), 0);
+            worldTextMaterial.SetTexture("u_Texture", Texture.LoadFromPng("assets/fonts/download.png"), 0);
 
             ShaderProgram uiTextShader = ShaderProgram.FromFile("assets/shaders/uiText.vert", "assets/shaders/uiText.frag");
             uiTextShader.Compile();
@@ -29,7 +29,7 @@ namespace Runtime.Graphics.Renderers
             {
                 matrixEnabled = false
             };
-            uiTextMaterial.SetTexture("u_Texture", new Texture("assets/fonts/download.png"), 0);
+            uiTextMaterial.SetTexture("u_Texture", Texture.LoadFromPng("assets/fonts/download.png"), 0);
         }
 
 

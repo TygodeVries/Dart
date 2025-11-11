@@ -14,7 +14,7 @@ namespace Project.Editor
         {
             if(fallbackTexture == null)
             {
-                fallbackTexture = new Texture("assets/textures/icons/Unknown.png");
+                fallbackTexture = Texture.LoadFromPng("assets/textures/icons/Unknown.png");
             }
             
             return fallbackTexture;

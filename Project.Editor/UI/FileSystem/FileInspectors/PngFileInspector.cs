@@ -22,7 +22,7 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
             if (textureCache.ContainsKey(filepath))
                 return textureCache[filepath];
 
-            textureCache.Add(filepath, new Texture(filepath));
+            textureCache.Add(filepath, Texture.LoadFromPng(filepath, 100, 100));
             return textureCache[filepath];
         }
     }
