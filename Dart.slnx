@@ -14,10 +14,9 @@
   </Folder>
   <Folder Name="/Plugins/">
     <Project Path="Plugin.DearImGUI\Plugin.DearImGui.csproj" />
-    <Project Path="Plugin.Windows.audio\Plugin.Windows.Audio.vcxproj" />
+    <Project Path="Plugin.Windows.audio\Plugin.Windows.Audio.vcxproj" Id="2005ab50-1b49-4d3a-7dc8-7203eac64f6f" />
   </Folder>
   <Project Path="Runtime\Runtime.csproj" />
-  <Project Path="Start.Editor\Start.Editor.vcxproj" />
-  <Project Path="Start.Example\Start.Example.vcxproj" />
-</Solution>6fcfa1b417f" />
+  <Project Path="Start.Editor\Start.Editor.vcxproj" Id="3730117e-ae96-4b94-9d87-7d7c699a26b8" />
+  <Project Path="Start.Example\Start.Example.vcxproj" Id="0c208e99-e84c-4e38-b465-e6fcfa1b417f" />
 </Solution>

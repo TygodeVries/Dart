@@ -17,6 +17,8 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
     <LocalDebuggerCommandArguments>Assets.Editor</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArgumentsHistory>Assets.Editor|</LocalDebuggerCommandArgumentsHistory>
+    <LocalDebuggerDebuggerType>ManagedCore</LocalDebuggerDebuggerType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerCommand>$(SolutionDir)Assets.Editor\bin\Runtime.exe</LocalDebuggerCommand>

@@ -20,6 +20,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerDebuggerType>ManagedCore</LocalDebuggerDebuggerType>
     <LocalDebuggerCommandArguments>Assets.Example</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArgumentsHistory>Assets.Example|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerCommand>$(SolutionDir)Assets.Example\bin\Runtime.exe</LocalDebuggerCommand>
