@@ -25,6 +25,12 @@ namespace Runtime.Graphics
 
         public Texture(string path)
         {
+            if(!File.Exists(path))
+            {
+                Debug.Error($"Failed to load image from path {path}. File does not exist!");
+                return;
+            }
+
             Image<Rgba32> image = Image.Load<Rgba32>(path);
            
             pixels = new byte[4 * image.Width * image.Height];

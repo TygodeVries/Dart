@@ -1,4 +1,5 @@
 ﻿using ImGuiNET;
+using Project.Editor.UI.FileSystem.FileInspectors;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
 using System;
@@ -8,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Project.Editor.UI
+namespace Project.Editor.UI.FileSystem
 {
     internal class ProjectWindow : GuiWindow
     {
@@ -65,7 +66,7 @@ namespace Project.Editor.UI
             foreach (string file in files)
             {
                 string fileName = Path.GetFileName(file);
-                if (ImGui.ImageButton(fileName, AssetIcons.GetIconForAsset(fileName).Handle, new System.Numerics.Vector2(100, 100)))
+                if (ImGui.ImageButton(fileName, FileInspector.GetInspector(file).GetIcon(file).Handle, new System.Numerics.Vector2(100, 100)))
                 {
                     
                 }
