@@ -30,6 +30,18 @@ namespace Runtime.Logging
             Console.WriteLine($"[{method?.DeclaringType?.FullName}] {log}");
             Console.BackgroundColor = ConsoleColor.Black;
         }
+
+        public static void Warning(string log)
+        {
+            var stackTrace = new StackTrace(1, true);
+            var frame = stackTrace.GetFrame(0);
+
+            var method = frame?.GetMethod();
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"[{method?.DeclaringType?.FullName}] {log}");
+            Console.ForegroundColor = ConsoleColor.White;
+        }
     }
 
     public enum LogLevel

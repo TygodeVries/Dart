@@ -21,7 +21,7 @@ namespace Runtime.Graphics
         public int width;
         public int height;
         public int Handle;
-
+        public bool isUploaded = false;
         public Texture(int width, int height, byte[] pixels)
         {
             this.width = width;
@@ -29,7 +29,7 @@ namespace Runtime.Graphics
             this.pixels = pixels;
         }
 
-        public static Texture LoadFromPng(string path, int maxWidth = 8192, int maxHeight = 8192)
+        public static Texture LoadFromPng(string path, int maxWidth = 8192, int maxHeight = 8192, bool upload = true)
         {
             if (!File.Exists(path))
             {
@@ -59,7 +59,7 @@ namespace Runtime.Graphics
             image.CopyPixelDataTo(pixels);
 
             Texture texture = new Texture(image.Width, image.Height, pixels);
-            texture.Upload();
+            if(upload) texture.Upload();
 
             image.Dispose();
             return texture;
@@ -67,6 +67,7 @@ namespace Runtime.Graphics
 
         public void Upload()
         {
+            isUploaded = true;
             Handle = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2d, Handle);
             GL.TexParameterf(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);

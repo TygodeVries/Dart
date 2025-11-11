@@ -19,5 +19,16 @@ namespace Project.Editor
             
             return fallbackTexture;
         }
+
+        private static Texture? loadingTexture;
+        public static Texture GetLoadingTexture()
+        {
+            if (loadingTexture == null)
+            {
+                loadingTexture = Texture.LoadFromPng("assets/textures/icons/loading.png");
+            }
+
+            return loadingTexture;
+        }
     }
 }
