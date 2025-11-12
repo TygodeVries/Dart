@@ -1,10 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <None Include="..\TestProject\assets\shaders\fixed.frag">
+    <None Include="..\Assets.Example\assets\shaders\fixed.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\TestProject\assets\shaders\fixed.vert">
+    <None Include="..\Assets.Example\assets\shaders\fixed.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Assets.Example\assets\shaders\particle_step.compute">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

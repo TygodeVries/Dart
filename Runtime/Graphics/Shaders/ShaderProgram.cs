@@ -5,6 +5,7 @@ using Runtime.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -165,4 +166,151 @@ namespace Runtime.Graphics.Shaders
             }
         }
     }
+    public class ComputeShaderProgram 
+    {
+		bool compiled = false;
+		private int shaderProgramId;
+        string sourceContent;
+		public void Use()
+		{
+			if (!compiled)
+				Compile();
+
+			GL.UseProgram(shaderProgramId);
+		}
+		public static ComputeShaderProgram FromFile(string source)
+		{
+			string sourceContent = File.ReadAllText(source);
+
+			return new ComputeShaderProgram(sourceContent);
+		}
+
+		public ComputeShaderProgram(string source)
+		{
+			if (source.Length < 20)
+			{
+				Debug.Log($"ComputeShader does not look like source code, please be aware. {source}");
+			}
+
+
+
+			this.sourceContent = source;
+		}
+
+		public void Compile()
+		{
+			int compute = GL.CreateShader(ShaderType.ComputeShader);
+			GL.ShaderSource(compute, sourceContent);
+			GL.CompileShader(compute);
+
+			int program = GL.CreateProgram();
+			GL.AttachShader(program, compute);
+			GL.LinkProgram(program);
+			GL.ValidateProgram(program);
+
+			if (GL.GetError() != 0)
+			{
+				Debug.Error("Shader complication resulted in an error!" + GL.GetError());
+			}
+
+			shaderProgramId = program;
+			compiled = true;
+
+			string infoLog;
+			GL.GetShaderInfoLog(compute, out infoLog);
+			if (infoLog.Length > 3)
+				Debug.Error($"Compiling fragment shader resulted an an error: {infoLog}");
+
+            GL.DeleteShader(compute);
+		}
+        public void Check()
+        {
+            ErrorCode error = GL.GetError();
+            if (ErrorCode.NoError != error)
+            {
+                Debug.Error($"OpenGL error {error}");
+            }
+        }
+
+        public void Dispatch(uint x)
+        {
+            Dispatch(x, 1, 1);
+        }
+        public void Dispatch(uint x, uint y)
+        {
+            Dispatch(x, y, 1);
+        }
+        public void Dispatch(uint x, uint y, uint z)
+        {
+            Use();
+            GL.DispatchCompute(x, y, z);
+            Check();
+        }
+        public int GenerateComputeBuffer(uint size_in_bytes)
+        {
+            int buffer = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ShaderStorageBuffer, buffer);
+            Check();
+            byte[] dummy = new byte[size_in_bytes];
+            GL.BufferData(BufferTarget.ShaderStorageBuffer, (nint)size_in_bytes, dummy, BufferUsage.DynamicCopy);
+            Check();
+            return buffer;
+        }
+        public int GenerateAtomicBuffer(uint count_of_uints) 
+        {
+			int buffer = GL.GenBuffer();
+			GL.BindBuffer(BufferTarget.AtomicCounterBuffer, buffer);
+            Check();
+			GL.BufferData(BufferTarget.AtomicCounterBuffer, (nint)count_of_uints * sizeof(uint), 0, BufferUsage.DynamicCopy);
+            Check();
+			return buffer;
+		}
+		public void BindComputeBuffer(int buffer, uint bind_point)
+        {
+            Use();
+            GL.BindBufferBase(BufferTarget.ShaderStorageBuffer, bind_point, buffer);
+        }
+        public void BindAtomicBuffer(int buffer, uint bind_point)
+        {
+            Use();
+            GL.BindBufferBase(BufferTarget.AtomicCounterBuffer, bind_point, buffer);
+        }
+
+        public unsafe void SetComputeBufferData<T>(int buffer, int offset, T[] data) where T: struct
+        {
+            GL.BindBuffer(BufferTarget.ShaderStorageBuffer, buffer);
+            fixed (T* ptr = data)
+            {
+                GL.BufferSubData(BufferTarget.ShaderStorageBuffer, offset * sizeof(T), data.Length * sizeof(T), ptr);
+            }
+        }
+
+        public void SetAtomicBufferData(int buffer, int offset, uint[] data)
+        {
+			GL.BindBuffer(BufferTarget.AtomicCounterBuffer, buffer);
+			GL.BufferSubData(BufferTarget.AtomicCounterBuffer, offset * sizeof(uint), data.Length * sizeof(uint), data);
+		}
+		public unsafe void ReadComputeBufferData<T>(int buffer, int offset, T[] data) where T: struct
+        {
+            GL.MemoryBarrier(MemoryBarrierMask.ShaderStorageBarrierBit);
+            GL.BindBuffer(BufferTarget.ShaderStorageBuffer, buffer);
+            fixed (T* ptr = data)
+            {
+                GL.GetBufferSubData(BufferTarget.ShaderStorageBuffer, offset * sizeof(T), data.Length * sizeof(T), ptr);
+            }
+        }
+        public void ReadAtomicBufferData(int buffer, int offset, uint[] data)
+        {
+			GL.MemoryBarrier(MemoryBarrierMask.AtomicCounterBarrierBit);
+            Check();
+			GL.BindBuffer(BufferTarget.AtomicCounterBuffer, buffer);
+            Check();
+			GL.GetBufferSubData(BufferTarget.AtomicCounterBuffer, offset * sizeof(uint), data.Length * sizeof(uint), data);
+            Check();
+		}
+        public unsafe uint SizeOf<T>()
+        {
+            return (uint)sizeof(T);
+        }
+	}
 }
