@@ -68,14 +68,12 @@ namespace Project.Editor.UI.FileSystem
 
                 if (ImGui.ImageButton(folderName, folderTexture.Handle, new System.Numerics.Vector2(100, 100), uv, uv2, default(Vector4), color))
                 {
-                    if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
-                    {
-                        browsePath = Path.GetRelativePath(Editor.projectPath, directory);
-                    }
-                    else
-                    {
-                        InspectorWindow.GetActive().SetInspection(new FolderAssetInspection(metaData));
-                    }
+                    InspectorWindow.GetActive().SetInspection(new FolderAssetInspection(metaData));
+                }
+
+                if (ImGui.IsItemHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
+                {
+                    browsePath = Path.GetRelativePath(Editor.projectPath, directory);
                 }
 
                 // Draw the file name
