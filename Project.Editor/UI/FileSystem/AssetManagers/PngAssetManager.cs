@@ -1,4 +1,5 @@
-﻿using Runtime.Graphics;
+﻿using Project.Editor.UI.Inspectors;
+using Runtime.Graphics;
 using Runtime.Logging;
 using System;
 using System.Collections.Generic;
@@ -8,9 +9,14 @@ using System.Threading.Tasks;
 
 namespace Project.Editor.UI.FileSystem.FileInspectors
 {
-    [FileInspector(".png")]
-    public class PngFileInspector : FileInspector
+    [AssetManager(".png")]
+    public class PngAssetManager : AssetManager
     {
+        public override Inspection GetInspection()
+        {
+            return null;
+        }
+
         Dictionary<string, Texture> textureCache = new Dictionary<string, Texture>();
         List<string> loadingTextures = new List<string>();
         public override void ClearCache()

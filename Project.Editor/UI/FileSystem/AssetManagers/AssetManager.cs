@@ -1,4 +1,5 @@
-﻿using Runtime.Graphics;
+﻿using Project.Editor.UI.Inspectors;
+using Runtime.Graphics;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Project.Editor.UI.FileSystem.FileInspectors
 {
-    public abstract class FileInspector
+    public abstract class AssetManager
     {
         public virtual Texture GetIcon(string filepath)
         {
@@ -20,30 +21,32 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
 
         }
 
+        public abstract Inspection GetInspection();
+
         public static void Reset()
         {
-            foreach(FileInspector fileInspector in cache.Values)
+            foreach(AssetManager fileInspector in cache.Values)
             {
                 fileInspector.ClearCache();
             }
 
-            cache = new Dictionary<string, FileInspector>();
-            fileInspectors = null;
+            cache = new Dictionary<string, AssetManager>();
+            assetManager = null;
 
             GC.Collect();
         }
 
-        private static Dictionary<string, FileInspector> cache = new Dictionary<string, FileInspector>();
-        private static IEnumerable<Type>? fileInspectors;
-        public static FileInspector GetInspector(string filepath)
+        private static Dictionary<string, AssetManager> cache = new Dictionary<string, AssetManager>();
+        private static IEnumerable<Type>? assetManager;
+        public static AssetManager GetAssetManager(string filepath)
         {
             string fileType = Path.GetExtension(filepath).ToLower();
-            var inspectorType = typeof(FileInspector);
+            var inspectorType = typeof(AssetManager);
 
             // Get all fileInspectors
-            if (fileInspectors == null)
+            if (assetManager == null)
             {
-                fileInspectors =  AppDomain.CurrentDomain.GetAssemblies()
+                assetManager =  AppDomain.CurrentDomain.GetAssemblies()
                     .SelectMany(a => a.GetTypes())
                     .Where(t => inspectorType.IsAssignableFrom(t) && !t.IsAbstract);
             }
@@ -53,14 +56,14 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
                 return cache[fileType];
             }
 
-            foreach (var type in fileInspectors)
+            foreach (var type in assetManager)
             {
-                FileInspectorAttribute? attribute = type.GetCustomAttributes(typeof(FileInspectorAttribute), false)
-                               .FirstOrDefault() as FileInspectorAttribute;
+                AssetManagerAttribute? attribute = type.GetCustomAttributes(typeof(AssetManagerAttribute), false)
+                               .FirstOrDefault() as AssetManagerAttribute;
 
                 if (attribute != null && attribute.FileExtension.ToLower() == fileType)
                 {
-                    FileInspector fileInspector = (FileInspector)Activator.CreateInstance(type)!;
+                    AssetManager fileInspector = (AssetManager)Activator.CreateInstance(type)!;
                     cache.Add(fileType, fileInspector);
                     return fileInspector;
                 }
@@ -69,6 +72,6 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
             return defaultInspector;
         }
 
-        private static DefaultFileInspector defaultInspector = new DefaultFileInspector();
+        private static DefaultAssetManager defaultInspector = new DefaultAssetManager();
     }
 }

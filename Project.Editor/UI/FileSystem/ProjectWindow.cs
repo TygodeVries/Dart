@@ -1,11 +1,16 @@
 ﻿using ImGuiNET;
+using Project.Editor.Data;
 using Project.Editor.UI.FileSystem.FileInspectors;
+using Project.Editor.UI.Inspectors;
+using Project.Editor.UI.Inspectors.Inspections;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
+using Runtime.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -52,9 +57,25 @@ namespace Project.Editor.UI.FileSystem
             {
                 // Draw the image
                 string folderName = Path.GetFileName(directory);
-                if (ImGui.ImageButton(folderName, folderTexture.Handle, new System.Numerics.Vector2(100, 100)))
+
+
+                Vector2 uv = default(Vector2);
+                Vector2 uv2 = new Vector2(1f, 1f);
+
+                MetaData metaData = MetaData.Get(directory);
+
+                Vector4 color = (Vector4)metaData.GetVector4("color", new Vector4(1, 1, 1, 1));
+
+                if (ImGui.ImageButton(folderName, folderTexture.Handle, new System.Numerics.Vector2(100, 100), uv, uv2, default(Vector4), color))
                 {
-                    browsePath = Path.GetRelativePath(Editor.projectPath, directory);
+                    if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
+                    {
+                        browsePath = Path.GetRelativePath(Editor.projectPath, directory);
+                    }
+                    else
+                    {
+                        InspectorWindow.GetActive().SetInspection(new FolderAssetInspection(metaData));
+                    }
                 }
 
                 // Draw the file name
@@ -66,9 +87,11 @@ namespace Project.Editor.UI.FileSystem
             foreach (string file in files)
             {
                 string fileName = Path.GetFileName(file);
-                if (ImGui.ImageButton(fileName, FileInspector.GetInspector(file).GetIcon(file).Handle, new System.Numerics.Vector2(100, 100)))
+
+                AssetManager assetManager = AssetManager.GetAssetManager(file);
+                if (ImGui.ImageButton(fileName, assetManager.GetIcon(file).Handle, new System.Numerics.Vector2(100, 100)))
                 {
-                    
+                    InspectorWindow.GetActive().SetInspection(assetManager.GetInspection());
                 }
                 ImGui.Text(fileName);
                 ImGui.NextColumn();
