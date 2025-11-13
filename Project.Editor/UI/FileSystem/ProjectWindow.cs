@@ -7,8 +7,7 @@ using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
 using Runtime.Logging;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -24,6 +23,8 @@ namespace Project.Editor.UI.FileSystem
         {
             folderTexture = Texture.LoadFromPng("assets/textures/icons/folder.png");
         }
+
+        string selectedFolder = "";
 
          string browsePath = "assets";
         public override void Render()
@@ -66,15 +67,20 @@ namespace Project.Editor.UI.FileSystem
                 MetaData metaData = MetaData.Get(directory);
 
                 Vector4 color = (Vector4)metaData.GetVector4("color", new Vector4(1, 1, 1, 1));
+                ImGui.Image(folderTexture.Handle, new Vector2(100, 100), uv, uv2, color, color);
 
-                if (ImGui.ImageButton(folderName, folderTexture.Handle, new System.Numerics.Vector2(100, 100), uv, uv2, default(Vector4), color))
-                {
-                    InspectorWindow.GetActive().SetInspection(new FolderAssetInspection(metaData));
-                }
-
-                if (ImGui.IsItemHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
+                if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && selectedFolder == directory)
                 {
                     browsePath = Path.GetRelativePath(Editor.projectPath, directory);
+                    Debug.Log("Opening folder: " + browsePath);
+                }
+
+                if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
+                {
+                    selectedFolder = directory;
+                    // Single click only triggers if not a double-click
+                    InspectorWindow.GetActive().SetInspection(new FolderAssetInspection(metaData));
+                    Debug.Log("Opening inspector");
                 }
 
                 // Draw the file name
@@ -87,6 +93,9 @@ namespace Project.Editor.UI.FileSystem
             {
                 string fileName = Path.GetFileName(file);
 
+                if (Path.GetExtension(fileName) == ".meta")
+                    continue;
+
                 AssetManager assetManager = AssetManager.GetAssetManager(file);
                 if (ImGui.ImageButton(fileName, assetManager.GetIcon(file).Handle, new System.Numerics.Vector2(100, 100)))
                 {
@@ -96,7 +105,7 @@ namespace Project.Editor.UI.FileSystem
                 ImGui.NextColumn();
             }
 
-            if (ImGui.BeginPopupContextWindow("FolderContext"))
+            if (ImGui.BeginPopupContextWindow($"FolderContext_", ImGuiPopupFlags.MouseButtonRight | ImGuiPopupFlags.NoOpenOverItems))
             {
                 if (ImGui.BeginMenu("Create"))
                 {
@@ -110,7 +119,7 @@ namespace Project.Editor.UI.FileSystem
 
                 if(ImGui.MenuItem("Open Folder in Explorer"))
                 {
-                    Process.Start("explorer.exe", currentPath);
+                    System.Diagnostics.Process.Start("explorer.exe", currentPath);
                 }
 
                 ImGui.EndPopup();

@@ -23,7 +23,6 @@ namespace Project.Editor.UI.Inspectors.Inspections
         public override void Render()
         {
             ImGui.ColorPicker4("Folder Color", ref color);
-            Debug.Log($"{color.X}, {color.Y}, {color.Z}");
             metaData.SetVector4("color", color);
             metaData.Save();
             
