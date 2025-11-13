@@ -8,6 +8,7 @@ using Runtime.Graphics;
 using Runtime.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -93,6 +94,26 @@ namespace Project.Editor.UI.FileSystem
                 }
                 ImGui.Text(fileName);
                 ImGui.NextColumn();
+            }
+
+            if (ImGui.BeginPopupContextWindow("FolderContext"))
+            {
+                if (ImGui.BeginMenu("Create"))
+                {
+                    if(ImGui.MenuItem("Test"))
+                    {
+
+                    }
+                    // Action
+                    ImGui.EndMenu();
+                }
+
+                if(ImGui.MenuItem("Open Folder in Explorer"))
+                {
+                    Process.Start("explorer.exe", currentPath);
+                }
+
+                ImGui.EndPopup();
             }
 
             ImGui.Columns(1); // Reset
