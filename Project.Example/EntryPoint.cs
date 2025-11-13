@@ -25,10 +25,8 @@ namespace FeatureTestProject
 
 			Runtime.Scenes.Scene.main.Instantiate(
 				new GameObjectFactory()
-					.AddComponent<Box2D>()
-					.AddComponent<Box2DRenderer>()
-					.AddComponent<Box2DCollider>()
-					.AddComponent<Box2DRigidBody>()
+					.AddComponent<ParticleSystem>()
+					.AddComponent<ParticleEmitter>()
 					.Build()
 			);
 		}

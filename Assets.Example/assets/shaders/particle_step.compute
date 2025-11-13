@@ -40,6 +40,8 @@ layout (binding=0, offset = 4)
 uniform atomic_uint element_counter;
 layout (location = 0)
 uniform int genesis_total;
+
+// One step is 10 ms
 void main()
 {
     uint x = gl_GlobalInvocationID.x;
@@ -47,7 +49,7 @@ void main()
     {
         _output[x].prev_pos = _input[x].position;
         _output[x].position = 2*_input[x].position-_input[x].prev_pos;
-        _output[x].life_time.x = _input[x].life_time.x - 0.01;
+        _output[x].life_time.x = _input[x].life_time.x - 0.01f;
         uint e = atomicCounterIncrement(element_counter);
         _element[e] = x;
     }
@@ -57,6 +59,10 @@ void main()
         if (g < genesis_total)
         {
             _output[x] = _genesis[g];
+        }
+        else
+        {
+            _output[x].life_time.x = -1;
         }
     }
 

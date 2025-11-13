@@ -45,7 +45,7 @@ namespace Runtime
             Scene.main = new Scene();
 
             RenderCanvas window = new RenderCanvas(nativeWindowSettings);
-
+            
             foreach (string plugin in gameSettings!.Plugins)
             {
                AssemblyLoader.LoadPlugin(plugin);

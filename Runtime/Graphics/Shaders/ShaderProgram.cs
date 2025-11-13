@@ -261,7 +261,7 @@ namespace Runtime.Graphics.Shaders
 			int buffer = GL.GenBuffer();
 			GL.BindBuffer(BufferTarget.AtomicCounterBuffer, buffer);
             Check();
-			GL.BufferData(BufferTarget.AtomicCounterBuffer, (nint)count_of_uints * sizeof(uint), 0, BufferUsage.DynamicCopy);
+			GL.BufferData(BufferTarget.AtomicCounterBuffer, (nint)count_of_uints * sizeof(uint), 0, BufferUsage.StaticRead);
             Check();
 			return buffer;
 		}
@@ -308,6 +308,10 @@ namespace Runtime.Graphics.Shaders
 			GL.GetBufferSubData(BufferTarget.AtomicCounterBuffer, offset * sizeof(uint), data.Length * sizeof(uint), data);
             Check();
 		}
+        public void DeleteBuffer(int buffer)
+        {
+            GL.DeleteBuffer(buffer);
+        }
         public unsafe uint SizeOf<T>()
         {
             return (uint)sizeof(T);
