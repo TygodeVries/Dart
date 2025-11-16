@@ -45,7 +45,10 @@ namespace Project.Editor.Data
 
         public Vector4 GetVector4(string key, Vector4 def = default)
         {
-            if (data.ContainsKey(key))
+            if (data == null)
+                Load();
+
+            if (data!.ContainsKey(key))
             {
                 string value = data[key];
                 string[] args = value.Split(' ');
@@ -62,7 +65,10 @@ namespace Project.Editor.Data
 
         public void SetVector4(string path, Vector4 val)
         {
-            data[path] = $"{val.X.ToString(CultureInfo.InvariantCulture)} {val.Y.ToString(CultureInfo.InvariantCulture)} {val.Z.ToString(CultureInfo.InvariantCulture)} {val.W}";
+            if (data == null)
+                Load();
+
+            data![path] = $"{val.X.ToString(CultureInfo.InvariantCulture)} {val.Y.ToString(CultureInfo.InvariantCulture)} {val.Z.ToString(CultureInfo.InvariantCulture)} {val.W}";
         }
 
         string path;
@@ -71,7 +77,7 @@ namespace Project.Editor.Data
             this.path = path;
         }
 
-        private Dictionary<string, string> data;
+        private Dictionary<string, string>? data;
 
         public void Load()
         {

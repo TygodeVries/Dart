@@ -11,8 +11,8 @@ namespace Project.Editor.UI.Inspectors.Inspections
 {
     public abstract class AssetInspection : Inspection
     {
-        string filepath;
-        MetaData metaData;
+        string? filepath;
+        MetaData? metaData;
         public void SetFilePath(string assetPath)
         {
             filepath = assetPath;
@@ -25,11 +25,11 @@ namespace Project.Editor.UI.Inspectors.Inspections
         /// <returns></returns>
         public string GetActiveFilePath()
         {
-            if (metaData == null)
+            if (filepath == null)
             {
                 Debug.Error("Attempting to retrieve active file path from a file inspection, that is not linked to a file!");
             }
-            return filepath;
+            return filepath!;
         }
 
         public MetaData GetActiveMetaData()
@@ -39,7 +39,7 @@ namespace Project.Editor.UI.Inspectors.Inspections
                 Debug.Error("Attempting to retrieve meta data from a file inspection, that is not linked to a file!");
             }
             
-            return metaData;
+            return metaData!;
         }
     }
 }
