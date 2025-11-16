@@ -1,9 +1,4 @@
 ﻿using Runtime.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.Editor
 {
@@ -16,11 +11,11 @@ namespace Project.Editor
         /// <returns></returns>
         public static Texture GetFallbackTexture()
         {
-            if(fallbackTexture == null)
+            if (fallbackTexture == null)
             {
                 fallbackTexture = Texture.LoadFromPng("assets/textures/icons/Unknown.png");
             }
-            
+
             return fallbackTexture;
         }
 

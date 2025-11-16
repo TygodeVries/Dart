@@ -1,11 +1,5 @@
 ﻿using Project.Editor.UI.Inspectors;
 using Runtime.Graphics;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.Editor.UI.FileSystem.FileInspectors
 {
@@ -22,7 +16,7 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
 
         public static void Reset()
         {
-            foreach(AssetManager fileInspector in cache.Values)
+            foreach (AssetManager fileInspector in cache.Values)
             {
                 fileInspector.ClearCache();
             }
@@ -43,12 +37,12 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
             // Get all fileInspectors
             if (assetManager == null)
             {
-                assetManager =  AppDomain.CurrentDomain.GetAssemblies()
+                assetManager = AppDomain.CurrentDomain.GetAssemblies()
                     .SelectMany(a => a.GetTypes())
                     .Where(t => inspectorType.IsAssignableFrom(t) && !t.IsAbstract);
             }
 
-            if(cache.ContainsKey(fileType))
+            if (cache.ContainsKey(fileType))
             {
                 return cache[fileType];
             }

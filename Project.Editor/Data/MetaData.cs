@@ -1,14 +1,7 @@
 ﻿using Runtime.Logging;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Numerics;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Project.Editor.Data
 {
@@ -21,7 +14,7 @@ namespace Project.Editor.Data
         private static Dictionary<string, MetaData> metaDataCache = new Dictionary<string, MetaData>();
         public static MetaData Get(string path)
         {
-            if(metaDataCache.ContainsKey(path))
+            if (metaDataCache.ContainsKey(path))
             {
                 return metaDataCache[path];
             }
@@ -29,9 +22,9 @@ namespace Project.Editor.Data
             FileAttributes fileAttributes = File.GetAttributes(path);
 
             string metaDataFilePath;
-            if((fileAttributes & FileAttributes.Directory) == FileAttributes.Directory)
+            if ((fileAttributes & FileAttributes.Directory) == FileAttributes.Directory)
             {
-                metaDataFilePath = Path.Join(path, "folder.meta");   
+                metaDataFilePath = Path.Join(path, "folder.meta");
             }
             else
             {
@@ -95,7 +88,7 @@ namespace Project.Editor.Data
                     data = new Dictionary<string, string>();
                 }
             }
-           
+
             if (data == null)
             {
                 data = new Dictionary<string, string>();

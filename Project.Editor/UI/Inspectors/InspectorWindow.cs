@@ -1,10 +1,5 @@
 ﻿using ImGuiNET;
 using Runtime.DearImGUI.Gui;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.Editor.UI.Inspectors
 {
@@ -21,13 +16,13 @@ namespace Project.Editor.UI.Inspectors
         /// <param name="inspection"></param>
         public void SetInspection(Inspection inspection)
         {
-            if(this.inspection != null)
+            if (this.inspection != null)
             {
                 this.inspection.Close();
             }
 
             this.inspection = inspection;
-            if(this.inspection == null)
+            if (this.inspection == null)
             {
                 return;
             }
@@ -36,7 +31,7 @@ namespace Project.Editor.UI.Inspectors
         }
 
         static InspectorWindow? activeWindow = null;
-        
+
         /// <summary>
         /// Get the inspector the user is currently targeting.
         /// </summary>
@@ -69,7 +64,8 @@ namespace Project.Editor.UI.Inspectors
                 ImGui.Text($"Handled by: {inspection.GetType().Name}");
                 ImGui.NewLine();
                 inspection.Render();
-            }else
+            }
+            else
             {
                 ImGui.Text("Hmm, the should be more here...");
             }

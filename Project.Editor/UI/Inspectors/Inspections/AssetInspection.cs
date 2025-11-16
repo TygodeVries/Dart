@@ -1,11 +1,5 @@
 ﻿using Project.Editor.Data;
 using Runtime.Logging;
-using System;
-using System.Collections.Generic;
-
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.Editor.UI.Inspectors.Inspections
 {
@@ -13,6 +7,12 @@ namespace Project.Editor.UI.Inspectors.Inspections
     {
         string? filepath;
         MetaData? metaData;
+
+
+        /// <summary>
+        /// Set the file that is being inspected, called automatically in most cases.
+        /// </summary>
+        /// <param name="assetPath"></param>
         public void SetFilePath(string assetPath)
         {
             filepath = assetPath;
@@ -38,7 +38,7 @@ namespace Project.Editor.UI.Inspectors.Inspections
             {
                 Debug.Error("Attempting to retrieve meta data from a file inspection, that is not linked to a file!");
             }
-            
+
             return metaData!;
         }
     }

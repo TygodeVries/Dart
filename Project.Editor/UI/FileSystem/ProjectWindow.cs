@@ -6,13 +6,7 @@ using Project.Editor.UI.Inspectors.Inspections;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
 using Runtime.Logging;
-using System;
-
-using System.IO;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.Editor.UI.FileSystem
 {
@@ -26,7 +20,7 @@ namespace Project.Editor.UI.FileSystem
 
         string selectedFolder = "";
 
-         string browsePath = "assets";
+        string browsePath = "assets";
         public override void Render()
         {
             // Get all files we need to draw
@@ -35,7 +29,7 @@ namespace Project.Editor.UI.FileSystem
 
             // Add a back button
             string currentPath = Path.Combine(Editor.projectPath, browsePath);
-           
+
             ImGui.Begin("Project");
 
             if (ImGui.Button("..."))
@@ -52,8 +46,8 @@ namespace Project.Editor.UI.FileSystem
             // Calculate the columns count
             float buttonWidth = 100;
             float windowWidth = ImGui.GetContentRegionAvail().X;
-            ImGui.Columns((int) Math.Max(1, windowWidth / buttonWidth), "?", false);
-            
+            ImGui.Columns((int)Math.Max(1, windowWidth / buttonWidth), "?", false);
+
             // Draw all directies
             foreach (string directory in directories)
             {
@@ -66,7 +60,7 @@ namespace Project.Editor.UI.FileSystem
 
                 MetaData metaData = MetaData.Get(directory);
 
-                Vector4 color = (Vector4)metaData.GetVector4("color", new Vector4(1, 1, 1, 1));
+                Vector4 color = metaData.GetVector4("color", new Vector4(1, 1, 1, 1));
                 ImGui.Image(folderTexture.Handle, new Vector2(100, 100), uv, uv2, color, color);
 
                 if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && selectedFolder == directory)
@@ -100,7 +94,7 @@ namespace Project.Editor.UI.FileSystem
                 AssetManager assetManager = AssetManager.GetAssetManager(file);
                 if (ImGui.ImageButton(fileName, assetManager.GetIcon(file).Handle, new System.Numerics.Vector2(100, 100)))
                 {
-                    if(assetManager.GetInspection() is AssetInspection assetInspection)
+                    if (assetManager.GetInspection() is AssetInspection assetInspection)
                     {
                         assetInspection.SetFilePath(file);
                     }
@@ -115,7 +109,7 @@ namespace Project.Editor.UI.FileSystem
             {
                 if (ImGui.BeginMenu("Create"))
                 {
-                    if(ImGui.MenuItem("Test"))
+                    if (ImGui.MenuItem("Test"))
                     {
 
                     }
@@ -123,7 +117,7 @@ namespace Project.Editor.UI.FileSystem
                     ImGui.EndMenu();
                 }
 
-                if(ImGui.MenuItem("Open Folder in Explorer"))
+                if (ImGui.MenuItem("Open Folder in Explorer"))
                 {
                     System.Diagnostics.Process.Start("explorer.exe", currentPath);
                 }
