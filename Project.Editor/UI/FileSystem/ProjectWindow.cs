@@ -78,9 +78,10 @@ namespace Project.Editor.UI.FileSystem
                 if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
                 {
                     selectedFolder = directory;
-                    // Single click only triggers if not a double-click
-                    InspectorWindow.GetActive().SetInspection(new FolderAssetInspection(metaData));
-                    Debug.Log("Opening inspector");
+
+                    FolderAssetInspection inspection = new FolderAssetInspection();
+                    inspection.SetFilePath(directory);
+                    InspectorWindow.GetActive().SetInspection(inspection);
                 }
 
                 // Draw the file name
@@ -99,6 +100,11 @@ namespace Project.Editor.UI.FileSystem
                 AssetManager assetManager = AssetManager.GetAssetManager(file);
                 if (ImGui.ImageButton(fileName, assetManager.GetIcon(file).Handle, new System.Numerics.Vector2(100, 100)))
                 {
+                    if(assetManager.GetInspection() is AssetInspection assetInspection)
+                    {
+                        assetInspection.SetFilePath(file);
+                    }
+
                     InspectorWindow.GetActive().SetInspection(assetManager.GetInspection());
                 }
                 ImGui.Text(fileName);

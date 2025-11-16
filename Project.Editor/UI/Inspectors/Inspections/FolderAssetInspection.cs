@@ -10,22 +10,19 @@ using System.Threading.Tasks;
 
 namespace Project.Editor.UI.Inspectors.Inspections
 {
-    internal class FolderAssetInspection : Inspection
+    internal class FolderAssetInspection : AssetInspection
     {
-        MetaData metaData;
-        public FolderAssetInspection(MetaData metaData)
+        public override void Open()
         {
-            this.metaData = metaData;
-            color = (Vector4) metaData.GetVector4("color", new Vector4(1, 1, 1, 1));
+            color = (Vector4)GetActiveMetaData().GetVector4("color", new Vector4(1, 1, 1, 1));
         }
 
         Vector4 color;
         public override void Render()
         {
             ImGui.ColorPicker4("Folder Color", ref color);
-            metaData.SetVector4("color", color);
-            metaData.Save();
-            
+            GetActiveMetaData().SetVector4("color", color);
+            GetActiveMetaData().Save();
         }
     }
 }

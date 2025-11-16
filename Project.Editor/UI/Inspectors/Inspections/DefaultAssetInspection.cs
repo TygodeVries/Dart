@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Project.Editor.UI.Inspectors.Inspections
 {
-    internal class DefaultAssetInspection : Inspection
+    internal class DefaultAssetInspection : AssetInspection
     {
         public override void Render()
         {

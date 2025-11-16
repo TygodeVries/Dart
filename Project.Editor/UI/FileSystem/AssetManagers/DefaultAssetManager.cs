@@ -9,11 +9,14 @@ using System.Threading.Tasks;
 
 namespace Project.Editor.UI.FileSystem.FileInspectors
 {
+    /// <summary>
+    /// A fallback for files we have no clue what to do with!
+    /// </summary>
     internal class DefaultAssetManager : AssetManager
     {
         public override Texture GetIcon(string path)
         {
-            return Defaults.GetFallbackTexture();
+            return DefaultsTextures.GetFallbackTexture();
         }
 
         public override Inspection GetInspection()

@@ -1,4 +1,5 @@
 ﻿using Project.Editor.UI.Inspectors;
+using Project.Editor.UI.Inspectors.Inspections;
 using Runtime.Graphics;
 using Runtime.Logging;
 using System;
@@ -14,7 +15,7 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
     {
         public override Inspection GetInspection()
         {
-            return null;
+            return new PngAssetInspection();
         }
 
         Dictionary<string, Texture> textureCache = new Dictionary<string, Texture>();
@@ -27,7 +28,7 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
         public override Texture GetIcon(string filepath)
         {
             if (loadingTextures.Contains(filepath))
-                return Defaults.GetLoadingTexture();
+                return DefaultsTextures.GetLoadingTexture();
 
             if (textureCache.ContainsKey(filepath))
             {
@@ -64,7 +65,7 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
                 }
             });
 
-            return Defaults.GetFallbackTexture();
+            return DefaultsTextures.GetFallbackTexture();
         }
     }
 }

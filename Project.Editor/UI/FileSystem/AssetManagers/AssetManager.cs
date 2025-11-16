@@ -13,13 +13,10 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
     {
         public virtual Texture GetIcon(string filepath)
         {
-            return Defaults.GetFallbackTexture();
+            return DefaultsTextures.GetFallbackTexture();
         }
 
-        public virtual void ClearCache()
-        {
-
-        }
+        public virtual void ClearCache() { }
 
         public abstract Inspection GetInspection();
 

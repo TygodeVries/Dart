@@ -8,8 +8,15 @@ using System.Threading.Tasks;
 
 namespace Project.Editor.UI
 {
+    /// <summary>
+    /// The nav bar is the ui at the top of the screen.
+    /// </summary>
     internal class NavBarUI : GuiWindow
     {
+
+        /// <summary>
+        /// Render the NavBarUI with ImGui.
+        /// </summary>
         public override void Render()
         {
             ImGui.SetWindowFontScale(1.1f);
@@ -20,7 +27,11 @@ namespace Project.Editor.UI
             ImGui.EndMainMenuBar();
         }
 
-        public void DrawPlayButton()
+
+        /// <summary>
+        /// Draw the correct button based on the current game state.
+        /// </summary>
+        private void DrawPlayButton()
         {
             if (Editor.IsGameRunning())
             {

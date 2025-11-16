@@ -13,6 +13,10 @@ namespace Project.Editor
         public static string projectPath = "D:\\Games\\Dart\\Assets.Example";
 
         static System.Diagnostics.Process? gameProcess;
+
+        /// <summary>
+        /// Load up user's game executable.
+        /// </summary>
         public static void StartGame()
         {
             Debug.Log("Starting Game...");
@@ -35,6 +39,11 @@ namespace Project.Editor
             gameProcess.Exited += GameProcess_Exited;
         }
 
+        /// <summary>
+        /// Get's called from the game's running executable.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private static void GameProcess_Exited(object? sender, EventArgs e)
         {
             Debug.Log("Game Closed. (Process Exited)");
@@ -42,6 +51,9 @@ namespace Project.Editor
             gameProcess = null;
         }
 
+        /// <summary>
+        /// Stop the game if its running
+        /// </summary>
         public static void StopGame()
         {
             gameProcess?.Kill();
@@ -49,6 +61,10 @@ namespace Project.Editor
             gameProcess = null;
         }
 
+        /// <summary>
+        /// If the user's game is currently running
+        /// </summary>
+        /// <returns>True if its running, false if its not.</returns>
         public static bool IsGameRunning()
         {
             return gameProcess == null;
