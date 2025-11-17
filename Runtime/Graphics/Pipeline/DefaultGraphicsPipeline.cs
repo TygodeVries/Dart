@@ -47,7 +47,7 @@ namespace Runtime.Graphics.Pipeline
             return renderers.Count;
         }
 
-        // Anything that needs to be renderered by this graphics pipeline
+        // Anything that needs to be rendered by this graphics pipeline
         List<Renderer> renderers = new List<Renderer>();
 
         // Any custom passes we might need to do (ui?)

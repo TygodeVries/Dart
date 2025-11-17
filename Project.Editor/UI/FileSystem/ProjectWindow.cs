@@ -12,6 +12,11 @@ namespace Project.Editor.UI.FileSystem
 {
     internal class ProjectWindow : GuiWindow
     {
+        string[] hiddenFiles = new string[]
+        {
+            ".meta",
+            ".mtl"
+        };
         Texture folderTexture;
         public ProjectWindow()
         {
@@ -61,7 +66,7 @@ namespace Project.Editor.UI.FileSystem
                 MetaData metaData = MetaData.Get(directory);
 
                 Vector4 color = metaData.GetVector4("color", new Vector4(1, 1, 1, 1));
-                ImGui.Image(folderTexture.Handle, new Vector2(100, 100), uv, uv2, color, color);
+                ImGui.Image(folderTexture.Handle, new Vector2(100, 100), uv, uv2, color);
 
                 if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && selectedFolder == directory)
                 {
@@ -88,11 +93,13 @@ namespace Project.Editor.UI.FileSystem
             {
                 string fileName = Path.GetFileName(file);
 
-                if (Path.GetExtension(fileName) == ".meta")
+                if (hiddenFiles.Contains(Path.GetExtension(fileName)))
                     continue;
 
                 AssetManager assetManager = AssetManager.GetAssetManager(file);
-                if (ImGui.ImageButton(fileName, assetManager.GetIcon(file).Handle, new System.Numerics.Vector2(100, 100)))
+                ImGui.Image(assetManager.GetIcon(file).Handle, new Vector2(100, 100), default(Vector2), Vector2.One, new Vector4(1, 1, 1, 1));
+
+                if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
                 {
                     if (assetManager.GetInspection() is AssetInspection assetInspection)
                     {

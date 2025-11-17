@@ -1,12 +1,12 @@
 ﻿using ImGuiNET;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
 using Runtime.Graphics.Pipeline;
 using Runtime.Input;
 using Runtime.Logging;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Runtime.DearImGUI.Backend
 {
@@ -63,7 +63,7 @@ namespace Runtime.DearImGUI.Backend
             ImguiImplOpenGL3.NewFrame();
             ImGui.NewFrame();
 
-            foreach(GuiWindow guiWindow in guiWindows)
+            foreach (GuiWindow guiWindow in guiWindows)
             {
                 guiWindow.Render();
             }
@@ -72,7 +72,7 @@ namespace Runtime.DearImGUI.Backend
 
 
             GL.Viewport(0, 0, RenderCanvas.main!.FramebufferSize.X, RenderCanvas.main!.FramebufferSize.Y);
-            
+
             ImguiImplOpenGL3.RenderDrawData(ImGui.GetDrawData());
 
             if (ImGui.GetIO().ConfigFlags.HasFlag(ImGuiConfigFlags.ViewportsEnable))
@@ -89,18 +89,19 @@ namespace Runtime.DearImGUI.Backend
             // Mouse Position
             Vector2 mousePos = Mouse.current.position;
             io.MousePos = new System.Numerics.Vector2(mousePos.X, mousePos.Y);
+            io.AddMouseWheelEvent(Mouse.current.scroll.X, Mouse.current.scroll.Y);
 
             io.MouseDown[0] = Mouse.current.leftPressed;
             io.MouseDown[1] = Mouse.current.rightPressed;
             io.MouseDown[2] = Mouse.current.middlePressed;
 
-            Keys[] keys = (Keys[]) Enum.GetValues(typeof(Keys));
+            Keys[] keys = (Keys[])Enum.GetValues(typeof(Keys));
             Keyboard.current.IsPressed(Keys.A);
 
             foreach (var v in keyMap)
             {
                 bool isPressedThisFrame = Keyboard.current.IsPressedThisFrame(v.Key);
-                if(isPressedThisFrame)
+                if (isPressedThisFrame)
                 {
                     io.AddKeyEvent(v.Value, true);
                 }

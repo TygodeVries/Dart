@@ -1,5 +1,4 @@
 ﻿using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using Runtime.Calc;
@@ -7,12 +6,6 @@ using Runtime.Graphics.Pipeline;
 using Runtime.Input;
 using Runtime.Logging;
 using Runtime.Scenes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static OpenTK.Platform.Native.macOS.MacOSCursorComponent;
 
 namespace Runtime.Graphics
 {
@@ -35,19 +28,20 @@ namespace Runtime.Graphics
 
         public static RenderCanvas? main;
         public RenderCanvas(NativeWindowSettings settings)
-         : base(GameWindowSettings.Default, settings) 
-         { 
-            if (main == null) main = this; 
-            Unload += () => {
-               Debug.Log("Unloading...");
-               }; 
-         }
+         : base(GameWindowSettings.Default, settings)
+        {
+            if (main == null) main = this;
+            Unload += () =>
+            {
+                Debug.Log("Unloading...");
+            };
+        }
 
         protected override void OnLoad()
         {
             Keyboard.current.EndOfFrame();
             Mouse.current.EndOfFrame();
-
+            Mouse.current.scroll = new OpenTK.Mathematics.Vector2();
 
             Debug.Log("Loading render canvas...");
             base.OnLoad();
@@ -98,6 +92,11 @@ namespace Runtime.Graphics
             base.OnKeyDown(e);
         }
 
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            Mouse.current.scroll.X = e.OffsetX;
+            Mouse.current.scroll.Y = e.OffsetY;
+        }
         protected override void OnKeyUp(KeyboardKeyEventArgs e)
         {
             Keyboard.current.SetKeyState(e.Key, false);
@@ -106,7 +105,7 @@ namespace Runtime.Graphics
 
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
-            if(args.Time < 0.2f)
+            if (args.Time < 0.2f)
             {
                 Time.deltaTime = args.Time;
             }
@@ -134,7 +133,7 @@ namespace Runtime.Graphics
             if (i == 500 - 1)
             {
                 double avr = 0;
-                for(int a = 0; a < 500; a++)
+                for (int a = 0; a < 500; a++)
                 {
                     avr += frames[a];
                 }
