@@ -49,7 +49,7 @@ void main()
     {
         _output[x].prev_pos = _input[x].position;
         _output[x].position = 2*_input[x].position-_input[x].prev_pos;
-        _output[x].life_time.x = _input[x].life_time.x - 0.01f;
+        _output[x].life_time.x = _input[x].life_time.x - _input[x].life_time.y;
         uint e = atomicCounterIncrement(element_counter);
         _element[e] = x;
     }

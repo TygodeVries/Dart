@@ -1,20 +1,55 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using Runtime.Graphics.Shaders;
 using Runtime.Objects;
+using Runtime.Scenes;
+using System.Numerics;
 using System.Runtime.InteropServices;
 
-namespace FeatureTestProject
+namespace Runtime.Graphics
 {
-	public class ParticleSystem : Runtime.Graphics.Renderers.Renderer
+	public class ParticleSystem : Renderers.Renderer
 	{
+		~ParticleSystem()
+		{
+			if (null != storage_buffer)
+			{
+				compute?.DeleteBuffer(storage_buffer[0]);
+				compute?.DeleteBuffer(storage_buffer[1]);
+			}
+			compute?.DeleteBuffer(element_buffer);
+			compute?.DeleteBuffer(genesis_buffer);
+			compute?.DeleteBuffer(atomic_buffer);
+		}
 		// vertexarray hold openGL buffer bindings
-		int vertexArray;
+		int vertexArray = 0;
 
+		// The number of slots for partile types
+		int number_of_slots;
+
+		// 
+		bool[]? occupied_slots;
+
+		public int AllocateParticleTypeSlot()
+		{
+			for (int cx = 0; cx < number_of_slots; cx++)
+				if (!occupied_slots![cx])
+				{
+					occupied_slots[cx] = true;
+					return cx;
+				}
+			return -1;
+		}
+		public void FreeParticleTypeSlot(int s)
+		{
+			if (s >= 0 && s < number_of_slots)
+				occupied_slots![s] = false;
+		}
 		// shader program to draw the particles
 		ShaderProgram? shader;
 
 		// compute shader to step the particles forward in time
 		ComputeShaderProgram? compute;
+		int property_texture = 0;
 		public override void Render()
 		{
 			// activate our vertexArray
@@ -25,9 +60,9 @@ namespace FeatureTestProject
 			GL.Enable(EnableCap.Blend);
 			GL.BlendFunc(BlendingFactor.OneMinusSrcAlpha, BlendingFactor.SrcAlpha);
 
-			shader.Use();
+			shader?.Use();
 			// Buffer of particle states
-			GL.BindBuffer(BufferTarget.ArrayBuffer, storage_buffer[1-pingpong]);
+			GL.BindBuffer(BufferTarget.ArrayBuffer, storage_buffer![1-pingpong]);
 			compute.Check();
 			// Buffer for the particle indices
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, element_buffer);
@@ -45,6 +80,8 @@ namespace FeatureTestProject
 			// just be sure all calculations are done
 			GL.MemoryBarrier(MemoryBarrierMask.ShaderStorageBarrierBit);
 
+			GL.ActiveTexture(TextureUnit.Texture0);
+			GL.BindTexture(TextureTarget.Texture2d, property_texture);
 			// and go for it! Draw the stuff
 			GL.DrawElements(PrimitiveType.Points, (int)atomics_mirror[1], DrawElementsType.UnsignedInt, 0);
 			compute.Check();
@@ -104,40 +141,39 @@ namespace FeatureTestProject
 		uint pingpong = 0;
 
 		// names of the two buffers that hold the state
-		int[] storage_buffer;
+		int[]? storage_buffer = null;
 
 		// name of the buffer that will hold the indices of the active particles
-		int element_buffer;
+		int element_buffer = 0;
 
 		// name of the buffer that holds the particles that are new and not in the active particle buffer yet
-		int genesis_buffer;
+		int genesis_buffer = 0;
 
 		// name of the buffer that will hold atomic counters
-		int atomic_buffer;
+		int atomic_buffer = 0;
 
 		// local copy of the counters, index 1 will hold the number of active particles (used to transfer to and from the GPU)
-		uint[] atomics_mirror;
+		uint[]? atomics_mirror = null;
 
 		// local copy of the particles that still need to be added (used to transfer to the gpu)
-		state_t[] genesis_data;
+		state_t[]? genesis_data = null;
 
 		// Queue of particles to add to the system.
 		System.Collections.Generic.Queue<state_t> queue = new Queue<state_t>();
 		/// <summary>
 		/// Add a particle to the queue, needs to be extended to be useful
 		/// </summary>
-		public void AddParticle()
+		public void AddParticle(Vector3 x, Vector3 v, ParticleType type)
 		{
-			// This needs to change...
-			float a = MathF.Sin(100 * t) / 3f;
-			float dx = MathF.Sin(a);
-			float dy = MathF.Cos(a);
 			state_t item = new state_t();
-			item.position = new vec4(0, 0, 0);
-			item.prev_pos = new vec4(-dx / 1000f, -dy / 1000f, 0);
-			item.lifetime.x = 10;
+			item.position = new vec4(x.X, x.Y, x.Z);
+			item.prev_pos = new vec4(x.X - v.X / 100f, x.Y - v.Y / 100f, x.Z - v.Z / 100f);
+			item.lifetime.x = 1;
+			item.lifetime.y = 0.01f / type.GetLifetime();
+			item.lifetime.z = (type.GetSlot() + 0.5f) / number_of_slots;
 			queue.Enqueue(item);
 		}
+		
 		public override void OnLoad()
 		{
 			atomics_mirror = new uint[2];
@@ -169,6 +205,20 @@ namespace FeatureTestProject
 			compute.BindComputeBuffer(element_buffer, 3);
 
 			compute.BindAtomicBuffer(atomic_buffer, 0);
+
+			// This texture can be used to set properties per particle type x lifetime
+
+			number_of_slots = 1024;
+			occupied_slots = new bool[number_of_slots];
+
+			for (int cx = 0; cx < number_of_slots; cx++)
+				occupied_slots[cx] = false;
+
+			property_texture = GL.GenTexture();
+			GL.BindTexture(TextureTarget.Texture2d, property_texture);
+			compute.Check();
+			GL.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba16f, 256, (int)number_of_slots, 0, PixelFormat.Rgba, PixelType.Byte, (nint)0);
+			compute.Check();
 		}
 		float t = 0;
 		/// <summary>
@@ -239,24 +289,45 @@ namespace FeatureTestProject
 		}
 	}
 
+	public class ParticleType
+	{
+		int slot = 0;
+		public ParticleType() 
+		{
+			// Allocate a slot for the type
+			int s = Scene.main.GetParticleSystem().AllocateParticleTypeSlot();
+			if (s >= 0)
+				slot = s;
+		}
+		~ParticleType()
+		{
+			// Deallocate the slot
+			Scene.main.GetParticleSystem().FreeParticleTypeSlot(slot);
+		}
+		public float GetSlot()
+		{
+			return (float)slot;
+		}
+		public virtual float GetLifetime()
+		{
+			return 2f;
+		}
+	};
+
 	/// <summary>
 	/// Generatate a particle every 100 ms, just for testing
 	/// </summary>
 	public class ParticleEmitter: IComponent
 	{
-		float next_particle = 0;
-
-		public override void Update()
+		public void AddParticle(Vector3 position, Vector3 velocity, ParticleType type)
 		{
-			ParticleSystem sys = GetComponent<ParticleSystem>();
-			next_particle -= (float)Runtime.Calc.Time.deltaTime;
-			if (next_particle < 0)
+			ParticleSystem? sys = Scene.main.GetParticleSystem();
+
+			if (null != sys)
 			{
-				uint nparts = sys!.GetActiveParticles();
-				if (nparts < 1000)
-					sys.AddParticle();
-				next_particle += 0.100f;
+				sys.AddParticle(position, velocity, type);
 			}
+
 		}
 	}
 }

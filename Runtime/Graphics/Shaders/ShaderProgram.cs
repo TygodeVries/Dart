@@ -310,7 +310,8 @@ namespace Runtime.Graphics.Shaders
 		}
         public void DeleteBuffer(int buffer)
         {
-            GL.DeleteBuffer(buffer);
+            if (buffer != 0)
+               GL.DeleteBuffer(buffer);
         }
         public unsafe uint SizeOf<T>()
         {
