@@ -216,6 +216,8 @@ namespace Runtime.Graphics
 
 			property_texture = GL.GenTexture();
 			GL.BindTexture(TextureTarget.Texture2d, property_texture);
+			GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+			GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)TextureMagFilter.Nearest);
 			compute.Check();
 			GL.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba16f, 256, (int)number_of_slots, 0, PixelFormat.Rgba, PixelType.Byte, (nint)0);
 			compute.Check();
@@ -287,11 +289,25 @@ namespace Runtime.Graphics
 			}
 			GL.BindVertexArray(last_va);
 		}
+		public void UpdateParticleType(ParticleType pt)
+		{
+			vec4[] buffer = new vec4[256];
+			for (int cx = 0; cx < 256; cx++)
+			{
+				float a = 3.1415264f * cx / 256;
+				buffer[cx].x = MathF.Sin(a);
+				buffer[cx].y = MathF.Cos(a);
+				buffer[cx].z = -MathF.Cos(a);
+				buffer[cx].w = 1 + 10 * MathF.Sin(a);
+			}
+			
+			GL.TexSubImage2D(TextureTarget.Texture2d, 0, 0, pt.slot, 256, 1, PixelFormat.Rgba, PixelType.Float, buffer);
+		}
 	}
 
 	public class ParticleType
 	{
-		int slot = 0;
+		public int slot = 0;
 		public ParticleType() 
 		{
 			// Allocate a slot for the type

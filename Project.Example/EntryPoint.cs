@@ -40,6 +40,7 @@ namespace FeatureTestProject
 		public override void OnLoad()
 		{
 			pt = new ParticleType();
+			Scene.main.GetParticleSystem().UpdateParticleType(pt);
 		}
 		double t = 0;
 		public override void Update()
