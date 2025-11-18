@@ -9,7 +9,7 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
     /// </summary>
     internal class DefaultAssetManager : AssetManager
     {
-        public override Texture GetIcon(string path)
+        public override Texture GetIcon()
         {
             return DefaultsTextures.GetFallbackTexture();
         }

@@ -17,7 +17,9 @@ namespace Runtime.Input
         public void EndOfFrame()
         {
             mouseDelta = Vector2.Zero;
+            scroll = Vector2.Zero;
         }
+        Vector2 lastFrameScroll = Vector2.Zero;
         public Vector2 mouseDelta;
         public Vector2 position;
 

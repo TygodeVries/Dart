@@ -24,6 +24,7 @@ namespace Project.Editor.UI.FileSystem
         }
 
         string selectedFolder = "";
+        string selectedFile = "";
 
         string browsePath = "assets";
         public override void Render()
@@ -97,7 +98,12 @@ namespace Project.Editor.UI.FileSystem
                     continue;
 
                 AssetManager assetManager = AssetManager.GetAssetManager(file);
-                ImGui.Image(assetManager.GetIcon(file).Handle, new Vector2(100, 100), default(Vector2), Vector2.One, new Vector4(1, 1, 1, 1));
+                ImGui.Image(assetManager.GetIcon().Handle, new Vector2(100, 100), default(Vector2), Vector2.One, new Vector4(1, 1, 1, 1));
+
+                if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && selectedFile == file)
+                {
+                    assetManager.OnOpen();
+                }
 
                 if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
                 {
@@ -106,8 +112,10 @@ namespace Project.Editor.UI.FileSystem
                         assetInspection.SetFilePath(file);
                     }
 
+                    selectedFile = file;
                     InspectorWindow.GetActive().SetInspection(assetManager.GetInspection());
                 }
+
                 ImGui.Text(fileName);
                 ImGui.NextColumn();
             }

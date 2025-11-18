@@ -19,7 +19,7 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
             textureCache = new Dictionary<string, Texture>();
         }
 
-        public override Texture GetIcon(string filepath)
+        public override Texture GetIcon()
         {
             if (loadingTextures.Contains(filepath))
                 return DefaultsTextures.GetLoadingTexture();

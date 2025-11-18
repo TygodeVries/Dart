@@ -1,11 +1,5 @@
 ﻿using OpenTK.Mathematics;
-using Runtime;
 using Runtime.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Runtime.Component.Core
 {
@@ -39,6 +33,15 @@ namespace Runtime.Component.Core
                 main = this;
         }
 
+
+        /// <summary>
+        /// Set this camera to be the main camera
+        /// </summary>
+        public void SetAsMain()
+        {
+            main = this;
+        }
+
         /// <summary>
         /// Returns the projection matrix of the camera
         /// </summary>
@@ -47,7 +50,7 @@ namespace Runtime.Component.Core
         {
             return Matrix4.CreatePerspectiveFieldOfView(
                 MathHelper.DegreesToRadians(fieldOfView),
-                (float)Game.width / (float) Game.height,
+                Game.width / (float)Game.height,
                 0.1f, 4000.0f
             );
         }
@@ -62,7 +65,7 @@ namespace Runtime.Component.Core
 
             Vector3 position = new Vector3(0, 0, 0);
             Vector3 direction = new Vector3(0, 0, -1);
-            if(transform != null)
+            if (transform != null)
             {
                 position = transform.position;
                 direction = transform.GetForwards();

@@ -14,7 +14,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             icon = Texture.LoadFromPng("assets/textures/icons/wav.png");
         }
 
-        public override Texture GetIcon(string filepath)
+        public override Texture GetIcon()
         {
             return icon;
         }

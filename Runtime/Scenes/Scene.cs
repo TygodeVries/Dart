@@ -1,17 +1,33 @@
-﻿using Runtime.Physics;
+﻿using Runtime.Graphics;
+using Runtime.Graphics.Pipeline;
 using Runtime.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Runtime.Component.Lighting;
-using Runtime.Graphics;
+using Runtime.Physics;
 
 namespace Runtime.Scenes
 {
     public class Scene
     {
+        public static void Load(Scene scene)
+        {
+            Scene.main.Unload();
+            Scene.main = scene;
+        }
+
+        public void Unload()
+        {
+            // #Todo make this better
+            if (RenderCanvas.main!.GetGraphicsPipeline() is DefaultGraphicsPipeline defaultGraphics)
+            {
+                defaultGraphics.ClearRenderers();
+            }
+
+            foreach (GameObject gameObject in gameObjects)
+            {
+
+            }
+
+            gameObjects.Clear();
+        }
         List<GameObject> gameObjects = new List<GameObject>();
         public void Instantiate(GameObject game)
         {
@@ -25,7 +41,7 @@ namespace Runtime.Scenes
             return defaultLightManager;
         }
 
-         // Implicitly make the main scene an empty scene
+        // Implicitly make the main scene an empty scene
         public static Scene main = new Scene();
 
         public PhysicsSolver physicsSolver = new PhysicsSolver();

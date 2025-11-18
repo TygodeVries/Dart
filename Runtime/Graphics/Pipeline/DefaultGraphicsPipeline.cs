@@ -58,6 +58,10 @@ namespace Runtime.Graphics.Pipeline
             customRenderPasses.Add(renderPass);
         }
 
+        public void ClearRenderers()
+        {
+            renderers.Clear();
+        }
         bool sendNoCameraIssue;
         public void Render()
         {

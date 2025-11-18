@@ -7,6 +7,11 @@ uniform sampler2D u_Texture;
 
 out vec4 FragColor;
 
+uniform mat4 uModel;
+uniform mat4 uView;
+uniform mat4 uProjection;
+
+
 void main()
 {
     vec4 col = texture(u_Texture, Uv);

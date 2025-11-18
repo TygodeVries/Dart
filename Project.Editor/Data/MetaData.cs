@@ -86,6 +86,7 @@ namespace Project.Editor.Data
                 {
                     Debug.Error($"Failed to load metadata: {ex}. Resetting, sorry!");
                     data = new Dictionary<string, string>();
+                    Save();
                 }
             }
 

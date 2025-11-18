@@ -5,11 +5,13 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
 {
     public abstract class AssetManager
     {
-        public virtual Texture GetIcon(string filepath)
+        protected string? filepath;
+        public virtual Texture GetIcon()
         {
             return DefaultsTextures.GetFallbackTexture();
         }
 
+        public virtual void OnOpen() { }
         public virtual void ClearCache() { }
 
         public abstract Inspection GetInspection();
@@ -44,6 +46,7 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
 
             if (cache.ContainsKey(fileType))
             {
+                cache[fileType].filepath = filepath;
                 return cache[fileType];
             }
 
@@ -56,6 +59,7 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
                 {
                     AssetManager fileInspector = (AssetManager)Activator.CreateInstance(type)!;
                     cache.Add(fileType, fileInspector);
+                    cache[fileType].filepath = filepath;
                     return fileInspector;
                 }
             }
