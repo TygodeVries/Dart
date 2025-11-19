@@ -43,6 +43,8 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
                 return;
             }
 
+
+
             Scene.Load(new Scene());
             Scene.main.Instantiate(new GameObjectFactory()
                 .AddComponent(new MeshRenderer(material)
@@ -55,6 +57,10 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
 
             Camera sceneCamera = new Camera();
             sceneCamera.SetAsMain();
+
+            float backgroundGrayness = 30;
+            sceneCamera.backgroundColor = new OpenTK.Mathematics.Vector3(backgroundGrayness / 255f, backgroundGrayness / 255f, backgroundGrayness / 255f);
+
             Scene.main.Instantiate(new GameObjectFactory()
                 .AddComponent(new Transform()
                 {
@@ -63,6 +69,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
                 .AddComponent(sceneCamera)
                 .AddComponent(new CameraPreview())
                 .Build());
+
         }
 
         public override Inspection GetInspection()

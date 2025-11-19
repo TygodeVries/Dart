@@ -10,6 +10,6 @@ uniform mat4 uProjection;
 
 void main()
 {
-    float val = dot(Normal, vec3(1, 1, 1));
+    float val = (dot(Normal, vec3(1, 1, 1)) + 1) / 2.0;
     FragColor = vec4(val, val, val, 1);
 }

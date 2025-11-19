@@ -49,8 +49,10 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
                         textureCache[filepath] = texture; // Override
                         return;
                     }
-
-                    textureCache.Add(filepath, texture);
+                    else
+                    {
+                        textureCache.Add(filepath, texture);
+                    }
                 }
 
                 lock (loadingTextures)
