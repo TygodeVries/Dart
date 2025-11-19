@@ -1,11 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using Runtime.Objects;
+using Runtime.Physics.Raycasts;
 using Runtime.Scenes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Runtime.Component.Physics
 {
@@ -22,5 +18,6 @@ namespace Runtime.Component.Physics
         }
         public abstract bool HasOverlap(Vector3 point);
         public abstract bool HasOverlap(ICollider collider);
+        public abstract float Raycast(Raycast raycast);
     }
 }
