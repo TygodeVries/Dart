@@ -45,10 +45,13 @@ uniform int genesis_total;
 void main()
 {
     uint x = gl_GlobalInvocationID.x;
-    if (_input[x].life_time.x > 0)
+    
+    if (_input[x].life_time.x >= 0)
     {
+        float a = _input[x].life_time.a;
         _output[x].prev_pos = _input[x].position;
-        _output[x].position = 2*_input[x].position-_input[x].prev_pos;
+        _output[x].position = (1.0f + a) * _input[x].position - a * _input[x].prev_pos;
+        _output[x].life_time = _input[x].life_time;
         _output[x].life_time.x = _input[x].life_time.x - _input[x].life_time.y;
         uint e = atomicCounterIncrement(element_counter);
         _element[e] = x;
@@ -58,7 +61,11 @@ void main()
         uint g = atomicCounterIncrement(genesis_counter);
         if (g < genesis_total)
         {
-            _output[x] = _genesis[g];
+            
+            _output[x].position = _genesis[g].position;
+            _output[x].prev_pos = _genesis[g].prev_pos;
+            _output[x].life_time = _genesis[g].life_time;
+            _output[x].padding = _genesis[g].padding;
         }
         else
         {

@@ -5,6 +5,7 @@ using Runtime.Graphics;
 using Runtime.Graphics.Pipeline;
 using Runtime.Plugins;
 using Runtime.Scenes;
+using System.Globalization;
 using static Runtime.Logging.Debug;
 
 namespace Runtime
@@ -12,79 +13,80 @@ namespace Runtime
 	public delegate void DartEventHandler();
 
 	public class Game
-    {
-        public static int width = 640 * 2;
-        public static int height = 480 * 2;
-        public static void Start(string path)
-        {
-            Log("Starting Dart v0.1...");
-            Log($"Working from {path}");
-            Directory.SetCurrentDirectory(path);
+	{
+		public static int width = 640 * 2;
+		public static int height = 480 * 2;
+		public static void Start(string path)
+		{
+			Log("Starting Dart v0.1...");
+			Log($"Working from {path}");
+			Directory.SetCurrentDirectory(path);
 
-            Log($"Loading {Path.Join(path, "GameSettings.json")}...");
-            GameSettings? gameSettings = Files.Load<GameSettings>("GameSettings.json");
+			Log($"Loading {Path.Join(path, "GameSettings.json")}...");
+			GameSettings? gameSettings = Files.Load<GameSettings>("GameSettings.json");
 
-            if (null == gameSettings)
-            {
-               Log("GameSettings.json not loaded");
-               return;
-            }
+			if (null == gameSettings)
+			{
+				Log("GameSettings.json not loaded");
+				return;
+			}
 
-            Log("Attempting to switch to dedicated graphics card (If present)");
-            DedicatedSwitch.Switch();
+			Log("Attempting to switch to dedicated graphics card (If present)");
+			DedicatedSwitch.Switch();
 
-            Log($"Creating window of size {width}, {height}");
-            Log($"Setting window title to {gameSettings!.WindowTitle}");
-            var nativeWindowSettings = new NativeWindowSettings()
-            {
-                ClientSize = new Vector2i(width, height),
-                Title = gameSettings?.WindowTitle,
-            };
+			Log($"Creating window of size {width}, {height}");
+			Log($"Setting window title to {gameSettings!.WindowTitle}");
+			var nativeWindowSettings = new NativeWindowSettings()
+			{
+				ClientSize = new Vector2i(width, height),
+				Title = gameSettings?.WindowTitle,
+			};
 
-            Log($"Creating empty scene...");
-            Scene.main = new Scene();
+			Log($"Creating empty scene...");
+			Scene.main = new Scene();
 
-            RenderCanvas window = new RenderCanvas(nativeWindowSettings);
-            
-            foreach (string plugin in gameSettings!.Plugins)
-            {
-               AssemblyLoader.LoadPlugin(plugin);
-            }
-   			IGraphicsPipeline graphicsPipeline = new DefaultGraphicsPipeline();
-   			Log($"Using graphicsPipeline: {graphicsPipeline}.");
-   			window.SetGraphicsPipeline(graphicsPipeline);
+			RenderCanvas window = new RenderCanvas(nativeWindowSettings);
 
-			   if (File.Exists(gameSettings!.CodePath))
-			   {
-				   Log($"Loading user code from {gameSettings.CodePath}");
-				   AssemblyLoader.LoadAndRun(gameSettings.CodePath);
-			   }
-			   else
-			   {
-				   Error($"Could not load user code from path {gameSettings!.CodePath}. File not found!");
-			   }
+			foreach (string plugin in gameSettings!.Plugins)
+			{
+				AssemblyLoader.LoadPlugin(plugin);
+			}
+			IGraphicsPipeline graphicsPipeline = new DefaultGraphicsPipeline();
+			Log($"Using graphicsPipeline: {graphicsPipeline}.");
+			window.SetGraphicsPipeline(graphicsPipeline);
 
-   			onReady?.Invoke();
-            Log($"Opening window...");
-            window.Run(); // Keeps the thread blocked until closed.
-            Log($"Cleaning up...");
-        }
+			if (File.Exists(gameSettings!.CodePath))
+			{
+				Log($"Loading user code from {gameSettings.CodePath}");
+				AssemblyLoader.LoadAndRun(gameSettings.CodePath);
+			}
+			else
+			{
+				Error($"Could not load user code from path {gameSettings!.CodePath}. File not found!");
+			}
 
-        public static event DartEventHandler? onReady;
-    }
+			onReady?.Invoke();
+			Log($"Opening window...");
+			window.Run(); // Keeps the thread blocked until closed.
+			Log($"Cleaning up...");
+		}
 
-    class Program
-    {
-        public static void Main(string[] args)
-        {
-            if (0 != args.Length)
-            {
-               Game.Start(args[0]);
-            }
-            else
-            {
-               Logging.Debug.Error("(FATALITY) No project given");
-            }
-        }
-    }
+		public static event DartEventHandler? onReady;
+	}
+
+	class Program
+	{
+		public static void Main(string[] args)
+		{
+			CultureInfo.DefaultThreadCurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+			if (0 != args.Length)
+			{
+				Game.Start(args[0]);
+			}
+			else
+			{
+				Logging.Debug.Error("(FATALITY) No project given");
+			}
+		}
+	}
 }

@@ -231,7 +231,10 @@ namespace Runtime.Graphics.Shaders
                 Debug.Error($"OpenGL error {error}");
             }
         }
-
+      public void Barrier()
+      {
+         GL.MemoryBarrier(MemoryBarrierMask.ShaderStorageBarrierBit | MemoryBarrierMask.AtomicCounterBarrierBit);
+      }
         public void Dispatch(uint x)
         {
             Dispatch(x, 1, 1);

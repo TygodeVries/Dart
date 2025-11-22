@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using Microsoft.VisualBasic.FileIO;
+using OpenTK.Graphics.OpenGL;
 using Runtime.Graphics.Shaders;
 using Runtime.Objects;
 using Runtime.Scenes;
@@ -58,7 +59,7 @@ namespace Runtime.Graphics
 			GL.Enable(EnableCap.ProgramPointSize);
 			// And we want to blend the particles
 			GL.Enable(EnableCap.Blend);
-			GL.BlendFunc(BlendingFactor.OneMinusSrcAlpha, BlendingFactor.SrcAlpha);
+			GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
 			shader?.Use();
 			// Buffer of particle states
@@ -76,7 +77,7 @@ namespace Runtime.Graphics
 			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, true, (int)compute.SizeOf<state_t>(), 0);
 			GL.VertexAttribPointer(1, 1, VertexAttribPointerType.Float, true, (int)compute.SizeOf<state_t>(), 32);
 			compute.Check();
-
+			GL.Uniform1f(0, 0.5f / number_of_slots);
 			// just be sure all calculations are done
 			GL.MemoryBarrier(MemoryBarrierMask.ShaderStorageBarrierBit);
 
@@ -130,7 +131,7 @@ namespace Runtime.Graphics
 		{
 			public vec4 position;
 			public vec4 prev_pos;
-			public vec4 lifetime;
+			public vec4 lifetime; // current, delta, texture offset, friction
 			public vec4 padding;
 		};
 
@@ -155,9 +156,6 @@ namespace Runtime.Graphics
 		// local copy of the counters, index 1 will hold the number of active particles (used to transfer to and from the GPU)
 		uint[]? atomics_mirror = null;
 
-		// local copy of the particles that still need to be added (used to transfer to the gpu)
-		state_t[]? genesis_data = null;
-
 		// Queue of particles to add to the system.
 		System.Collections.Generic.Queue<state_t> queue = new Queue<state_t>();
 		/// <summary>
@@ -171,13 +169,13 @@ namespace Runtime.Graphics
 			item.lifetime.x = 1;
 			item.lifetime.y = 0.01f / type.GetLifetime();
 			item.lifetime.z = (type.GetSlot() + 0.5f) / number_of_slots;
+			item.lifetime.w = 1f-type.GetFriction();
 			queue.Enqueue(item);
 		}
-		
+
 		public override void OnLoad()
 		{
 			atomics_mirror = new uint[2];
-			genesis_data = new state_t[16];
 
 			// create and use the vertexarray
 			vertexArray = GL.CreateVertexArray();
@@ -197,8 +195,19 @@ namespace Runtime.Graphics
 					compute.GenerateComputeBuffer(count * compute.SizeOf<state_t>()),
 					compute.GenerateComputeBuffer(count * compute.SizeOf<state_t>())
 				};
+
+			state_t[]? state_buffer = new state_t[count];
+			for (int cx = 0; cx < count; cx++)
+			{
+				state_buffer[cx].lifetime.x = -1;
+			}
+			compute.SetComputeBufferData<state_t>(storage_buffer[0], 0, state_buffer);
+			compute.SetComputeBufferData<state_t>(storage_buffer[1], 0, state_buffer);
+
+			state_buffer = null;
+
 			element_buffer = compute.GenerateComputeBuffer(count * sizeof(uint));
-			genesis_buffer = compute.GenerateComputeBuffer(16 * compute.SizeOf<state_t>());
+			genesis_buffer = compute.GenerateComputeBuffer(count * compute.SizeOf<state_t>());
 			atomic_buffer = compute.GenerateAtomicBuffer(2);
 
 			compute.BindComputeBuffer(genesis_buffer, 2);
@@ -219,7 +228,7 @@ namespace Runtime.Graphics
 			GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
 			GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)TextureMagFilter.Nearest);
 			compute.Check();
-			GL.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba16f, 256, (int)number_of_slots, 0, PixelFormat.Rgba, PixelType.Byte, (nint)0);
+			GL.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba16f, 256, 2 * (int)number_of_slots, 0, PixelFormat.Rgba, PixelType.Byte, (nint)0);
 			compute.Check();
 		}
 		float t = 0;
@@ -239,12 +248,11 @@ namespace Runtime.Graphics
 			// update the time, used for generateing a particle for now
 
 			// Number of steps to take (one step is 10 ms)
-			int steps = Math.Clamp((int)(100 * ((float)Runtime.Calc.Time.deltaTime + time_to_compensate)),0, 20);
+			int steps = Math.Clamp((int)(0.5 + 100 * ((float)Runtime.Calc.Time.deltaTime + time_to_compensate)),0, 20);
 			// How many time is going to be simulator
 			float simulated_time = (float)steps / 100f;
 			// Time to compensate in the next loop
-			time_to_compensate += (float)Runtime.Calc.Time.deltaTime - simulated_time; 
-
+			time_to_compensate += (float)Runtime.Calc.Time.deltaTime - simulated_time;
 			// save the current vertexarray, to set it back later
 			int last_va = GL.GetInteger(GetPName.VertexArray);
 
@@ -256,8 +264,9 @@ namespace Runtime.Graphics
 			for (int step = 0; step < steps; step++)
 			{
 				uint space_left = count - GetActiveParticles(); // space left in the GPU particle buffer
-				uint particles_to_add = Math.Min((uint)queue.Count, Math.Min(16, space_left)); // Add a maximum of 16 particles per loop
-				
+				uint particles_to_add = Math.Min((uint)queue.Count, space_left); // Add a maximum of max_genesis_size particles per loop
+
+				state_t[] genesis_data = new state_t[particles_to_add];				
 				// queue some data for new particles to send to the GPU
 				for (int cx = 0; cx < particles_to_add; cx++)
 				{
@@ -278,7 +287,6 @@ namespace Runtime.Graphics
 				atomics_mirror[1] = 0;
 				// and send to the GPU
 				compute.SetAtomicBufferData(atomic_buffer, 0, atomics_mirror);
-
 				// run the shader
 				compute.Dispatch(count);
 				// ping-pong the in- and output buffers
@@ -291,29 +299,41 @@ namespace Runtime.Graphics
 		}
 		public void UpdateParticleType(ParticleType pt)
 		{
-			vec4[] buffer = new vec4[256];
+			vec4[] buffer1 = new vec4[256];
+			vec4[] buffer2 = new vec4[256];
 			for (int cx = 0; cx < 256; cx++)
 			{
-				float a = 3.1415264f * cx / 256;
-				buffer[cx].x = MathF.Sin(a);
-				buffer[cx].y = MathF.Cos(a);
-				buffer[cx].z = -MathF.Cos(a);
-				buffer[cx].w = 1 + 10 * MathF.Sin(a);
+				float a = (float)cx / 256;
+
+				Vector4 c = pt.GetColor(1f-a);
+				float s = pt.GetSize(1f - a);
+				buffer1[cx].x = c.X;
+				buffer1[cx].y = c.Y;
+				buffer1[cx].z = c.Z;
+				buffer1[cx].w = c.W;
+
+				buffer2[cx].x = s;
 			}
 			
-			GL.TexSubImage2D(TextureTarget.Texture2d, 0, 0, pt.slot, 256, 1, PixelFormat.Rgba, PixelType.Float, buffer);
+			GL.TexSubImage2D(TextureTarget.Texture2d, 0, 0, 2 * pt.slot, 256, 1, PixelFormat.Rgba, PixelType.Float, buffer1);
+			GL.TexSubImage2D(TextureTarget.Texture2d, 0, 0, 2 * pt.slot + 1, 256, 1, PixelFormat.Rgba, PixelType.Float, buffer2);
 		}
 	}
 
-	public class ParticleType
+	/// <summary>
+	/// 
+	/// </summary>
+	public abstract class ParticleType
 	{
-		public int slot = 0;
+		public int slot = -1;
 		public ParticleType() 
 		{
 			// Allocate a slot for the type
 			int s = Scene.main.GetParticleSystem().AllocateParticleTypeSlot();
 			if (s >= 0)
 				slot = s;
+			else
+				Logging.Debug.Warning("Could not allocate slot for particle type");
 		}
 		~ParticleType()
 		{
@@ -324,14 +344,15 @@ namespace Runtime.Graphics
 		{
 			return (float)slot;
 		}
-		public virtual float GetLifetime()
-		{
-			return 2f;
-		}
+
+		public abstract Vector4 GetColor(float age /* 0 - 1*/);
+		public abstract float GetSize(float age);
+		public abstract float GetLifetime();
+		public virtual float GetFriction() {return 0.0f; }
 	};
 
 	/// <summary>
-	/// Generatate a particle every 100 ms, just for testing
+	/// Interface for the particle system
 	/// </summary>
 	public class ParticleEmitter: IComponent
 	{
