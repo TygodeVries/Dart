@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
+using Runtime.Component.Core;
 using Runtime.Graphics.Shaders;
 using Runtime.Objects;
 using Runtime.Scenes;
@@ -53,6 +55,15 @@ namespace Runtime.Graphics
 		int property_texture = 0;
 		public override void Render()
 		{
+			int[] _viewport = new int[4];
+			unsafe
+			{
+				fixed (int* viewport = _viewport)
+				{
+					GL.GetIntegerv(GetPName.Viewport, viewport);
+				}
+			}
+
 			// activate our vertexArray
 			GL.BindVertexArray(vertexArray);
 			// Enables setting point sizes from a vertex program
@@ -62,6 +73,26 @@ namespace Runtime.Graphics
 			GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
 			shader?.Use();
+			if (null != Camera.main)
+			{
+				shader?.SetMatrix4("uView", Camera.main.GetViewMatrix());
+				shader?.SetMatrix4("uProjection", Camera.main.GetProjectionMatrix());
+			}
+			else
+			{
+				shader?.SetMatrix4("uView", Matrix4.Identity);
+				shader?.SetMatrix4("uProjection", Matrix4.Identity);
+			}
+			Transform? transform = GetComponent<Transform>();
+			if (null != transform)
+			{
+				shader?.SetMatrix4("uModel", transform.GetMatrix());
+			}
+			else
+			{
+				shader?.SetMatrix4("uModel", Matrix4.Identity);
+			}
+			GL.Uniform4i(1, _viewport[0], _viewport[1], _viewport[2], _viewport[3]);
 			// Buffer of particle states
 			GL.BindBuffer(BufferTarget.ArrayBuffer, storage_buffer![1-pingpong]);
 			compute.Check();
@@ -161,7 +192,7 @@ namespace Runtime.Graphics
 		/// <summary>
 		/// Add a particle to the queue, needs to be extended to be useful
 		/// </summary>
-		public void AddParticle(Vector3 x, Vector3 v, ParticleType type)
+		public void AddParticle(System.Numerics.Vector3 x, System.Numerics.Vector3 v, ParticleType type)
 		{
 			state_t item = new state_t();
 			item.position = new vec4(x.X, x.Y, x.Z);
@@ -305,7 +336,7 @@ namespace Runtime.Graphics
 			{
 				float a = (float)cx / 256;
 
-				Vector4 c = pt.GetColor(1f-a);
+				System.Numerics.Vector4 c = pt.GetColor(1f-a);
 				float s = pt.GetSize(1f - a);
 				buffer1[cx].x = c.X;
 				buffer1[cx].y = c.Y;
@@ -345,7 +376,7 @@ namespace Runtime.Graphics
 			return (float)slot;
 		}
 
-		public abstract Vector4 GetColor(float age /* 0 - 1*/);
+		public abstract System.Numerics.Vector4 GetColor(float age /* 0 - 1*/);
 		public abstract float GetSize(float age);
 		public abstract float GetLifetime();
 		public virtual float GetFriction() {return 0.0f; }
@@ -356,7 +387,7 @@ namespace Runtime.Graphics
 	/// </summary>
 	public class ParticleEmitter: IComponent
 	{
-		public void AddParticle(Vector3 position, Vector3 velocity, ParticleType type)
+		public void AddParticle(System.Numerics.Vector3 position, System.Numerics.Vector3 velocity, ParticleType type)
 		{
 			ParticleSystem? sys = Scene.main.GetParticleSystem();
 

@@ -57,7 +57,7 @@ namespace FeatureTestProject
 			public override float GetSize(float age)
 			{
 				float a = PI * age;
-				return (1 - age) * Sin(a) * 30;
+				return (1 - age) * Sin(a) * .3f;
 			}
 			public override float GetFriction()
 			{
@@ -78,7 +78,7 @@ namespace FeatureTestProject
 				float t = (float)num / 100 - 0.5f;
 				Vector3 v = new Vector3(1.25f, Sin(8f*t)/3, 0);
 				GetComponent<ParticleEmitter>()?.AddParticle(
-					new Vector3(-1, 0, 0),
+					new Vector3(0, 0, -10),
 					v,
 					pt!
 					);
