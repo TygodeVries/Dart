@@ -10,9 +10,12 @@ using System.Runtime.InteropServices;
 
 namespace Runtime.Graphics
 {
-	public class ParticleSystem : Renderers.Renderer
+	/// <summary>
+	/// Manager for the particle system, create this on the current scene before using the particle system
+	/// </summary>
+	public class ParticleSystemManager : Renderers.Renderer, IUpdatableManager
 	{
-		~ParticleSystem()
+		~ParticleSystemManager()
 		{
 			if (null != storage_buffer)
 			{
@@ -213,12 +216,12 @@ namespace Runtime.Graphics
 			GL.BindVertexArray(vertexArray);
 
 			// load some shaders
-			shader = ShaderProgram.FromFile("assets/shaders/fixed.vert", "assets/shaders/fixed.frag");
+			shader = ShaderProgram.FromFile("assets/shaders/plugin.particlesystem/particle_draw.vert", "assets/shaders/plugin.particlesystem/particle_draw.frag");
 
 			Runtime.Graphics.RenderCanvas.main?.GetGraphicsPipeline()?.AddRenderer(this);
 
 			// load compute shader
-			compute = ComputeShaderProgram.FromFile("assets/shaders/particle_step.compute");
+			compute = ComputeShaderProgram.FromFile("assets/shaders/plugin.particlesystem/particle_step.compute");
 			compute.Use();
 			// allocate some buffers
 			storage_buffer = new int[2]
@@ -360,16 +363,20 @@ namespace Runtime.Graphics
 		public ParticleType() 
 		{
 			// Allocate a slot for the type
-			int s = Scene.main.GetParticleSystem().AllocateParticleTypeSlot();
-			if (s >= 0)
-				slot = s;
+			int? s = Scene.main?.GetManager<ParticleSystemManager>()?.AllocateParticleTypeSlot();
+			if (null != s)
+				if (s >= 0)
+					slot = (int)s;
+				else
+					Logging.Debug.Warning("Could not allocate slot for particle type");
 			else
-				Logging.Debug.Warning("Could not allocate slot for particle type");
+				Logging.Debug.Error("Could not allocate a slot in the ParticleSystem");
 		}
 		~ParticleType()
 		{
 			// Deallocate the slot
-			Scene.main.GetParticleSystem().FreeParticleTypeSlot(slot);
+			if (slot >= 0)
+				Scene.main.GetManager<ParticleSystemManager>()?.FreeParticleTypeSlot(slot);
 		}
 		public float GetSlot()
 		{
@@ -389,7 +396,7 @@ namespace Runtime.Graphics
 	{
 		public void AddParticle(System.Numerics.Vector3 position, System.Numerics.Vector3 velocity, ParticleType type)
 		{
-			ParticleSystem? sys = Scene.main.GetParticleSystem();
+			ParticleSystemManager? sys = Scene.main.GetManager<ParticleSystemManager>();
 
 			if (null != sys)
 			{

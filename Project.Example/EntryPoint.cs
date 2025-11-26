@@ -24,6 +24,9 @@ namespace FeatureTestProject
 		{
 
 			GameObject emitter;
+
+			Runtime.Scenes.Scene.main.AddManager(new ParticleSystemManager());
+
 			Runtime.Scenes.Scene.main.Instantiate(emitter = 
 				new GameObjectFactory()
 					.AddComponent<ParticleEmitter>()
@@ -36,7 +39,6 @@ namespace FeatureTestProject
 			GuiWindow.Enable(new FireWindow(emitter));
 			Runtime.Scenes.Scene.main.Instantiate(
 				new GameObjectFactory().AddComponent<Camera>().Build());
-
 		}
 	}
 	class ParticleTest: IComponent
@@ -68,7 +70,7 @@ namespace FeatureTestProject
 		public override void OnLoad()
 		{
 			pt = new MyParticleType();
-			Scene.main.GetParticleSystem().UpdateParticleType(pt);
+			Scene.main.GetManager<ParticleSystemManager>()?.UpdateParticleType(pt);
 		}
 		int num = 0;
 		public override void Update()
@@ -76,7 +78,7 @@ namespace FeatureTestProject
 			if (num>0)
 			{
 				float t = (float)num / 100 - 0.5f;
-				Vector3 v = new Vector3(1.25f, Sin(8f*t)/3, 0);
+				Vector3 v = new Vector3(1.25f, Sin(8f*t)/3, Cos(8f*t)/3);
 				GetComponent<ParticleEmitter>()?.AddParticle(
 					new Vector3(0, 0, -10),
 					v,

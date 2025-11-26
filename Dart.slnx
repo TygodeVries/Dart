@@ -16,6 +16,7 @@
   </Folder>
   <Folder Name="/Plugins/">
     <Project Path="Plugin.DearImGUI\Plugin.DearImGui.csproj" />
+    <Project Path="Plugin.ParticleSystem\Plugin.ParticleSystem.csproj" Type="Classic C#" />
     <Project Path="Plugin.Windows.audio\Plugin.Windows.Audio.vcxproj">
       <BuildDependency Project="Runtime\Runtime.csproj" />
     </Project>

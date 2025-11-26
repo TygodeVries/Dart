@@ -12,12 +12,27 @@ namespace Runtime.Scenes
 {
 	public class Scene
 	{
+		List<IManager> managers = new List<IManager>();
 		List<GameObject> gameObjects = new List<GameObject>();
 		public void Instantiate(GameObject game)
 		{
 			gameObjects.Add(game);
 			game.OnLoad();
 		}
+		public void AddManager<T>(T manager) where T : IManager
+		{
+			managers.Add(manager);
+			manager.OnLoad();
+		}
+		public T? GetManager<T>() where T : IManager
+		{
+            foreach (IManager item in managers)
+            {
+                if (item.GetType() == typeof(T))
+						return (T)item;
+            }
+				return default(T);
+        }
 
 		LightManager defaultLightManager = new LightManager();
 		public LightManager GetLightManager()
@@ -28,17 +43,6 @@ namespace Runtime.Scenes
 		// Implicitly make the main scene an empty scene
 		public static Scene main = new Scene();
 
-		public ParticleSystem? particleSystem = null;
-
-		public ParticleSystem GetParticleSystem()
-		{
-			if (null == particleSystem)
-			{
-				particleSystem = new ParticleSystem();
-				particleSystem.OnLoad();
-			}
-			return particleSystem;
-		}
 		public PhysicsSolver physicsSolver = new PhysicsSolver();
 		public Scene()
 		{
@@ -46,9 +50,10 @@ namespace Runtime.Scenes
 
 		public void Update()
 		{
-			if (null != particleSystem)
+			foreach (IManager manager in managers)
 			{
-				particleSystem.Update();
+				if (manager is IUpdatableManager updatable)
+					updatable.Update();
 			}
 			foreach (GameObject obj in gameObjects)
 			{
