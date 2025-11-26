@@ -10,6 +10,7 @@ using System.Numerics;
 
 using static System.MathF;
 using Project.Example.Windows;
+using Runtime.Component.Test;
 
 namespace FeatureTestProject
 {
@@ -31,6 +32,8 @@ namespace FeatureTestProject
 				new GameObjectFactory()
 					.AddComponent<ParticleEmitter>()
 					.AddComponent<ParticleTest>()
+					.AddComponent<TestCameraControls>()
+					.AddComponent<Transform>()
 					.Build()
 			);
 
@@ -71,19 +74,42 @@ namespace FeatureTestProject
 		{
 			pt = new MyParticleType();
 			Scene.main.GetManager<ParticleSystemManager>()?.UpdateParticleType(pt);
+			Transform? tr = GetComponent<Transform>();
+			tr.position.Z = -10;
 		}
 		int num = 0;
+		double t = 1;
+		System.Numerics.Vector3 TransVec(OpenTK.Mathematics.Vector3 inv)
+		{
+			return new System.Numerics.Vector3(inv.X, inv.Y, inv.Z);
+		}
 		public override void Update()
 		{
+			t -= Runtime.Calc.Time.deltaTime;
+			if (t < 0)
+			{
+				num += 1;
+				t = 1;
+			}
 			if (num>0)
 			{
 				float t = (float)num / 100 - 0.5f;
-				Vector3 v = new Vector3(1.25f, Sin(8f*t)/3, Cos(8f*t)/3);
-				GetComponent<ParticleEmitter>()?.AddParticle(
-					new Vector3(0, 0, -10),
-					v,
-					pt!
-					);
+				Transform? tr = GetComponent<Transform>();
+				if (null != tr)
+				{
+					Vector3 v = new Vector3(0, 0, 1.25f);
+
+					
+					OpenTK.Mathematics.Matrix4 m = tr.GetMatrix();
+					OpenTK.Mathematics.Vector4 otk_v = new OpenTK.Mathematics.Vector4(v.X, v.Y, v.Z, 0);
+					OpenTK.Mathematics.Vector4 otk_vv = m * otk_v;
+					v = TransVec(otk_vv.Xyz);
+					GetComponent<ParticleEmitter>()?.AddParticle(
+						TransVec(tr.position),
+						v,
+						pt!
+						);
+				}
 				num--;
 			}
 		}

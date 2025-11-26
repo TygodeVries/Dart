@@ -117,8 +117,15 @@ namespace Runtime.Graphics
 
 			GL.ActiveTexture(TextureUnit.Texture0);
 			GL.BindTexture(TextureTarget.Texture2d, property_texture);
+			
+			// save current value of depthwrite mask
+			bool depth_mask = GL.GetBoolean(GetPName.DepthWritemask);
+			
+			// disable writing to the zbuffer
+			GL.DepthMask(false);
 			// and go for it! Draw the stuff
 			GL.DrawElements(PrimitiveType.Points, (int)atomics_mirror[1], DrawElementsType.UnsignedInt, 0);
+			GL.DepthMask(depth_mask);
 			compute.Check();
 			GL.BindVertexArray(0);
 		}
@@ -215,7 +222,7 @@ namespace Runtime.Graphics
 			vertexArray = GL.CreateVertexArray();
 			GL.BindVertexArray(vertexArray);
 
-			// load some shaders
+			// load some shaders, TODO: these files need to be copied from the plugin to the project assests folder
 			shader = ShaderProgram.FromFile("assets/shaders/plugin.particlesystem/particle_draw.vert", "assets/shaders/plugin.particlesystem/particle_draw.frag");
 
 			Runtime.Graphics.RenderCanvas.main?.GetGraphicsPipeline()?.AddRenderer(this);
