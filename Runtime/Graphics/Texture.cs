@@ -1,17 +1,8 @@
-﻿using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
+﻿using OpenTK.Graphics.OpenGL;
 using Runtime.Logging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Runtime.Graphics
 {
@@ -38,7 +29,7 @@ namespace Runtime.Graphics
             }
 
             Image<Rgba32> image = Image.Load<Rgba32>(path);
-            
+
             int newWidth = image.Width;
             int newHeight = image.Height;
 
@@ -59,7 +50,7 @@ namespace Runtime.Graphics
             image.CopyPixelDataTo(pixels);
 
             Texture texture = new Texture(image.Width, image.Height, pixels);
-            if(upload) texture.Upload();
+            if (upload) texture.Upload();
 
             image.Dispose();
             return texture;
@@ -67,7 +58,6 @@ namespace Runtime.Graphics
 
         public void Upload()
         {
-            isUploaded = true;
             Handle = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2d, Handle);
             GL.TexParameterf(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
@@ -78,6 +68,8 @@ namespace Runtime.Graphics
 
             if (GL.GetError() != ErrorCode.NoError)
                 Debug.Log($"OpenGL has an error: {GL.GetError()}");
+
+            isUploaded = true;
         }
 
         public void Use(TextureUnit textureUnit)

@@ -105,6 +105,7 @@ namespace Runtime.Graphics
 
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
+            MainThread.Update();
             if (args.Time < 0.2f)
             {
                 Time.deltaTime = args.Time;
