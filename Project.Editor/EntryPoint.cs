@@ -21,7 +21,17 @@ namespace Editor
         public static void Main()
         {
             Debug.Log("Loading Editor...");
-            GuiWindow.Enable(new NavBarUI());
+   			string[] args = Environment.GetCommandLineArgs();
+
+         for (int cx = 0; cx < args.Length - 1; cx++)
+         {
+            if (args[cx] == "-p")
+            {
+               Project.Editor.Editor.projectPath = args[cx + 1];
+            }
+         }
+
+	   		GuiWindow.Enable(new NavBarUI());
             GuiWindow.Enable(new ProjectWindow());
             GuiWindow.Enable(new InspectorWindow());
 
