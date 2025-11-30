@@ -33,6 +33,10 @@ namespace Editor
             {
                Project.Editor.Editor.projectPath = args[cx + 1];
             }
+            if (args[cx] == "-e")
+            {
+               Project.Editor.Editor.exeLocation = args[cx + 1];
+            }
          }
 
 	   		GuiWindow.Enable(new NavBarUI());
