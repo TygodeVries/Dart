@@ -1,14 +1,8 @@
-﻿using OpenTK.Mathematics;
-using OpenTK.Windowing.GraphicsLibraryFramework;
-using Runtime.Component.Core;
+﻿using OpenTK.Windowing.GraphicsLibraryFramework;
 using Runtime.Calc;
+using Runtime.Component.Core;
 using Runtime.Input;
 using Runtime.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Runtime.Component.Test
 {

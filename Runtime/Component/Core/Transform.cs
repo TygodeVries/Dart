@@ -1,10 +1,5 @@
 ﻿using OpenTK.Mathematics;
 using Runtime.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Runtime.Component.Core
 {
@@ -35,15 +30,17 @@ namespace Runtime.Component.Core
                 MathHelper.DegreesToRadians(rotation.Y),
                 MathHelper.DegreesToRadians(rotation.Z));
 
-            float pitch = radians.X;
+            // Yaw (Y), Pitch (X)
             float yaw = radians.Y;
+            float pitch = radians.X;
 
             float x = MathF.Cos(pitch) * MathF.Sin(yaw);
-            float y = -MathF.Sin(pitch);
+            float y = MathF.Sin(pitch);
             float z = MathF.Cos(pitch) * MathF.Cos(yaw);
 
-            return new Vector3(x, y, z);
+            return new Vector3(x, y, z).Normalized();
         }
+
 
         /// <summary>
         /// The direction of the right side
@@ -89,15 +86,15 @@ namespace Runtime.Component.Core
                 MathHelper.DegreesToRadians(rotation.Y),
                 MathHelper.DegreesToRadians(rotation.Z));
 
-            Matrix4 rotX = Matrix4.CreateRotationX(radians.X);
-            Matrix4 rotY = Matrix4.CreateRotationY(radians.Y);
-            Matrix4 rotZ = Matrix4.CreateRotationZ(radians.Z);
-
-            Matrix4 rotationMatrix = rotZ * rotX * rotY;
+            Matrix4 rotationMatrix =
+                Matrix4.CreateRotationY(radians.Y) *
+                Matrix4.CreateRotationX(radians.X) *
+                Matrix4.CreateRotationZ(radians.Z);
 
             Matrix4 translationMatrix = Matrix4.CreateTranslation(position);
 
             return rotationMatrix * translationMatrix;
         }
+
     }
 }

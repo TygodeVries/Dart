@@ -1,6 +1,8 @@
 ﻿using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Inspectors.Inspections;
+using Runtime.Calc;
 using Runtime.Graphics;
+using Runtime.Logging;
 
 namespace Project.Editor.UI.FileSystem.FileInspectors
 {
@@ -13,7 +15,9 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
         }
 
         Dictionary<string, Texture> textureCache = new Dictionary<string, Texture>();
-        List<string> loadingTextures = new List<string>();
+        HashSet<string> loadingTextures = new HashSet<string>();
+
+        bool isLoadingTexture;
         public override void ClearCache()
         {
             textureCache = new Dictionary<string, Texture>();
@@ -21,47 +25,41 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
 
         public override Texture GetIcon()
         {
-            if (loadingTextures.Contains(filepath))
-                return DefaultsTextures.GetLoadingTexture();
-
-            if (textureCache.ContainsKey(filepath))
+            string taskPath = (string)filepath.Clone();
+            if (textureCache.TryGetValue(taskPath, out var tex))
             {
-                if (!textureCache[filepath].isUploaded)
-                    textureCache[filepath].Upload(); // We need to upload it on the main thread, otherwise OpenGL will throw an error
-                return textureCache[filepath];
+                return tex;
             }
 
-            // Load async
+            lock (loadingTextures)
+            {
+                if (loadingTextures.Contains(taskPath))
+                    return DefaultsTextures.GetLoadingTexture();
+
+                loadingTextures.Add(taskPath);
+            }
+
             Task.Run(() =>
             {
-                lock (loadingTextures)
-                {
-                    loadingTextures.Add(filepath);
-                }
+                Debug.Log($"Now loading: {taskPath}");
 
-                Texture texture = Texture.LoadFromPng(filepath, 100, 100, false);
+                var texture = Texture.LoadFromPng(taskPath, 100, 100, false);
 
                 lock (textureCache)
+                    textureCache[taskPath] = texture;
+
+                MainThread.Run(() =>
                 {
-                    // I don't know why this is happening some times.
-                    if (textureCache.ContainsKey(filepath))
-                    {
-                        textureCache[filepath] = texture; // Override
-                        return;
-                    }
-                    else
-                    {
-                        textureCache.Add(filepath, texture);
-                    }
-                }
+                    if (!texture.isUploaded)
+                        texture.Upload();
+                });
 
                 lock (loadingTextures)
-                {
-                    loadingTextures.RemoveAll(x => x == filepath);
-                }
+                    loadingTextures.Remove(taskPath);
             });
 
-            return DefaultsTextures.GetFallbackTexture();
+            return DefaultsTextures.GetLoadingTexture();
         }
+
     }
 }

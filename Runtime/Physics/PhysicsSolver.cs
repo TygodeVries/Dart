@@ -34,21 +34,21 @@ namespace Runtime.Physics
         /// <returns>The result if something was hit, null if nothing was hit</returns>
         public RaycastResult? ShootRaycast(Raycast raycast)
         {
-            float distance = -1;
+            float closestDistance = -1;
             ICollider? closestCollider = null;
 
             foreach (ICollider collider in colliders)
             {
-                float newDistance = collider.Raycast(raycast);
+                float colliderDistance = collider.Raycast(raycast);
 
                 // We missed!
-                if (distance < 0)
+                if (colliderDistance < 0)
                     continue;
 
-                if (newDistance < distance)
+                if (colliderDistance < closestDistance || closestDistance < 0)
                 {
                     closestCollider = collider;
-                    distance = newDistance;
+                    closestDistance = colliderDistance;
                 }
             }
 
@@ -58,9 +58,9 @@ namespace Runtime.Physics
             }
 
             return new RaycastResult(
-                distance: distance!,
+                distance: closestDistance!,
                 collider: closestCollider!,
-                hit: (raycast.position + (raycast.direction * distance))!
+                hit: (raycast.position + (raycast.direction * closestDistance))!
             );
         }
     }

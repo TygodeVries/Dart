@@ -26,7 +26,7 @@ namespace Runtime.Component.Physics
         /// <summary>
         /// The size of the bouding box
         /// </summary>
-        public Vector3 Size;
+        public Vector3 size;
 
         /// <summary>
         /// If a spesific point overlaps the collider
@@ -36,9 +36,9 @@ namespace Runtime.Component.Physics
         public override bool HasOverlap(Vector3 point)
         {
             Vector3 center = GetCenter();
-            return point.X < center.X + (Size.X * 0.5f) && point.X > center.X - (Size.X * 0.5f) &&
-                point.Y < center.Y + (Size.Y * 0.5f) && point.Y > center.Y - (Size.Y * 0.5f) &&
-                point.Z < center.Z + (Size.Z * 0.5f) && point.Z > center.Z - (Size.Z * 0.5f);
+            return point.X < center.X + (size.X * 0.5f) && point.X > center.X - (size.X * 0.5f) &&
+                point.Y < center.Y + (size.Y * 0.5f) && point.Y > center.Y - (size.Y * 0.5f) &&
+                point.Z < center.Z + (size.Z * 0.5f) && point.Z > center.Z - (size.Z * 0.5f);
         }
 
         /// <summary>
@@ -51,8 +51,8 @@ namespace Runtime.Component.Physics
             Vector3 centerA = GetCenter();
             Vector3 centerB = ((AABBBoxCollider)other).GetCenter();
 
-            Vector3 sizeA = Size * 0.5f;
-            Vector3 sizeB = ((AABBBoxCollider)other).Size * 0.5f;
+            Vector3 sizeA = size * 0.5f;
+            Vector3 sizeB = ((AABBBoxCollider)other).size * 0.5f;
 
             bool overlapX = centerA.X - sizeA.X < centerB.X + sizeB.X &&
                             centerA.X + sizeA.X > centerB.X - sizeB.X;
@@ -73,42 +73,48 @@ namespace Runtime.Component.Physics
         /// <returns></returns>
         public override float Raycast(Raycast ray)
         {
-            Vector3 boxMin = -(Size / 2);
-            Vector3 boxMax = Size / 2;
-
             Transform? transform = GetComponent<Transform>();
+            Vector3 center = transform?.position ?? Vector3.Zero;
+            Vector3 min = center - (size / 2);
+            Vector3 max = center + (size / 2);
 
-            if (transform != null)
+            float tmin = float.NegativeInfinity;
+            float tmax = float.PositiveInfinity;
+
+            for (int i = 0; i < 3; i++)
             {
-                boxMax += transform.position;
-                boxMax += transform.position;
+                float origin = ray.position[i];
+                float dir = ray.direction[i];
+                float slabMin = min[i];
+                float slabMax = max[i];
+
+                if (MathF.Abs(dir) < 0.0001f)
+                {
+                    if (origin < slabMin || origin > slabMax)
+                        return -1;
+                }
+                else
+                {
+                    float t1 = (slabMin - origin) / dir;
+                    float t2 = (slabMax - origin) / dir;
+
+                    if (t1 > t2)
+                    {
+                        float tmp = t1;
+                        t1 = t2;
+                        t2 = tmp;
+                    }
+
+                    tmin = MathF.Max(tmin, t1);
+                    tmax = MathF.Min(tmax, t2);
+
+                    if (tmin > tmax)
+                        return -1;
+                }
             }
 
-            float t1 = (boxMin.X - ray.position.X) / ray.direction.X;
-            float t2 = (boxMax.X - ray.position.X) / ray.direction.X;
-            float t3 = (boxMin.Y - ray.position.Y) / ray.direction.Y;
-            float t4 = (boxMax.Y - ray.position.Y) / ray.direction.Y;
-            float t5 = (boxMin.Z - ray.position.Z) / ray.direction.Z;
-            float t6 = (boxMax.Z - ray.position.Z) / ray.direction.Z;
-
-            float tmin = MathF.Max(MathF.Max(MathF.Min(t1, t2), MathF.Min(t3, t4)), MathF.Min(t5, t6));
-            float tmax = MathF.Min(MathF.Min(MathF.Max(t1, t2), MathF.Max(t3, t4)), MathF.Max(t5, t6));
-
-            if (tmax < 0)
-            {
-                return -1;
-            }
-
-            if (tmin > tmax)
-            {
-                return -1;
-            }
-
-            if (tmin < 0f)
-            {
-                return tmax;
-            }
-            return tmin;
+            return tmin >= 0 ? tmin : tmax;
         }
+
     }
 }
