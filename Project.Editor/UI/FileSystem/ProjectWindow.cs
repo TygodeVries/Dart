@@ -12,6 +12,11 @@ namespace Project.Editor.UI.FileSystem
 {
     internal class ProjectWindow : GuiWindow
     {
+        public override string GetName()
+        {
+            return "Project";
+        }
+
         string[] hiddenFiles = new string[]
         {
             ".meta",
@@ -35,8 +40,6 @@ namespace Project.Editor.UI.FileSystem
 
             // Add a back button
             string currentPath = Path.Combine(Editor.projectPath, browsePath);
-
-            ImGui.Begin("Project");
 
             if (ImGui.Button("..."))
             {
@@ -141,7 +144,6 @@ namespace Project.Editor.UI.FileSystem
             }
 
             ImGui.Columns(1); // Reset
-            ImGui.End();
         }
     }
 }

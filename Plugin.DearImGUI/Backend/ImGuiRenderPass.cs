@@ -58,6 +58,21 @@ namespace Runtime.DearImGUI.Backend
         public static List<GuiWindow> guiWindows = new List<GuiWindow>();
         public override void Pass()
         {
+            foreach (GuiWindow guiWindow in GuiWindow.windowsToOpen)
+            {
+                guiWindow.InitId();
+                guiWindows.Add(guiWindow);
+            }
+
+            GuiWindow.windowsToOpen.Clear();
+
+            while (GuiWindow.windowsToClose.Count > 0)
+            {
+                guiWindows.Remove(GuiWindow.windowsToClose.Dequeue());
+            }
+
+            GuiWindow.windowsToClose.Clear();
+
             InputData();
 
             ImguiImplOpenGL3.NewFrame();
@@ -65,11 +80,16 @@ namespace Runtime.DearImGUI.Backend
 
             foreach (GuiWindow guiWindow in guiWindows)
             {
+                if (guiWindow.WriteHeaderAndFooter)
+                    guiWindow.Begin();
+
                 guiWindow.Render();
+
+                if (guiWindow.WriteHeaderAndFooter)
+                    ImGui.End();
             }
 
             ImGui.Render();
-
 
             GL.Viewport(0, 0, RenderCanvas.main!.FramebufferSize.X, RenderCanvas.main!.FramebufferSize.Y);
 

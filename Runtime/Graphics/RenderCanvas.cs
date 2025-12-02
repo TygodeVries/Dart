@@ -80,9 +80,9 @@ namespace Runtime.Graphics
 
         protected override void OnResize(ResizeEventArgs e)
         {
-            base.OnResize(e);
             Game.width = e.Width;
             Game.height = e.Height;
+            base.OnResize(e);
         }
 
 

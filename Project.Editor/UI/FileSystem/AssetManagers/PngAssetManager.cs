@@ -9,9 +9,10 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
     [AssetManager(".png")]
     public class PngAssetManager : AssetManager
     {
+        PngAssetInspection inspection = new PngAssetInspection();
         public override Inspection GetInspection()
         {
-            return new PngAssetInspection();
+            return inspection;
         }
 
         Dictionary<string, Texture> textureCache = new Dictionary<string, Texture>();

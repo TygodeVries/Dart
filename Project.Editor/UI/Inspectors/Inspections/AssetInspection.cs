@@ -17,7 +17,13 @@ namespace Project.Editor.UI.Inspectors.Inspections
         {
             filepath = assetPath;
             this.metaData = MetaData.Get(assetPath);
+            Loaded();
         }
+
+        /// <summary>
+        /// Called when a filepath is set
+        /// </summary>
+        public virtual void Loaded() { }
 
         /// <summary>
         /// Returns the active file path

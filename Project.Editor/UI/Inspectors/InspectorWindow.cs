@@ -8,6 +8,11 @@ namespace Project.Editor.UI.Inspectors
     /// </summary>
     internal class InspectorWindow : GuiWindow
     {
+        public override string GetName()
+        {
+            return "Inspector";
+        }
+
         private Inspection? inspection;
 
         /// <summary>
@@ -57,8 +62,6 @@ namespace Project.Editor.UI.Inspectors
         /// </summary>
         public override void Render()
         {
-            ImGui.Begin("Inspector");
-
             if (inspection != null)
             {
                 ImGui.Text($"Handled by: {inspection.GetType().Name}");
@@ -69,7 +72,6 @@ namespace Project.Editor.UI.Inspectors
             {
                 ImGui.Text("Hmm, the should be more here...");
             }
-            ImGui.End();
         }
     }
 }

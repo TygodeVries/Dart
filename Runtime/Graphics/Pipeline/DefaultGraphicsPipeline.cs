@@ -75,7 +75,6 @@ namespace Runtime.Graphics.Pipeline
                 // Set to camera background color   
                 GL.ClearColor(Camera.main.backgroundColor.X, Camera.main.backgroundColor.Y, Camera.main.backgroundColor.Z, 1);
                 Camera renderCamera = Camera.main;
-                renderCamera.backgroundColor = new Vector3();
                 view = renderCamera.GetViewMatrix();
                 projection = renderCamera.GetProjectionMatrix();
             }

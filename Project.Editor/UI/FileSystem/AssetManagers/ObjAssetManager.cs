@@ -16,6 +16,11 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
     [AssetManager(".obj")]
     public class ObjAssetManager : AssetManager
     {
+        ObjAssetInspection inspection = new ObjAssetInspection();
+        public override Inspection GetInspection()
+        {
+            return inspection;
+        }
 
         Texture icon;
         public ObjAssetManager()
@@ -25,6 +30,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
 
             // Load a default shader
             material = new Material(ShaderProgram.FromFile("assets/shaders/previews/model_untextured.vert", "assets/shaders/previews/model_untextured.frag"));
+            material.SetVector3("tintColor", new OpenTK.Mathematics.Vector3(1, 1, 1));
         }
 
         public override Texture GetIcon()
@@ -43,9 +49,11 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
                 return;
             }
 
-
+            Debug.Log("Creating model preview...");
 
             Scene.Load(new Scene());
+
+            Debug.Log("Creating display object...");
             Scene.main.Instantiate(new GameObjectFactory()
                 .AddComponent(new MeshRenderer(material)
                 {
@@ -55,11 +63,14 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
                 .AddComponent(new RotationPreview())
                 .Build());
 
+            Debug.Log("Creating Camera...");
             Camera sceneCamera = new Camera();
             sceneCamera.SetAsMain();
 
-            float backgroundGrayness = 30;
-            sceneCamera.backgroundColor = new OpenTK.Mathematics.Vector3(backgroundGrayness / 255f, backgroundGrayness / 255f, backgroundGrayness / 255f);
+            Debug.Log("Setting background...");
+
+
+            sceneCamera.backgroundColor = Colors.ModelPreviewBackground;
 
             Scene.main.Instantiate(new GameObjectFactory()
                 .AddComponent(new Transform()
@@ -70,11 +81,6 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
                 .AddComponent(new CameraPreview())
                 .Build());
 
-        }
-
-        public override Inspection GetInspection()
-        {
-            return new DefaultAssetInspection();
         }
     }
 }
