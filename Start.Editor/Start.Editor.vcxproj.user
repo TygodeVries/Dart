@@ -4,19 +4,19 @@
     <LocalDebuggerCommand>$(SolutionDir)Assets.Editor\bin\Runtime.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
-    <LocalDebuggerCommandArguments>Assets.Editor</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>Assets.Editor -p $(SolutionDir)assets.example -e $(SolutionDir)Assets.Editor\bin\Runtime.exe</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerCommand>$(SolutionDir)Assets.Editor\bin\Runtime.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
-    <LocalDebuggerCommandArguments>Assets.Editor</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>Assets.Editor -p $(SolutionDir)assets.example -e $(SolutionDir)Assets.Editor\bin\Runtime.exe</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerCommand>$(SolutionDir)Assets.Editor\bin\Runtime.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
-    <LocalDebuggerCommandArguments>Assets.Editor</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>Assets.Editor -p $(SolutionDir)assets.example -e $(SolutionDir)Assets.Editor\bin\Runtime.exe</LocalDebuggerCommandArguments>
     <LocalDebuggerCommandArgumentsHistory>Assets.Editor|</LocalDebuggerCommandArgumentsHistory>
     <LocalDebuggerDebuggerType>ManagedCore</LocalDebuggerDebuggerType>
   </PropertyGroup>
@@ -24,6 +24,6 @@
     <LocalDebuggerCommand>$(SolutionDir)Assets.Editor\bin\Runtime.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
-    <LocalDebuggerCommandArguments>Assets.Editor</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>Assets.Editor -p $(SolutionDir)assets.example -e $(SolutionDir)Assets.Editor\bin\Runtime.exe</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

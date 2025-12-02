@@ -34,10 +34,20 @@ namespace Project.Editor.UI.FileSystem
         string browsePath = "assets";
         public override void Render()
         {
-            // Get all files we need to draw
-            string[] directories = Directory.GetDirectories(Path.Combine(Editor.projectPath, browsePath));
-            string[] files = Directory.GetFiles(Path.Combine(Editor.projectPath, browsePath));
+         // Get all files we need to draw
+         string[] directories;
+         string[] files;
+         try
+         {
 
+            directories = Directory.GetDirectories(Path.Combine(Editor.projectPath, browsePath));
+            files = Directory.GetFiles(Path.Combine(Editor.projectPath, browsePath));
+         }
+         catch (Exception e)
+         {
+            Debug.Error("Could not open directory: " + e.Message);
+            return;
+         }
             // Add a back button
             string currentPath = Path.Combine(Editor.projectPath, browsePath);
 
