@@ -107,7 +107,7 @@ namespace Project.Editor.Data
             }
             catch (Exception e)
             {
-                Debug.Error("Failed to save meta data for: " + path);
+                Debug.Error("Failed to save meta data for: " + path + " because " + e);
                 InspectorWindow.GetActive().SetInspection(null);
             }
         }

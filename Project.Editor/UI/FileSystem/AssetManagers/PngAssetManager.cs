@@ -18,7 +18,6 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
         Dictionary<string, Texture> textureCache = new Dictionary<string, Texture>();
         HashSet<string> loadingTextures = new HashSet<string>();
 
-        bool isLoadingTexture;
         public override void ClearCache()
         {
             textureCache = new Dictionary<string, Texture>();
@@ -26,7 +25,7 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
 
         public override Texture GetIcon()
         {
-            string taskPath = (string)filepath.Clone();
+            string taskPath = (string)filepath!.Clone();
             if (textureCache.TryGetValue(taskPath, out var tex))
             {
                 return tex;

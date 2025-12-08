@@ -1,12 +1,15 @@
 ﻿using ImGuiNET;
 using Project.Editor.Data;
+using Runtime.Calc;
 using Runtime.Graphics.Materials;
+using Runtime.Graphics.Shaders;
+using System.Numerics;
 
 namespace Project.Editor.UI.Inspectors.Inspections
 {
     internal class MaterialAssetInspection : AssetInspection
     {
-        MaterialData materialData;
+        MaterialData? materialData;
         public override void Open()
         {
 
@@ -19,7 +22,6 @@ namespace Project.Editor.UI.Inspectors.Inspections
             string[] vertexShaders = AssetDatabase.GetAllAssetsOfType(".vert").ToArray();
             string[] fragmentShaders = AssetDatabase.GetAllAssetsOfType(".frag").ToArray();
 
-            // Draw UI
 
             // Get the current vertex shader
             int current = vertexShaders.ToList().IndexOf(materialData.VertexShader);
@@ -27,14 +29,38 @@ namespace Project.Editor.UI.Inspectors.Inspections
                 current = 0;
 
             // Draw vertex UI
-            if (ImGui.BeginCombo("Vertex Shader", Path.GetRelativePath(Editor.projectPath, vertexShaders[current])))
+            RenderShaderSelector("Vertex Shader", vertexShaders, current, true);
+
+            string currentVertexShader = vertexShaders[current];
+
+            // Get current fragment shader
+            current = fragmentShaders.ToList().IndexOf(materialData.FragmentShader);
+            if (current == -1)
+                current = 0;
+
+            // Draw fragment UI
+            RenderShaderSelector("Fragment Shader", fragmentShaders, current, false);
+
+            string currentFragmentShader = fragmentShaders[current];
+
+            RenderFields(currentVertexShader, currentFragmentShader, materialData);
+        }
+
+        private void RenderShaderSelector(string title, string[] shaders, int current, bool writeToVertex)
+        {
+            if (ImGui.BeginCombo(title, Path.GetRelativePath(Editor.projectPath, shaders[current])))
             {
-                for (int i = 0; i < vertexShaders.Length; i++)
+                for (int i = 0; i < shaders.Length; i++)
                 {
-                    if (ImGui.Selectable(Path.GetRelativePath(Editor.projectPath, vertexShaders[i]), i == current))
+                    if (ImGui.Selectable(Path.GetRelativePath(Editor.projectPath, shaders[i]), i == current))
                     {
                         current = i;
-                        materialData.VertexShader = vertexShaders[i];
+
+                        if (writeToVertex)
+                            materialData.VertexShader = shaders[i];
+                        else
+                            materialData.FragmentShader = shaders[i];
+
                         materialData.Save();
                         AssetDatabase.Refresh();
                     }
@@ -42,27 +68,75 @@ namespace Project.Editor.UI.Inspectors.Inspections
 
                 ImGui.EndCombo();
             }
+        }
 
-            // Get current fragment shader
-            current = fragmentShaders.ToList().IndexOf(materialData.FragmentShader);
-            if (current == -1)
-                current = 0;
+        private void RenderFields(string vertexShader, string fragmentShader, MaterialData materialData)
+        {
+            ShaderProgram shaderProgram = ShaderProgram.FromFile(vertexShader, fragmentShader);
 
-
-            if (ImGui.BeginCombo("Fragment Shader", Path.GetRelativePath(Editor.projectPath, fragmentShaders[current])))
+            int fieldindex = 0;
+            foreach (Uniform uniform in shaderProgram.GetUniforms())
             {
-                for (int i = 0; i < fragmentShaders.Length; i++)
+                fieldindex++;
+                if (!uniform.showInInspector)
+                    continue;
+
+                string displayName = uniform.name.Replace("u_", "");
+
+                ImGui.Text(displayName);
+                var field = materialData.DataFields
+                    .FirstOrDefault(e => e.Name == uniform.name);
+
+
+                if (field == null)
                 {
-                    if (ImGui.Selectable(Path.GetRelativePath(Editor.projectPath, fragmentShaders[i]), i == current))
+                    field = new MaterialDataField()
                     {
-                        current = i;
-                        materialData.FragmentShader = fragmentShaders[i];
-                        materialData.Save();
-                        AssetDatabase.Refresh();
+                        Name = uniform.name,
+                        Type = uniform.type,
+                        Value = "default"
+                    };
+
+                    materialData.DataFields.Add(field);
+                }
+
+                bool shouldSave = false;
+                if (uniform.type == "vec4")
+                {
+                    Vector4 val = Encoder.NVec4(field.Value);
+
+                    if (ImGui.ColorPicker4($"vec4##{fieldindex}", ref val))
+                    {
+                        field.Value = Encoder.Get(val);
+                        shouldSave = true;
                     }
                 }
 
-                ImGui.EndCombo();
+                if (uniform.type == "sampler2D")
+                {
+                    List<string> textures = AssetDatabase.GetAllAssetsOfType(".png");
+                    int current = textures.IndexOf(field.Value);
+                    if (current == -1)
+                        current = 0;
+                    if (ImGui.BeginCombo($"sampler2D##{fieldindex}", Path.GetRelativePath(Editor.projectPath, textures[current])))
+                    {
+                        for (int i = 0; i < textures.Count; i++)
+                        {
+                            if (ImGui.Selectable(Path.GetRelativePath(Editor.projectPath, textures[i]), i == current))
+                            {
+                                field.Value = textures[i];
+                                shouldSave = true;
+                            }
+                        }
+
+                        ImGui.EndCombo();
+                    }
+                }
+
+                if (shouldSave)
+                {
+                    materialData.Save();
+                }
             }
         }
     }

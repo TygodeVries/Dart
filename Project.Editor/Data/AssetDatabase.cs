@@ -1,4 +1,5 @@
-﻿using Runtime.Logging;
+﻿using Runtime.Calc;
+using Runtime.Logging;
 
 namespace Project.Editor.Data
 {
@@ -67,19 +68,19 @@ namespace Project.Editor.Data
             return assets;
         }
 
-        public static event Action DatabaseRefreshed;
+        public static event Action? DatabaseRefreshed;
 
         static double lastEditTime = DateTime.UnixEpoch.Ticks;
 
-        static FileSystemWatcher watcher;
+        static FileSystemWatcher? watcher;
         public static void Start()
         {
             watcher = new FileSystemWatcher(Editor.projectPath);
 
             watcher.IncludeSubdirectories = true;
 
-            watcher.Created += (sender, args) => { Refresh(); };
-            watcher.Changed += (sender, args) => { Refresh(); };
+            watcher.Created += (sender, args) => { MainThread.Run(() => { Refresh(); }); };
+            watcher.Changed += (sender, args) => { MainThread.Run(() => { Refresh(); }); };
             watcher.EnableRaisingEvents = true;
 
             Debug.Log("Started Watching...");

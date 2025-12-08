@@ -35,6 +35,20 @@ namespace Runtime.Graphics.Shaders
             }
         }
 
+        List<Uniform> uniforms = new();
+        private void AnalyzeSourceForUniforms()
+        {
+            uniforms.AddRange(UniformFinder.FindUniformsInSource(vertexSource));
+            uniforms.AddRange(UniformFinder.FindUniformsInSource(fragmentSource));
+
+            uniforms.Distinct();
+        }
+
+        public List<Uniform> GetUniforms()
+        {
+            return uniforms;
+        }
+
         string vertexSource;
         string fragmentSource;
         public ShaderProgram(string vertexShader, string fragmentShader)
@@ -52,16 +66,23 @@ namespace Runtime.Graphics.Shaders
 
             this.vertexSource = vertexShader;
             this.fragmentSource = fragmentShader;
+
+            AnalyzeSourceForUniforms();
+        }
+
+        private string CleanDartTokens(string source)
+        {
+            return source.Replace("%show", "");
         }
 
         public void Compile()
         {
             int vertex = GL.CreateShader(ShaderType.VertexShader);
-            GL.ShaderSource(vertex, vertexSource);
+            GL.ShaderSource(vertex, CleanDartTokens(vertexSource));
             GL.CompileShader(vertex);
 
             int fragment = GL.CreateShader(ShaderType.FragmentShader);
-            GL.ShaderSource(fragment, fragmentSource);
+            GL.ShaderSource(fragment, CleanDartTokens(fragmentSource));
             GL.CompileShader(fragment);
 
             int program = GL.CreateProgram();
@@ -74,6 +95,7 @@ namespace Runtime.Graphics.Shaders
             {
                 Debug.Error("Shader complication resulted in an error!" + GL.GetError());
             }
+
             GL.DeleteShader(vertex);
             GL.DeleteShader(fragment);
 
@@ -101,6 +123,12 @@ namespace Runtime.Graphics.Shaders
         {
             int mvpLocation = GetUniformLocation(field);
             GL.Uniform3f(mvpLocation, vector3.X, vector3.Y, vector3.Z);
+        }
+
+        public void SetVector4(string field, Vector4 vector)
+        {
+            int mvpLocation = GetUniformLocation(field);
+            GL.Uniform4f(mvpLocation, vector.X, vector.Y, vector.Z, vector.W);
         }
 
 
@@ -131,7 +159,9 @@ namespace Runtime.Graphics.Shaders
 
             location = GL.GetUniformLocation(shaderProgramId, name);
             if (location == -1)
+            {
                 Debug.Error($"Error: Value '{name}' not found in shader!");
+            }
 
             uniformLocations[name] = location;
             return location;

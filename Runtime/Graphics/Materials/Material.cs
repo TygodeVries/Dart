@@ -106,6 +106,27 @@ namespace Runtime.Graphics.Materials
             }
         }
 
+        public void SetVector4(string field, Vector4 vector)
+        {
+            if (materialFields.ContainsKey(field))
+            {
+                if (materialFields[field] is Vector4MaterialField)
+                {
+                    ((Vector4MaterialField)materialFields[field]).vector = vector;
+                }
+                else
+                {
+                    Console.WriteLine($"{field} is already set as {materialFields[field].GetType()}. It can not also be a Vector4.");
+                    return;
+                }
+            }
+            else
+            {
+                Vector4MaterialField materialField = new Vector4MaterialField(field, vector);
+                materialFields.Add(field, materialField);
+            }
+        }
+
         public void SetVector3Array(string field, Vector3[] vectors)
         {
             if (materialFields.ContainsKey(field))
@@ -196,7 +217,7 @@ namespace Runtime.Graphics.Materials
                 if (materialFields[field] is TextureMaterialField)
                 {
                     ((TextureMaterialField)materialFields[field]).texture = texture;
-                    ((TextureMaterialField)materialFields[field]).id = id;
+                    ((TextureMaterialField)materialFields[field]).id = Random.Shared.Next(100000);
                 }
                 else
                 {
@@ -229,6 +250,19 @@ namespace Runtime.Graphics.Materials
         public override void Upload(ShaderProgram shader)
         {
             shader.SetVector3(field, vector);
+        }
+    }
+
+    class Vector4MaterialField : MaterialField
+    {
+        public Vector4 vector;
+        public Vector4MaterialField(string field, Vector4 vector) : base(field)
+        {
+            this.vector = vector;
+        }
+        public override void Upload(ShaderProgram shader)
+        {
+            shader.SetVector4(field, vector);
         }
     }
 

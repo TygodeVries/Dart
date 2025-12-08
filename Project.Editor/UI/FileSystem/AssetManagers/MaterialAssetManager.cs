@@ -43,7 +43,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             Debug.Log("Creating model preview...");
 
             Scene.Load(new Scene());
-            MaterialData materialData = MaterialData.FromJson(filepath);
+            MaterialData materialData = MaterialData.FromJson(filepath!);
 
             Material material = materialData.CreateMaterial(Editor.projectPath);
 
@@ -53,7 +53,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
                 {
                     mesh = this.previewMesh
                 })
-                .AddComponent(new LiveMaterialPreview(filepath, Editor.projectPath))
+                .AddComponent(new LiveMaterialPreview(filepath!, Editor.projectPath))
                 .AddComponent(new Transform())
                 .AddComponent(new RotationPreview())
                 .Build());

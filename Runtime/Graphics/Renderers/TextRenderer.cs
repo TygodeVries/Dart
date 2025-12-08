@@ -3,11 +3,6 @@ using Runtime.Component.Core;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Shaders;
 using Runtime.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 namespace Runtime.Graphics.Renderers
 {
     public class TextRenderer : MeshRenderer
@@ -77,7 +72,7 @@ namespace Runtime.Graphics.Renderers
                 }
                 else
                 {
-                    AddCharacter(verts, ind, uvs, character * characterDistance * fontSize + offset.X, -line * fontSize + offset.Y, text[i]);
+                    AddCharacter(verts, ind, uvs, (character * characterDistance * fontSize) + offset.X, (-line * fontSize) + offset.Y, text[i]);
                     character++;
                 }
             }
@@ -161,7 +156,6 @@ namespace Runtime.Graphics.Renderers
     public class CharacterMap
     {
         string fontText = " 1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,.<>/?!@#$%^&*()";
-        int row = 16;
         public Vector2[] GetCharacterUv(char c)
         {
             int charIndex = fontText.IndexOf(c);
@@ -170,10 +164,10 @@ namespace Runtime.Graphics.Renderers
 
             return new Vector2[]
             {
-                new Vector2((float) (x + 0) / 16f, (float) 1f - (y + 1) / 16f),
-                new Vector2((float) (x + 1) / 16f, (float) 1f - (y + 1) / 16f),
-                new Vector2((float) (x + 1) / 16f, (float) 1f - (y + 0) / 16f),
-                new Vector2((float) (x + 0) / 16f, (float) 1f - (y + 0) / 16f)
+                new Vector2((float) (x + 0) / 16f, (float) 1f - ((y + 1) / 16f)),
+                new Vector2((float) (x + 1) / 16f, (float) 1f - ((y + 1) / 16f)),
+                new Vector2((float) (x + 1) / 16f, (float) 1f - ((y + 0) / 16f)),
+                new Vector2((float) (x + 0) / 16f, (float) 1f - ((y + 0) / 16f))
             };
         }
     }

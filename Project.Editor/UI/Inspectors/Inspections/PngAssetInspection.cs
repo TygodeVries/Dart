@@ -5,7 +5,7 @@ namespace Project.Editor.UI.Inspectors.Inspections
 {
     internal class PngAssetInspection : AssetInspection
     {
-        Texture texture;
+        Texture? texture;
         public override void Loaded()
         {
             texture = Texture.LoadFromPng(GetActiveFilePath());
@@ -13,7 +13,7 @@ namespace Project.Editor.UI.Inspectors.Inspections
 
         public override void Render()
         {
-            ImGui.Text($"Resolution: {texture.width}x{texture.height}");
+            ImGui.Text($"Resolution: {texture!.width}x{texture!.height}");
 
         }
     }

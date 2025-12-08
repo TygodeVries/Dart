@@ -62,7 +62,6 @@ namespace Runtime.Graphics.Pipeline
         {
             renderers.Clear();
         }
-        bool sendNoCameraIssue;
         public void Render()
         {
             Scene.main.GetLightManager().UploadAll();
@@ -86,8 +85,8 @@ namespace Runtime.Graphics.Pipeline
 
                 if (material != null && material.matrixEnabled)
                 {
-                    material.SetMatrix4("uView", view);
-                    material.SetMatrix4("uProjection", projection);
+                    material.SetMatrix4("u_View", view);
+                    material.SetMatrix4("u_Projection", projection);
 
                     Matrix4 model;
                     Transform? transform = renderer.GetComponent<Transform>();
@@ -101,7 +100,7 @@ namespace Runtime.Graphics.Pipeline
                         model = transform.GetMatrix();
                     }
 
-                    material.SetMatrix4("uModel", model);
+                    material.SetMatrix4("u_Model", model);
                 }
 
                 renderer.Render();

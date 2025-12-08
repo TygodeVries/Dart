@@ -37,7 +37,7 @@ namespace Runtime.Component.Test
 
             float speed = 4;
 
-            Transform tr = GetComponent<Transform>();
+            Transform tr = GetComponent<Transform>()!;
             tr.position += tr.GetForwards() * -deltaZ * (float)Time.deltaTime * speed;
             tr.position += tr.GetRight() * deltaX * (float)Time.deltaTime * speed;
 

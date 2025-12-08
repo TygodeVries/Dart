@@ -9,7 +9,7 @@ namespace Project.Editor.UI.Inspectors.Inspections
             ImGui.Text("Wav File!");
             if (ImGui.Button("Play Clip"))
             {
-                // #TODO
+
             }
         }
     }

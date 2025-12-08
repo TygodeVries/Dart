@@ -5,9 +5,9 @@ in vec3 Normal;
 in vec2 Uv;
 in vec4 Tangent;
 
-uniform sampler2D u_Texture;
-uniform sampler2D u_NormalMap;
-uniform sampler2D u_Rough;
+%show uniform sampler2D u_Texture;
+%show uniform sampler2D u_NormalMap;
+%show uniform sampler2D u_Rough;
 
 uniform float u_shininess;
 uniform vec3 u_camera_pos;
@@ -72,5 +72,5 @@ void main()
         light += diffuse + specular;
     }
 
-    FragColor = vec4(1, 1, 0, 1);
+    FragColor = vec4(col.rgb * light, col.a);
 }

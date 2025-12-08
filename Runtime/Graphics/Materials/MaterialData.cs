@@ -1,4 +1,5 @@
-﻿using Runtime.Graphics.Shaders;
+﻿using Runtime.Calc;
+using Runtime.Graphics.Shaders;
 using Runtime.Logging;
 using System.Text.Json;
 
@@ -6,15 +7,15 @@ namespace Runtime.Graphics.Materials
 {
     public class MaterialData
     {
-        public string FilePath;
+        public required string FilePath;
 
-        public string VertexShader { get; set; }
+        public required string VertexShader { get; set; }
 
-        public string FragmentShader { get; set; }
+        public required string FragmentShader { get; set; }
 
-        public bool Lit { get; set; }
+        public required bool Lit { get; set; }
 
-        public List<MaterialDataField> DataFields { get; set; }
+        public required List<MaterialDataField> DataFields { get; set; }
 
         public Material CreateMaterial(string workingDir = "")
         {
@@ -22,6 +23,22 @@ namespace Runtime.Graphics.Materials
 
             if (Lit)
                 material.EnableLightData();
+
+            int textureIds = 0;
+            foreach (MaterialDataField field in DataFields)
+            {
+                if (field.Type == "vec4")
+                {
+                    material.SetVector4(field.Name, Encoder.OVec4(field.Value));
+                }
+
+                if (field.Type == "sampler2D")
+                {
+                    material.SetTexture(field.Name, Texture.LoadFromPng(field.Value), textureIds);
+                    textureIds++;
+                }
+            }
+
             return material;
         }
 
@@ -34,8 +51,12 @@ namespace Runtime.Graphics.Materials
             }
 
             string json = File.ReadAllText(file);
-            MaterialData data = JsonSerializer.Deserialize<MaterialData>(json);
-            data.FilePath = file;
+            MaterialData? data = JsonSerializer.Deserialize<MaterialData>(json);
+
+            if (data == null)
+                Debug.Error("Could not load MaterialData: Null!");
+
+            data!.FilePath = file;
             return data;
         }
 
@@ -47,8 +68,8 @@ namespace Runtime.Graphics.Materials
 
     public class MaterialDataField
     {
-        public string Name { get; set; }
-        public string Type { get; set; }
-        public string Value { get; set; }
+        public required string Name { get; set; }
+        public required string Type { get; set; }
+        public required string Value { get; set; }
     }
 }

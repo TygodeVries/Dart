@@ -19,7 +19,7 @@ namespace Project.Editor.UI.Inspectors
         /// Set what the inspector is inspecting.
         /// </summary>
         /// <param name="inspection"></param>
-        public void SetInspection(Inspection inspection)
+        public void SetInspection(Inspection? inspection)
         {
             if (this.inspection != null)
             {
