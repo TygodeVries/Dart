@@ -1,16 +1,15 @@
 ﻿
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using Runtime.Graphics;
 using Runtime.Graphics.Shaders;
 using Runtime.Scenes;
-using System;
 
 
 namespace Runtime.Graphics.Materials
 {
-    public class Material
+    public class Material : IDisposable
     {
+
         ShaderProgram shader;
         public Material(ShaderProgram shader)
         {
@@ -34,7 +33,7 @@ namespace Runtime.Graphics.Materials
             shader.Use();
             foreach (var field in materialFields.Values)
             {
-                field.Upload(shader);    
+                field.Upload(shader);
             }
         }
 
@@ -58,6 +57,11 @@ namespace Runtime.Graphics.Materials
                 Matrix4MaterialField materialField = new Matrix4MaterialField(field, matrix);
                 materialFields.Add(field, materialField);
             }
+        }
+
+        public void Dispose()
+        {
+            Scene.main.GetLightManager().RemoveEffected(this);
         }
 
         public void SetFloat(string field, float f)
@@ -280,7 +284,7 @@ namespace Runtime.Graphics.Materials
 
         public override void Upload(ShaderProgram shader)
         {
-            texture.Use((TextureUnit) (((Int64) TextureUnit.Texture0) + id));
+            texture.Use((TextureUnit)(((Int64)TextureUnit.Texture0) + id));
             shader.SetTextureId(field, id);
         }
     }

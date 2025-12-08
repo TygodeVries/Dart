@@ -1,12 +1,6 @@
 ﻿using OpenTK.Mathematics;
-using Runtime.Calc;
 using Runtime.Component.Lighting;
 using Runtime.Graphics.Materials;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 namespace Runtime.Graphics
 {
     public class LightManager
@@ -26,6 +20,11 @@ namespace Runtime.Graphics
             materials.Add(material);
         }
 
+        public void RemoveEffected(Material material)
+        {
+            materials.Remove(material);
+        }
+
 
         List<PointLight> pointLights = new List<PointLight>();
         public List<PointLight> GetPointLights()
@@ -39,30 +38,32 @@ namespace Runtime.Graphics
             Vector3[] colors = new Vector3[pointLights.Count];
             Vector3[] data = new Vector3[pointLights.Count];
 
-            for(int i = 0; i < pointLights.Count; i++)
+            for (int i = 0; i < pointLights.Count; i++)
             {
                 positions[i] = pointLights[i].GetPosition();
                 colors[i] = pointLights[i].color;
                 data[i] = pointLights[i].GetDataAsVector();
             }
 
-            foreach (Material material in materials)
+            lock (materials)
             {
-                if (sunLight != null)
+                foreach (Material material in materials)
                 {
-                    material.SetVector3("u_sun_Direction", sunLight.direction);
-                    material.SetVector3("u_sun_Color", sunLight.color);
+                    if (sunLight != null)
+                    {
+                        material.SetVector3("u_sun_Direction", sunLight.direction);
+                        material.SetVector3("u_sun_Color", sunLight.color);
+                    }
+
+                    material.SetVector3("u_ambient_color", ambient);
+
+
+                    material.SetVector3Array("u_point_light_pos", positions);
+                    material.SetVector3Array("u_point_light_col", colors);
+                    material.SetVector3Array("u_point_light_data", data);
+
+                    material.SetInt("u_pointLight_Count", positions.Length);
                 }
-
-                material.SetVector3("u_ambient_color", ambient);
-
-
-                material.SetVector3Array("u_point_light_pos", positions);
-                material.SetVector3Array("u_point_light_col", colors);
-                material.SetVector3Array("u_point_light_data", data);
-
-                material.SetInt("u_pointLight_Count", positions.Length);
-
             }
         }
 
@@ -70,7 +71,7 @@ namespace Runtime.Graphics
         SunLight? sunLight = null;
         public void SetSunLight(SunLight sunLight)
         {
-            this.sunLight = sunLight; 
+            this.sunLight = sunLight;
         }
 
 

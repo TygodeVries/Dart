@@ -5,9 +5,9 @@ namespace Project.Editor
     public class Editor
     {
         public static string projectPath = "D:\\Games\\Dart\\Assets.Example";
-		public static string exeLocation = "D:\\Games\\Dart\\Runtime\\bin\\Debug\\net8.0\\runtime.exe";
+        public static string exeLocation = "D:\\Games\\Dart\\Runtime\\bin\\Debug\\net8.0\\runtime.exe";
 
-		static System.Diagnostics.Process? gameProcess;
+        static System.Diagnostics.Process? gameProcess;
 
         /// <summary>
         /// Load up user's game executable.

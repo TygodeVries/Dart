@@ -17,7 +17,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
     <LocalDebuggerCommandArguments>Assets.Editor -p $(SolutionDir)assets.example -e $(SolutionDir)Assets.Editor\bin\Runtime.exe</LocalDebuggerCommandArguments>
-    <LocalDebuggerCommandArgumentsHistory>Assets.Editor|</LocalDebuggerCommandArgumentsHistory>
+    <LocalDebuggerCommandArgumentsHistory>Assets.Editor|Assets.Editor -p D:\Games\Dart\assets.example -e D:\Games\Dart\Assets.Editor\bin\Runtime.exe|</LocalDebuggerCommandArgumentsHistory>
     <LocalDebuggerDebuggerType>ManagedCore</LocalDebuggerDebuggerType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

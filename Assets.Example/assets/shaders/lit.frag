@@ -72,5 +72,5 @@ void main()
         light += diffuse + specular;
     }
 
-    FragColor = vec4(col.rgb * light, col.a);
+    FragColor = vec4(1, 1, 0, 1);
 }

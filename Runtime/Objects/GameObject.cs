@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Runtime.Logging;
 
 namespace Runtime.Objects
 {
@@ -55,7 +51,14 @@ namespace Runtime.Objects
         {
             foreach (IComponent component in components)
             {
-                component.Update();
+                try
+                {
+                    component.Update();
+                }
+                catch (Exception e)
+                {
+                    Debug.Error($"Failed to update {component.GetType()}! " + e);
+                }
             }
         }
     }

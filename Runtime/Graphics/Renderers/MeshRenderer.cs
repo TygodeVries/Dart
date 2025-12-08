@@ -17,6 +17,15 @@ namespace Runtime.Graphics.Renderers
             this.material = material;
         }
 
+        public void SetMaterial(Material material)
+        {
+            if (material != null)
+            {
+                material.Dispose();
+            }
+            this.material = material;
+        }
+
         public MeshRenderer(Material material, Mesh mesh)
         {
             this.material = material;

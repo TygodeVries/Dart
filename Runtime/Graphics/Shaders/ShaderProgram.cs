@@ -1,15 +1,12 @@
-﻿using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using Runtime.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Runtime.Graphics.Shaders
 {
+    /// <summary>
+    /// #TODO add a dispose
+    /// </summary>
     public class ShaderProgram
     {
         bool compiled = false;
@@ -24,17 +21,25 @@ namespace Runtime.Graphics.Shaders
 
         public static ShaderProgram FromFile(string vertex, string fragment)
         {
-            string vertexContent = File.ReadAllText(vertex);
-            string fragmentContent = File.ReadAllText(fragment);
+            try
+            {
+                string vertexContent = File.ReadAllText(vertex);
+                string fragmentContent = File.ReadAllText(fragment);
 
-            return new ShaderProgram(vertexContent, fragmentContent);
+                return new ShaderProgram(vertexContent, fragmentContent);
+            }
+            catch (Exception e)
+            {
+                Debug.Error($"Could not load ShaderProgram from files {vertex} & {fragment}! Because: " + e);
+                throw new FileNotFoundException();
+            }
         }
 
         string vertexSource;
         string fragmentSource;
         public ShaderProgram(string vertexShader, string fragmentShader)
         {
-            if(vertexShader.Length < 20)
+            if (vertexShader.Length < 20)
             {
                 Debug.Log($"VertexShader does not look like source code, please be aware. {vertexShader}");
             }

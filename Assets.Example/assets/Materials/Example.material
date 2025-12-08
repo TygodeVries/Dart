@@ -1,0 +1,1 @@
+{"VertexShader":"D:\\Games\\Dart\\assets.example\\assets\\Shaders\\lit.vert","FragmentShader":"D:\\Games\\Dart\\assets.example\\assets\\Shaders\\lit.frag","Lit":true,"DataFields":[{"Name":"Color","Type":"Vector4","Value":"1,1,1,1"},{"Name":"Metallic","Type":"Float","Value":"0.5"}]}

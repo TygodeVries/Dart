@@ -1,4 +1,5 @@
-﻿using Runtime.Logging;
+﻿using Project.Editor.UI.Inspectors;
+using Runtime.Logging;
 using System.Globalization;
 using System.Numerics;
 using System.Text.Json;
@@ -100,7 +101,15 @@ namespace Project.Editor.Data
 
         public void Save()
         {
-            File.WriteAllText(path, JsonSerializer.Serialize(data));
+            try
+            {
+                File.WriteAllText(path, JsonSerializer.Serialize(data));
+            }
+            catch (Exception e)
+            {
+                Debug.Error("Failed to save meta data for: " + path);
+                InspectorWindow.GetActive().SetInspection(null);
+            }
         }
     }
 
