@@ -3,6 +3,7 @@ using Project.Editor.Data;
 using Runtime.Calc;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Shaders;
+using Runtime.Logging;
 using System.Numerics;
 
 namespace Project.Editor.UI.Inspectors.Inspections
@@ -48,6 +49,12 @@ namespace Project.Editor.UI.Inspectors.Inspections
 
         private void RenderShaderSelector(string title, string[] shaders, int current, bool writeToVertex)
         {
+            if (shaders.Length == 0)
+            {
+                Debug.Warning("No shaders in selector!");
+                return;
+            }
+
             if (ImGui.BeginCombo(title, Path.GetRelativePath(Editor.projectPath, shaders[current])))
             {
                 for (int i = 0; i < shaders.Length; i++)
@@ -62,7 +69,6 @@ namespace Project.Editor.UI.Inspectors.Inspections
                             materialData.FragmentShader = shaders[i];
 
                         materialData.Save();
-                        AssetDatabase.Refresh();
                     }
                 }
 
@@ -74,6 +80,7 @@ namespace Project.Editor.UI.Inspectors.Inspections
         {
             ShaderProgram shaderProgram = ShaderProgram.FromFile(vertexShader, fragmentShader);
 
+            bool shouldSave = false;
             int fieldindex = 0;
             foreach (Uniform uniform in shaderProgram.GetUniforms())
             {
@@ -98,9 +105,9 @@ namespace Project.Editor.UI.Inspectors.Inspections
                     };
 
                     materialData.DataFields.Add(field);
+                    shouldSave = true;
                 }
 
-                bool shouldSave = false;
                 if (uniform.type == "vec4")
                 {
                     Vector4 val = Encoder.NVec4(field.Value);
@@ -132,11 +139,11 @@ namespace Project.Editor.UI.Inspectors.Inspections
                         ImGui.EndCombo();
                     }
                 }
+            }
 
-                if (shouldSave)
-                {
-                    materialData.Save();
-                }
+            if (shouldSave)
+            {
+                materialData.Save();
             }
         }
     }

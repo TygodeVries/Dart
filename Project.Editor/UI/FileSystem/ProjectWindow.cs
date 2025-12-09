@@ -34,20 +34,20 @@ namespace Project.Editor.UI.FileSystem
         string browsePath = "assets";
         public override void Render()
         {
-         // Get all files we need to draw
-         string[] directories;
-         string[] files;
-         try
-         {
+            // Get all files we need to draw
+            string[] directories;
+            string[] files;
+            try
+            {
 
-            directories = Directory.GetDirectories(Path.Combine(Editor.projectPath, browsePath));
-            files = Directory.GetFiles(Path.Combine(Editor.projectPath, browsePath));
-         }
-         catch (Exception e)
-         {
-            Debug.Error("Could not open directory: " + e.Message);
-            return;
-         }
+                directories = Directory.GetDirectories(Path.Combine(Editor.projectPath, browsePath));
+                files = Directory.GetFiles(Path.Combine(Editor.projectPath, browsePath));
+            }
+            catch (Exception e)
+            {
+                Debug.Error("Could not open directory: " + e.Message);
+                return;
+            }
             // Add a back button
             string currentPath = Path.Combine(Editor.projectPath, browsePath);
 
@@ -111,7 +111,12 @@ namespace Project.Editor.UI.FileSystem
                     continue;
 
                 AssetManager assetManager = AssetManager.GetAssetManager(file);
-                ImGui.Image(assetManager.GetIcon().Handle, new Vector2(100, 100), default(Vector2), Vector2.One, new Vector4(1, 1, 1, 1));
+                Vector4 borderColor = Vector4.Zero;
+                if (selectedFile == file)
+                {
+                    borderColor = new Vector4(0, 0, 1, 1);
+                }
+                ImGui.Image(assetManager.GetIcon().Handle, new Vector2(100, 100), default(Vector2), Vector2.One, Vector4.One, borderColor);
 
                 if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && selectedFile == file)
                 {
@@ -137,10 +142,7 @@ namespace Project.Editor.UI.FileSystem
             {
                 if (ImGui.BeginMenu("Create"))
                 {
-                    if (ImGui.MenuItem("Test"))
-                    {
-
-                    }
+                    AssetCreator.GUI(currentPath);
                     // Action
                     ImGui.EndMenu();
                 }

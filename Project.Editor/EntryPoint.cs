@@ -1,4 +1,5 @@
-﻿using Project.Editor.Data;
+﻿using Project.Editor;
+using Project.Editor.Data;
 using Project.Editor.UI;
 using Project.Editor.UI.FileSystem;
 using Project.Editor.UI.Inspectors;
@@ -44,6 +45,7 @@ namespace Editor
             GuiWindow.Enable(new NavBarUI());
             GuiWindow.Enable(new ProjectWindow());
             GuiWindow.Enable(new InspectorWindow());
+
             AssetDatabase.Start();
 
 
@@ -75,6 +77,9 @@ namespace Editor
                mesh = mesh
             }).AddComponent(new RaycastTester(t)).Build());
 
+            AssetDatabase.Refresh();
+
+            TextureMaterialField.fallback = DefaultsTextures.GetFallbackTexture();
         }
     }
 }

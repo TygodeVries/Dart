@@ -19,10 +19,12 @@ namespace Runtime.Graphics.Renderers
 
         public void SetMaterial(Material material)
         {
-            if (material != null)
+            // Delete the old material
+            if (this.material != null)
             {
-                material.Dispose();
+                this.material.Dispose();
             }
+
             this.material = material;
         }
 
