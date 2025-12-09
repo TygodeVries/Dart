@@ -4,9 +4,9 @@ in vec3 Pos;
 in vec3 Normal;
 out vec4 FragColor;
 
-uniform mat4 uModel;
-uniform mat4 uView;
-uniform mat4 uProjection;
+uniform mat4 u_Model;
+uniform mat4 u_View;
+uniform mat4 u_Projection;
 uniform vec3 tintColor;
 
 void main()

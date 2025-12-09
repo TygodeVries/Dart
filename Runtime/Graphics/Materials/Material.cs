@@ -233,7 +233,7 @@ namespace Runtime.Graphics.Materials
         }
     }
 
-    abstract class MaterialField
+    public abstract class MaterialField
     {
         public MaterialField(string field) { this.field = field; }
         public string field;
@@ -306,7 +306,7 @@ namespace Runtime.Graphics.Materials
         }
     }
 
-    class TextureMaterialField : MaterialField
+    public class TextureMaterialField : MaterialField
     {
         public int id;
         public Texture texture;
@@ -316,8 +316,14 @@ namespace Runtime.Graphics.Materials
             this.texture = texture;
         }
 
+        public static Texture fallback;
+
         public override void Upload(ShaderProgram shader)
         {
+            if (texture == null)
+            {
+                texture = fallback;
+            }
             texture.Use((TextureUnit)(((Int64)TextureUnit.Texture0) + id));
             shader.SetTextureId(field, id);
         }

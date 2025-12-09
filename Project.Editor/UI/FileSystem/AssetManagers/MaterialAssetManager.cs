@@ -24,12 +24,17 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             return inspection;
         }
 
-        Mesh previewMesh;
+        public static Mesh[] previewMeshes;
         Texture icon;
         public MaterialAssetManager()
         {
             // #Todo: Make this be a small preview of the model 
-            previewMesh = Mesh.FromFileObj("assets/models/ModelPreview.obj")!;
+
+            previewMeshes = new Mesh[] {
+                Mesh.FromFileObj("assets/models/ModelPreview_Sphere.obj")!,
+                Mesh.FromFileObj("assets/models/ModelPreview_Box.obj")!
+            };
+
             icon = Texture.LoadFromPng("assets/textures/icons/material.png");
         }
 
@@ -51,7 +56,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             Scene.main.Instantiate(new GameObjectFactory()
                 .AddComponent(new MeshRenderer(material)
                 {
-                    mesh = this.previewMesh
+                    mesh = previewMeshes[0]
                 })
                 .AddComponent(new LiveMaterialPreview(filepath!, Editor.projectPath))
                 .AddComponent(new Transform())

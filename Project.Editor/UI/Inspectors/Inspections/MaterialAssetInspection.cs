@@ -3,6 +3,7 @@ using Project.Editor.Data;
 using Runtime.Calc;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Shaders;
+using Runtime.Logging;
 using System.Numerics;
 
 namespace Project.Editor.UI.Inspectors.Inspections
@@ -48,6 +49,12 @@ namespace Project.Editor.UI.Inspectors.Inspections
 
         private void RenderShaderSelector(string title, string[] shaders, int current, bool writeToVertex)
         {
+            if (shaders.Length == 0)
+            {
+                Debug.Warning("No shaders in selector!");
+                return;
+            }
+
             if (ImGui.BeginCombo(title, Path.GetRelativePath(Editor.projectPath, shaders[current])))
             {
                 for (int i = 0; i < shaders.Length; i++)

@@ -5,9 +5,9 @@ layout(location = 1) in vec3 normal;
 layout(location = 2) in vec2 uv;
 layout(location = 3) in vec4 tangent;
 
-uniform mat4 uModel;
-uniform mat4 uView;
-uniform mat4 uProjection;
+uniform mat4 u_Model;
+uniform mat4 u_View;
+uniform mat4 u_Projection;
 
 out vec3 Pos;
 out vec3 Normal;
@@ -16,8 +16,8 @@ void main()
 {
     vec3 temp = aPosition;
     temp = temp;
-    gl_Position = uProjection * uView * uModel * vec4(temp, 1.0);
+    gl_Position = u_Projection * u_View * u_Model * vec4(temp, 1.0);
 
     Normal = normal;
-    Pos = vec3(uModel * vec4(aPosition, 1.0));
+    Pos = vec3(u_Model * vec4(aPosition, 1.0));
 }

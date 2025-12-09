@@ -1,8 +1,10 @@
-﻿using Project.Editor.Data;
+﻿using Project.Editor;
+using Project.Editor.Data;
 using Project.Editor.UI;
 using Project.Editor.UI.FileSystem;
 using Project.Editor.UI.Inspectors;
 using Runtime.DearImGUI.Gui;
+using Runtime.Graphics.Materials;
 using Runtime.Logging;
 
 namespace Editor
@@ -36,7 +38,11 @@ namespace Editor
             GuiWindow.Enable(new NavBarUI());
             GuiWindow.Enable(new ProjectWindow());
             GuiWindow.Enable(new InspectorWindow());
+
             AssetDatabase.Start();
+            AssetDatabase.Refresh();
+
+            TextureMaterialField.fallback = DefaultsTextures.GetFallbackTexture();
         }
     }
 }

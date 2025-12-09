@@ -1,6 +1,8 @@
 ﻿using Project.Editor.Data;
+using Project.Editor.UI.FileSystem.AssetManagers;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
+using Runtime.Input;
 using Runtime.Logging;
 using Runtime.Objects;
 namespace Project.Editor.Components
@@ -16,6 +18,20 @@ namespace Project.Editor.Components
 
 
             AssetDatabase.DatabaseRefreshed += AssetDatabase_DatabaseRefreshed;
+        }
+
+        int currentPreviewModel = 0;
+        public override void Update()
+        {
+            if (Keyboard.current.IsPressedThisFrame(OpenTK.Windowing.GraphicsLibraryFramework.Keys.Space))
+            {
+                currentPreviewModel++;
+
+                if (currentPreviewModel >= MaterialAssetManager.previewMeshes.Length)
+                    currentPreviewModel = 0;
+
+                GetComponent<MeshRenderer>().SetMesh(MaterialAssetManager.previewMeshes[currentPreviewModel]);
+            }
         }
 
         private void AssetDatabase_DatabaseRefreshed()
