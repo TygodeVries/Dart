@@ -51,7 +51,7 @@ namespace Runtime.Graphics
                 {
                     if (sunLight != null)
                     {
-                        material.SetVector3("u_sun_Direction", sunLight.direction);
+                        material.SetVector3("u_sun_Direction", sunLight.GetDirection());
                         material.SetVector3("u_sun_Color", sunLight.color);
                     }
 

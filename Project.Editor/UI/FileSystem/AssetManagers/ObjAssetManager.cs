@@ -60,7 +60,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
                     mesh = mesh
                 })
                 .AddComponent(new Transform())
-                .AddComponent(new RotationPreview())
+                .AddComponent(new RotationPreview(false))
                 .Build());
 
             Debug.Log("Creating Camera...");

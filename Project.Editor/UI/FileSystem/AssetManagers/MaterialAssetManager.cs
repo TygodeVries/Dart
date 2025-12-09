@@ -58,9 +58,9 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
                 {
                     mesh = previewMeshes[0]
                 })
-                .AddComponent(new LiveMaterialPreview(filepath!, Editor.projectPath))
+                .AddComponent(new MaterialPreview(filepath!, Editor.projectPath))
                 .AddComponent(new Transform())
-                .AddComponent(new RotationPreview())
+                .AddComponent(new RotationPreview(false))
                 .Build());
 
             Debug.Log("Creating Camera...");
@@ -83,6 +83,8 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
 
             Scene.main.Instantiate(new GameObjectFactory()
                 .AddComponent(new SunLight())
+                .AddComponent(new Transform())
+                .AddComponent(new RotationPreview(true))
                 .Build());
         }
     }

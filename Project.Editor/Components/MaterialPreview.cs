@@ -7,11 +7,11 @@ using Runtime.Logging;
 using Runtime.Objects;
 namespace Project.Editor.Components
 {
-    internal class LiveMaterialPreview : IComponent
+    internal class MaterialPreview : IComponent
     {
         string materialPath;
         string workingDir;
-        public LiveMaterialPreview(string materialPath, string workingDir)
+        public MaterialPreview(string materialPath, string workingDir)
         {
             this.materialPath = materialPath;
             this.workingDir = workingDir;
