@@ -62,7 +62,6 @@ namespace Project.Editor.UI.Inspectors.Inspections
                             materialData.FragmentShader = shaders[i];
 
                         materialData.Save();
-                        AssetDatabase.Refresh();
                     }
                 }
 
@@ -74,6 +73,7 @@ namespace Project.Editor.UI.Inspectors.Inspections
         {
             ShaderProgram shaderProgram = ShaderProgram.FromFile(vertexShader, fragmentShader);
 
+            bool shouldSave = false;
             int fieldindex = 0;
             foreach (Uniform uniform in shaderProgram.GetUniforms())
             {
@@ -98,9 +98,9 @@ namespace Project.Editor.UI.Inspectors.Inspections
                     };
 
                     materialData.DataFields.Add(field);
+                    shouldSave = true;
                 }
 
-                bool shouldSave = false;
                 if (uniform.type == "vec4")
                 {
                     Vector4 val = Encoder.NVec4(field.Value);
@@ -132,11 +132,11 @@ namespace Project.Editor.UI.Inspectors.Inspections
                         ImGui.EndCombo();
                     }
                 }
+            }
 
-                if (shouldSave)
-                {
-                    materialData.Save();
-                }
+            if (shouldSave)
+            {
+                materialData.Save();
             }
         }
     }

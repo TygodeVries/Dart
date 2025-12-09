@@ -13,9 +13,11 @@ namespace Project.Editor.UI.Inspectors.Inspections
         Vector4 color;
         public override void Render()
         {
-            ImGui.ColorPicker4("Folder Color", ref color);
-            GetActiveMetaData().SetVector4("color", color);
-            GetActiveMetaData().Save();
+            if (ImGui.ColorPicker4("Folder Color", ref color))
+            {
+                GetActiveMetaData().SetVector4("color", color);
+                GetActiveMetaData().Save();
+            }
         }
     }
 }

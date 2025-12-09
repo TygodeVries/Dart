@@ -23,6 +23,7 @@ namespace Project.Editor.Components
             try
             {
 
+
                 Debug.Log("Redid material");
                 MaterialData materialData = MaterialData.FromJson(Path.Combine(workingDir, materialPath));
                 Material mat = materialData.CreateMaterial(workingDir);
