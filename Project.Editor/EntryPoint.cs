@@ -49,8 +49,8 @@ namespace Editor
             AssetDatabase.Start();
 
 
-         Mesh? mesh = Mesh.FromFileObj("assets\\models\\modelpreview.obj");
-         Mesh? mesh2 = Mesh.FromFileObj("assets\\models\\modelpreview.obj");
+         Mesh? mesh = Mesh.FromFileObj("assets\\models\\modelpreview_sphere.obj");
+         Mesh? mesh2 = Mesh.FromFileObj("assets\\models\\modelpreview_box.obj");
          
          Material? material = new Material(
             Runtime.Graphics.Shaders.ShaderProgram.FromFile("assets\\shaders\\previews\\model_untextured.vert", "assets\\shaders\\previews\\model_untextured.frag"));
