@@ -42,9 +42,12 @@ namespace Runtime.Component.Test
             tr.position += tr.GetRight() * deltaX * (float)Time.deltaTime * speed;
 
 
-            // Rotating
+         // Rotating
+         if (Mouse.current.leftPressed)
+         {
             tr.Rotate(0, -Mouse.current.mouseDelta.X / 10, 0);
             tr.Rotate(Mouse.current.mouseDelta.Y / 10, 0, 0);
+         }
         }
 
     }
