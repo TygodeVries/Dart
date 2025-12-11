@@ -1,7 +1,7 @@
 ﻿using ImGuiNET;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using Runtime.Calc;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
 using Runtime.Graphics.Pipeline;
@@ -108,8 +108,8 @@ namespace Runtime.DearImGUI.Backend
         {
             // Mouse Position
             Vector2 mousePos = Mouse.current.position;
-            io.MousePos = new System.Numerics.Vector2(mousePos.X, mousePos.Y);
-            io.AddMouseWheelEvent(Mouse.current.scroll.X, Mouse.current.scroll.Y);
+            io.MousePos = Mouse.current.position.ToNumerics();
+            io.AddMouseWheelEvent(Mouse.current.scroll.x, Mouse.current.scroll.y);
 
             io.MouseDown[0] = Mouse.current.leftPressed;
             io.MouseDown[1] = Mouse.current.rightPressed;

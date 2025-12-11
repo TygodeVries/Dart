@@ -3,6 +3,7 @@ using Project.Editor.Preview;
 using Project.Editor.UI.FileSystem.FileInspectors;
 using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Inspectors.Inspections;
+using Runtime.Calc;
 using Runtime.Component.Core;
 using Runtime.Component.Lighting;
 using Runtime.Graphics;
@@ -75,7 +76,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             Scene.main.Instantiate(new GameObjectFactory()
                 .AddComponent(new Transform()
                 {
-                    position = new OpenTK.Mathematics.Vector3(0, 0, -4)
+                    position = new Vector3(0, 0, -4)
                 })
                 .AddComponent(sceneCamera)
                 .AddComponent(new CameraPreview())

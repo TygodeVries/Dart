@@ -1,4 +1,4 @@
-﻿using OpenTK.Mathematics;
+﻿using Runtime.Calc;
 using Runtime.Logging;
 
 namespace Runtime.Input

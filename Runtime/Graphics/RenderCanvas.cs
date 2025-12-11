@@ -41,7 +41,7 @@ namespace Runtime.Graphics
         {
             Keyboard.current.EndOfFrame();
             Mouse.current.EndOfFrame();
-            Mouse.current.scroll = new OpenTK.Mathematics.Vector2();
+            Mouse.current.scroll = new Vector2();
 
             Debug.Log("Loading render canvas...");
             base.OnLoad();
@@ -74,8 +74,8 @@ namespace Runtime.Graphics
 
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
-            Mouse.current.mouseDelta = e.Delta;
-            Mouse.current.position = e.Position;
+            Mouse.current.mouseDelta = new Vector2(e.Delta);
+            Mouse.current.position = new Vector2(e.Position);
         }
 
         protected override void OnResize(ResizeEventArgs e)
@@ -94,8 +94,8 @@ namespace Runtime.Graphics
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            Mouse.current.scroll.X = e.OffsetX;
-            Mouse.current.scroll.Y = e.OffsetY;
+            Mouse.current.scroll.x = e.OffsetX;
+            Mouse.current.scroll.y = e.OffsetY;
         }
         protected override void OnKeyUp(KeyboardKeyEventArgs e)
         {

@@ -1,5 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
+using Runtime.Calc;
 using Runtime.Component.Core;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
@@ -72,7 +72,7 @@ namespace Runtime.Graphics.Pipeline
             if (Camera.main != null)
             {
                 // Set to camera background color   
-                GL.ClearColor(Camera.main.backgroundColor.X, Camera.main.backgroundColor.Y, Camera.main.backgroundColor.Z, 1);
+                GL.ClearColor(Camera.main.backgroundColor.x, Camera.main.backgroundColor.y, Camera.main.backgroundColor.z, 1);
                 Camera renderCamera = Camera.main;
                 view = renderCamera.GetViewMatrix();
                 projection = renderCamera.GetProjectionMatrix();

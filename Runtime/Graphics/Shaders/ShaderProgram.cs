@@ -1,5 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
+using Runtime.Calc;
 using Runtime.Logging;
 
 namespace Runtime.Graphics.Shaders
@@ -122,20 +122,22 @@ namespace Runtime.Graphics.Shaders
         public void SetVector3(string field, Vector3 vector3)
         {
             int mvpLocation = GetUniformLocation(field);
-            GL.Uniform3f(mvpLocation, vector3.X, vector3.Y, vector3.Z);
+            GL.Uniform3f(mvpLocation, vector3.x, vector3.y, vector3.z);
         }
 
         public void SetVector4(string field, Vector4 vector)
         {
             int mvpLocation = GetUniformLocation(field);
-            GL.Uniform4f(mvpLocation, vector.X, vector.Y, vector.Z, vector.W);
+            GL.Uniform4f(mvpLocation, vector.x, vector.y, vector.z, vector.w);
         }
 
 
         public void SetMatrix4(string field, Matrix4 matrix4)
         {
             int mvpLocation = GetUniformLocation(field);
-            GL.UniformMatrix4f(mvpLocation, 1, false, ref matrix4);
+
+            OpenTK.Mathematics.Matrix4 m = matrix4.ToOpenTK();
+            GL.UniformMatrix4f(mvpLocation, 1, false, ref m);
         }
 
         public void SetInt(string field, int i)
@@ -175,7 +177,7 @@ namespace Runtime.Graphics.Shaders
                 int location = GL.GetUniformLocation(shaderProgramId, elementName);
                 if (location != -1)
                 {
-                    GL.Uniform3f(location, vectors[i].X, vectors[i].Y, vectors[i].Z);
+                    GL.Uniform3f(location, vectors[i].x, vectors[i].y, vectors[i].z);
                 }
             }
         }
@@ -195,7 +197,8 @@ namespace Runtime.Graphics.Shaders
                 int location = GL.GetUniformLocation(shaderProgramId, elementName);
                 if (location != -1)
                 {
-                    GL.UniformMatrix4f(location, 1, false, ref matrices[i]);
+                    OpenTK.Mathematics.Matrix4 matrix = matrices[i].ToOpenTK();
+                    GL.UniformMatrix4f(location, 1, false, ref matrix);
                 }
             }
         }

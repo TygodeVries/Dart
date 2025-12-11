@@ -1,4 +1,4 @@
-﻿using OpenTK.Mathematics;
+﻿using Runtime.Calc;
 using Runtime.Component.Core;
 using Runtime.Physics.Raycasts;
 
@@ -36,9 +36,9 @@ namespace Runtime.Component.Physics
         public override bool HasOverlap(Vector3 point)
         {
             Vector3 center = GetCenter();
-            return point.X < center.X + (size.X * 0.5f) && point.X > center.X - (size.X * 0.5f) &&
-                point.Y < center.Y + (size.Y * 0.5f) && point.Y > center.Y - (size.Y * 0.5f) &&
-                point.Z < center.Z + (size.Z * 0.5f) && point.Z > center.Z - (size.Z * 0.5f);
+            return point.x < center.x + (size.x * 0.5f) && point.x > center.x - (size.x * 0.5f) &&
+                point.y < center.y + (size.y * 0.5f) && point.y > center.y - (size.y * 0.5f) &&
+                point.z < center.z + (size.z * 0.5f) && point.z > center.z - (size.z * 0.5f);
         }
 
         /// <summary>
@@ -54,14 +54,14 @@ namespace Runtime.Component.Physics
             Vector3 sizeA = size * 0.5f;
             Vector3 sizeB = ((AABBBoxCollider)other).size * 0.5f;
 
-            bool overlapX = centerA.X - sizeA.X < centerB.X + sizeB.X &&
-                            centerA.X + sizeA.X > centerB.X - sizeB.X;
+            bool overlapX = centerA.x - sizeA.x < centerB.x + sizeB.x &&
+                            centerA.x + sizeA.x > centerB.x - sizeB.x;
 
-            bool overlapY = centerA.Y - sizeA.Y < centerB.Y + sizeB.Y &&
-                            centerA.Y + sizeA.Y > centerB.Y - sizeB.Y;
+            bool overlapY = centerA.y - sizeA.y < centerB.y + sizeB.y &&
+                            centerA.y + sizeA.y > centerB.y - sizeB.y;
 
-            bool overlapZ = centerA.Z - sizeA.Z < centerB.Z + sizeB.Z &&
-                            centerA.Z + sizeA.Z > centerB.Z - sizeB.Z;
+            bool overlapZ = centerA.z - sizeA.z < centerB.z + sizeB.z &&
+                            centerA.z + sizeA.z > centerB.z - sizeB.z;
 
             return overlapX && overlapY && overlapZ;
         }

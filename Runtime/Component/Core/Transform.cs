@@ -1,4 +1,4 @@
-﻿using OpenTK.Mathematics;
+﻿using Runtime.Calc;
 using Runtime.Objects;
 
 namespace Runtime.Component.Core
@@ -26,13 +26,13 @@ namespace Runtime.Component.Core
         public Vector3 GetForwards()
         {
             Vector3 radians = new Vector3(
-                MathHelper.DegreesToRadians(rotation.X),
-                MathHelper.DegreesToRadians(rotation.Y),
-                MathHelper.DegreesToRadians(rotation.Z));
+                OpenTK.Mathematics.MathHelper.DegreesToRadians(rotation.x),
+                OpenTK.Mathematics.MathHelper.DegreesToRadians(rotation.y),
+                OpenTK.Mathematics.MathHelper.DegreesToRadians(rotation.z));
 
             // Yaw (Y), Pitch (X)
-            float yaw = radians.Y;
-            float pitch = radians.X;
+            float yaw = radians.y;
+            float pitch = radians.x;
 
             float x = MathF.Cos(pitch) * MathF.Sin(yaw);
             float y = MathF.Sin(pitch);
@@ -82,14 +82,14 @@ namespace Runtime.Component.Core
         public Matrix4 GetMatrix()
         {
             Vector3 radians = new Vector3(
-                MathHelper.DegreesToRadians(rotation.X),
-                MathHelper.DegreesToRadians(rotation.Y),
-                MathHelper.DegreesToRadians(rotation.Z));
+                OpenTK.Mathematics.MathHelper.DegreesToRadians(rotation.x),
+                OpenTK.Mathematics.MathHelper.DegreesToRadians(rotation.y),
+                OpenTK.Mathematics.MathHelper.DegreesToRadians(rotation.z));
 
             Matrix4 rotationMatrix =
-                Matrix4.CreateRotationY(radians.Y) *
-                Matrix4.CreateRotationX(radians.X) *
-                Matrix4.CreateRotationZ(radians.Z);
+                Matrix4.CreateRotationY(radians.y) *
+                Matrix4.CreateRotationX(radians.x) *
+                Matrix4.CreateRotationZ(radians.z);
 
             Matrix4 translationMatrix = Matrix4.CreateTranslation(position);
 

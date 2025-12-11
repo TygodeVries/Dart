@@ -1,9 +1,8 @@
 ﻿using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
+using Runtime.Calc;
 using Runtime.Graphics;
 using Runtime.Objects;
 using Runtime.Physics.Raycasts;
-using System.Diagnostics;
 
 namespace Runtime.Component.Core
 {
@@ -53,7 +52,7 @@ namespace Runtime.Component.Core
         public Matrix4 GetProjectionMatrix()
         {
             return Matrix4.CreatePerspectiveFieldOfView(
-                MathHelper.DegreesToRadians(fieldOfView),
+                OpenTK.Mathematics.MathHelper.DegreesToRadians(fieldOfView),
                 Game.width / (float)Game.height,
                 0.1f, 4000.0f
             );
@@ -77,36 +76,36 @@ namespace Runtime.Component.Core
 
             return Matrix4.LookAt(position, position + direction, Vector3.UnitY);
         }
-      public Raycast? GetRaycastFromMouse()
-      {
+        public Raycast? GetRaycastFromMouse()
+        {
 
-         if (null == RenderCanvas.main)
-         {
-            return null;
-         }
-			float[] viewport = new float[4];
-			unsafe
-         {
-            fixed (float* vp = &viewport[0])
+            if (null == RenderCanvas.main)
             {
-               GL.GetFloatv(GetPName.Viewport, vp);
+                return null;
             }
-         }
-         float x = 2f * Input.Mouse.current.position.X / viewport[2] - 1f;
-         float y = 1f - 2f * Input.Mouse.current.position.Y / viewport[3];
+            float[] viewport = new float[4];
+            unsafe
+            {
+                fixed (float* vp = &viewport[0])
+                {
+                    GL.GetFloatv(GetPName.Viewport, vp);
+                }
+            }
+            float x = (2f * Input.Mouse.current.position.x / viewport[2]) - 1f;
+            float y = 1f - (2f * Input.Mouse.current.position.y / viewport[3]);
 
-         Matrix4 q = GetViewMatrix() * GetProjectionMatrix();
+            Matrix4 q = GetViewMatrix() * GetProjectionMatrix();
 
-         q.Invert();
-         Vector4 position = new Vector4(0, 0, 0, 1) * q;
-         Vector4 direction = new Vector4(x, y, 1, 1) * q;
+            q.Invert();
+            Vector4 position = new Vector4(0, 0, 0, 1) * q;
+            Vector4 direction = new Vector4(x, y, 1, 1) * q;
 
-         position /= position.W;
-         direction /= direction.W;
-         direction -= position;
-         direction.Normalize();
+            position /= position.w;
+            direction /= direction.w;
+            direction -= position;
+            direction.Normalize();
 
-			return new Raycast(position.Xyz, direction.Xyz);
-      }
+            return new Raycast(position.Xyz, direction.Xyz);
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿
+using Runtime.Calc;
 using Runtime.Component.Core;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Shaders;
@@ -57,8 +58,8 @@ namespace Runtime.Graphics.Renderers
             Transform? transform = GetComponent<Transform>();
             if (transform != null)
             {
-                offset.X = transform.position.X;
-                offset.Y = transform.position.Y;
+                offset.x = transform.position.x;
+                offset.y = transform.position.y;
             }
 
             int character = 0;
@@ -72,7 +73,7 @@ namespace Runtime.Graphics.Renderers
                 }
                 else
                 {
-                    AddCharacter(verts, ind, uvs, (character * characterDistance * fontSize) + offset.X, (-line * fontSize) + offset.Y, text[i]);
+                    AddCharacter(verts, ind, uvs, (character * characterDistance * fontSize) + offset.x, (-line * fontSize) + offset.y, text[i]);
                     character++;
                 }
             }

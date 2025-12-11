@@ -4,7 +4,6 @@ using Runtime.Calc;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Shaders;
 using Runtime.Logging;
-using System.Numerics;
 
 namespace Project.Editor.UI.Inspectors.Inspections
 {
@@ -110,11 +109,10 @@ namespace Project.Editor.UI.Inspectors.Inspections
 
                 if (uniform.type == "vec4")
                 {
-                    Vector4 val = Encoder.NVec4(field.Value);
-
+                    System.Numerics.Vector4 val = Vector4.Parse(field.Value).ToNumerics();
                     if (ImGui.ColorPicker4($"vec4##{fieldindex}", ref val))
                     {
-                        field.Value = Encoder.Get(val);
+                        field.Value = new Vector4(val).ToString();
                         shouldSave = true;
                     }
                 }

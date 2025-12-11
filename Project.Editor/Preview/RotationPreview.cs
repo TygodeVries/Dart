@@ -20,7 +20,7 @@ namespace Project.Editor.Preview
                 GetComponent<Transform>()?.Rotate(0, (float)Time.deltaTime * 1f, 0);
 
                 if (Mouse.current.leftPressed)
-                    GetComponent<Transform>()?.Rotate(-Mouse.current.mouseDelta.Y / 2, Mouse.current.mouseDelta.X / 2, 0);
+                    GetComponent<Transform>()?.Rotate(-Mouse.current.mouseDelta.y / 2, Mouse.current.mouseDelta.x / 2, 0);
             }
             else
             {

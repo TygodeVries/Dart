@@ -9,9 +9,9 @@ using static Runtime.Logging.Debug;
 
 namespace Runtime
 {
-	public delegate void DartEventHandler();
+    public delegate void DartEventHandler();
 
-	public class Game
+    public class Game
     {
         public static int width = 640 * 2;
         public static int height = 480 * 2;
@@ -26,8 +26,8 @@ namespace Runtime
 
             if (null == gameSettings)
             {
-               Log("GameSettings.json not loaded");
-               return;
+                Log("GameSettings.json not loaded");
+                return;
             }
 
             Log("Attempting to switch to dedicated graphics card (If present)");
@@ -48,23 +48,23 @@ namespace Runtime
 
             foreach (string plugin in gameSettings!.Plugins)
             {
-               AssemblyLoader.LoadPlugin(plugin);
+                AssemblyLoader.LoadPlugin(plugin);
             }
-   			IGraphicsPipeline graphicsPipeline = new DefaultGraphicsPipeline();
-   			Log($"Using graphicsPipeline: {graphicsPipeline}.");
-   			window.SetGraphicsPipeline(graphicsPipeline);
+            IGraphicsPipeline graphicsPipeline = new DefaultGraphicsPipeline();
+            Log($"Using graphicsPipeline: {graphicsPipeline}.");
+            window.SetGraphicsPipeline(graphicsPipeline);
 
-			   if (File.Exists(gameSettings!.CodePath))
-			   {
-				   Log($"Loading user code from {gameSettings.CodePath}");
-				   AssemblyLoader.LoadAndRun(gameSettings.CodePath);
-			   }
-			   else
-			   {
-				   Error($"Could not load user code from path {gameSettings!.CodePath}. File not found!");
-			   }
+            if (File.Exists(gameSettings!.CodePath))
+            {
+                Log($"Loading user code from {gameSettings.CodePath}");
+                AssemblyLoader.LoadAndRun(gameSettings.CodePath);
+            }
+            else
+            {
+                Error($"Could not load user code from path {gameSettings!.CodePath}. File not found!");
+            }
 
-   			onReady?.Invoke();
+            onReady?.Invoke();
             Log($"Opening window...");
             window.Run(); // Keeps the thread blocked until closed.
             Log($"Cleaning up...");
@@ -79,11 +79,11 @@ namespace Runtime
         {
             if (0 != args.Length)
             {
-               Game.Start(args[0]);
+                Game.Start(args[0]);
             }
             else
             {
-               Logging.Debug.Error("(FATALITY) No project given");
+                Logging.Debug.Error("(FATALITY) No project given");
             }
         }
     }

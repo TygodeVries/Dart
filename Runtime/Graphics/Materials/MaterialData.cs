@@ -29,7 +29,7 @@ namespace Runtime.Graphics.Materials
             {
                 if (field.Type == "vec4")
                 {
-                    material.SetVector4(field.Name, Encoder.OVec4(field.Value));
+                    material.SetVector4(field.Name, Vector4.Parse(field.Value));
                 }
 
                 if (field.Type == "sampler2D")

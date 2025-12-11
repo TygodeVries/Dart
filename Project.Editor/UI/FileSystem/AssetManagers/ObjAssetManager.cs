@@ -2,6 +2,7 @@
 using Project.Editor.UI.FileSystem.FileInspectors;
 using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Inspectors.Inspections;
+using Runtime.Calc;
 using Runtime.Component.Core;
 using Runtime.Graphics;
 using Runtime.Graphics.Materials;
@@ -30,7 +31,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
 
             // Load a default shader
             material = new Material(ShaderProgram.FromFile("assets/shaders/previews/model_untextured.vert", "assets/shaders/previews/model_untextured.frag"));
-            material.SetVector3("tintColor", new OpenTK.Mathematics.Vector3(1, 1, 1));
+            material.SetVector3("tintColor", new Vector3(1, 1, 1));
         }
 
         public override Texture GetIcon()
@@ -75,7 +76,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             Scene.main.Instantiate(new GameObjectFactory()
                 .AddComponent(new Transform()
                 {
-                    position = new OpenTK.Mathematics.Vector3(0, 0, -4)
+                    position = new Vector3(0, 0, -4)
                 })
                 .AddComponent(sceneCamera)
                 .AddComponent(new CameraPreview())

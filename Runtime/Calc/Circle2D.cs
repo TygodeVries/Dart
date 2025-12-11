@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Runtime.Calc
+﻿namespace Runtime.Calc
 {
     /// <summary>
     /// A 2 dimensional circle todo math with
@@ -25,28 +18,28 @@ namespace Runtime.Calc
         {
             Vector2 y0 = (x0 + x1) / 2f;
             Vector2 y1 = (x1 + x2) / 2f;
-            Vector2 d0 = (x1 - x0);
-            Vector2 d1 = (x2 - x1);
+            Vector2 d0 = x1 - x0;
+            Vector2 d1 = x2 - x1;
 
             Vector3 l0 = new Vector3(
-                d0.X,
-                d0.Y,
-                -y0.X * d0.X - y0.Y * d0.Y
+                d0.x,
+                d0.y,
+                (-y0.x * d0.x) - (y0.y * d0.y)
                 );
 
             Vector3 l1 = new Vector3(
-                d1.X,
-                d1.Y,
-                -y1.X * d1.X - y1.Y * d1.Y
+                d1.x,
+                d1.y,
+                (-y1.x * d1.x) - (y1.y * d1.y)
                 );
 
 
             Vector3 xm = Vector3.Cross(l0, l1);
 
-            xm.X /= xm.Z;
-            xm.Y /= xm.Z;
+            xm.x /= xm.z;
+            xm.y /= xm.z;
 
-            center = new Vector2(xm.X, xm.Y);
+            center = new Vector2(xm.x, xm.y);
             radius = MathF.Sqrt(Vector2.Dot(center - x0, center - x0));
         }
 
