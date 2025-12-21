@@ -16,7 +16,7 @@ namespace Project.Editor.UI.FileSystem
         Texture folderTexture;
         public ProjectWindow()
         {
-            folderTexture = new Texture("assets/textures/icons/folder.png");
+            folderTexture = Texture.LoadFromPng("assets/textures/icons/folder.png");
         }
 
          string browsePath = "assets";
