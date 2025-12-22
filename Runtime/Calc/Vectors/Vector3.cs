@@ -13,6 +13,16 @@ namespace Runtime.Calc
         public static Vector3 UnitY => new Vector3(0, 1, 0);
         public static Vector3 Up => new Vector3(0, 1, 0);
 
+        public static float Distance(Vector3 a, Vector3 b)
+        {
+            float dx = a.x - b.x;
+            float dy = a.y - b.y;
+            float dz = a.z - b.z;
+
+            return MathF.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
+        }
+
+
         public Vector3(float x, float y, float z)
         {
             this.x = x;
@@ -133,7 +143,7 @@ namespace Runtime.Calc
             return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
         }
 
-        public Vector3 Parse(string text)
+        public static Vector3 Parse(string text)
         {
             string[] args = text.Split(' ');
             float x = float.Parse(args[0], CultureInfo.InvariantCulture);

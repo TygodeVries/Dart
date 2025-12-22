@@ -9,21 +9,26 @@ namespace Runtime.Scenes
     {
         public static void Load(Scene scene)
         {
-            Scene.main.Unload();
+            if (Scene.main != null)
+                Scene.main?.Unload();
+
             Scene.main = scene;
         }
 
         public void Unload()
         {
             // #Todo make this better
-            if (RenderCanvas.main!.GetGraphicsPipeline() is DefaultGraphicsPipeline defaultGraphics)
+            if (RenderCanvas.main != null)
             {
-                defaultGraphics.ClearRenderers();
+                if (RenderCanvas.main!.GetGraphicsPipeline() is DefaultGraphicsPipeline defaultGraphics)
+                {
+                    defaultGraphics.ClearRenderers();
+                }
             }
 
             foreach (GameObject gameObject in gameObjects)
             {
-
+                gameObject.Unload();
             }
 
             gameObjects.Clear();
@@ -42,7 +47,7 @@ namespace Runtime.Scenes
         }
 
         // Implicitly make the main scene an empty scene
-        public static Scene main = new Scene();
+        public static Scene main { get; private set; } = new Scene();
 
         public PhysicsSolver physicsSolver = new PhysicsSolver();
         public Scene()

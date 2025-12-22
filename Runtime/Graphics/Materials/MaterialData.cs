@@ -1,6 +1,7 @@
 ﻿using Runtime.Calc;
 using Runtime.Graphics.Shaders;
 using Runtime.Logging;
+using System.Globalization;
 using System.Text.Json;
 
 namespace Runtime.Graphics.Materials
@@ -31,8 +32,15 @@ namespace Runtime.Graphics.Materials
                 {
                     material.SetVector4(field.Name, Vector4.Parse(field.Value));
                 }
-
-                if (field.Type == "sampler2D")
+                else if (field.Type == "vec3")
+                {
+                    material.SetVector3(field.Name, Vector3.Parse(field.Value));
+                }
+                else if (field.Type == "float")
+                {
+                    material.SetFloat(field.Name, float.Parse(field.Value, CultureInfo.InvariantCulture));
+                }
+                else if (field.Type == "sampler2D")
                 {
                     material.SetTexture(field.Name, Texture.LoadFromPng(field.Value), textureIds);
                     textureIds++;
@@ -66,6 +74,8 @@ namespace Runtime.Graphics.Materials
         }
     }
 
+
+    // #TODO maybe later replace this with ValueRecord?
     public class MaterialDataField
     {
         public required string Name { get; set; }

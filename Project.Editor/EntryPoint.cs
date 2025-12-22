@@ -11,7 +11,6 @@ using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
 using Runtime.Logging;
 using Runtime.Objects;
-using Runtime.Physics.Raycasts;
 using Runtime.Scenes;
 
 namespace Editor
@@ -49,33 +48,33 @@ namespace Editor
             AssetDatabase.Start();
 
 
-         Mesh? mesh = Mesh.FromFileObj("assets\\models\\modelpreview_sphere.obj");
-         Mesh? mesh2 = Mesh.FromFileObj("assets\\models\\modelpreview_box.obj");
-         
-         Material? material = new Material(
-            Runtime.Graphics.Shaders.ShaderProgram.FromFile("assets\\shaders\\previews\\model_untextured.vert", "assets\\shaders\\previews\\model_untextured.frag"));
+            Mesh? mesh = Mesh.FromFileObj("assets\\models\\modelpreview_sphere.obj");
+            Mesh? mesh2 = Mesh.FromFileObj("assets\\models\\modelpreview_box.obj");
 
-         GameObject cam;
-         Scene.main.Instantiate(cam = new Runtime.Objects.GameObjectFactory()
-            .AddComponent<Camera>()
-            .AddComponent<Transform>()
-            .AddComponent<TestCameraControls>().Build());
+            Material? material = new Material(
+               Runtime.Graphics.Shaders.ShaderProgram.FromFile("assets\\shaders\\previews\\model_untextured.vert", "assets\\shaders\\previews\\model_untextured.frag"));
 
-         cam.GetComponent<Camera>().SetAsMain();
+            GameObject cam;
+            Scene.main.Instantiate(cam = new Runtime.Objects.GameObjectFactory()
+               .AddComponent<Camera>()
+               .AddComponent<Transform>()
+               .AddComponent<TestCameraControls>().Build());
 
-         GameObject t = new GameObjectFactory()
-            .AddComponent(new MeshRenderer(material) { mesh = mesh2 })
-            .AddComponent<Transform>().Build();
+            cam.GetComponent<Camera>().SetAsMain();
 
-         Scene.main.Instantiate(t);
+            GameObject t = new GameObjectFactory()
+               .AddComponent(new MeshRenderer(material) { mesh = mesh2 })
+               .AddComponent<Transform>().Build();
 
-         Scene.main.Instantiate(new Runtime.Objects.GameObjectFactory()
-            .AddComponent(
-            new SphereCollider() { radius = 1 }
-            ).AddComponent(new MeshRenderer(material)
-            {
-               mesh = mesh
-            }).AddComponent(new RaycastTester(t)).Build());
+            Scene.main.Instantiate(t);
+
+            Scene.main.Instantiate(new Runtime.Objects.GameObjectFactory()
+               .AddComponent(
+               new SphereCollider() { radius = 1 }
+               ).AddComponent(new MeshRenderer(material)
+               {
+                   mesh = mesh
+               }).AddComponent(new RaycastTester(t)).Build());
 
             AssetDatabase.Refresh();
 

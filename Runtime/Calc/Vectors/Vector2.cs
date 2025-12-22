@@ -1,4 +1,6 @@
-﻿namespace Runtime.Calc
+﻿using System.Globalization;
+
+namespace Runtime.Calc
 {
     public struct Vector2
     {
@@ -11,6 +13,19 @@
         {
             this.x = x;
             this.y = y;
+        }
+
+        public override string ToString()
+        {
+            return $"{x.ToString(CultureInfo.InvariantCulture)} {y.ToString(CultureInfo.InvariantCulture)}";
+        }
+
+        public static Vector2 Parse(string text)
+        {
+            string[] args = text.Split(' ');
+            float x = float.Parse(args[0], CultureInfo.InvariantCulture);
+            float y = float.Parse(args[1], CultureInfo.InvariantCulture);
+            return new Vector2(x, y);
         }
 
         public static float Distance(Vector2 v1, Vector2 v2)

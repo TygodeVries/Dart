@@ -7,6 +7,19 @@ namespace Runtime.Objects
         private Dictionary<Type, IComponent> componentMap = new();
         private List<IComponent> components = new();
 
+        public void Unload()
+        {
+            foreach (var component in components)
+            {
+                component.Unload();
+            }
+        }
+
+        public List<IComponent> GetComponents()
+        {
+            return components;
+        }
+
         public T? GetComponent<T>() where T : IComponent
         {
             // Try to get by exact type first

@@ -63,21 +63,27 @@ namespace Project.Editor.Data
         /// <returns></returns>
         public static List<string> GetAllAssetsOfType(string type)
         {
-            List<string> assets = new List<string>();
+            List<string> result = new List<string>();
 
             var content = GetAllAssets();
             lock (content)
             {
-                foreach (KeyValuePair<string, string> pairs in content)
+                foreach (var pair in content)
                 {
-                    if (pairs.Value == type)
+                    if (pair.Value == type)
                     {
-                        assets.Add(pairs.Key);
+                        // Convert absolute → relative
+                        string relativePath =
+                            Path.GetRelativePath(Editor.projectPath, pair.Key);
+
+                        result.Add(relativePath);
                     }
                 }
             }
-            return assets;
+
+            return result;
         }
+
 
         public static event Action? DatabaseRefreshed;
 

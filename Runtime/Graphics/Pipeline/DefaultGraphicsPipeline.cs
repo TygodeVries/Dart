@@ -77,7 +77,10 @@ namespace Runtime.Graphics.Pipeline
                 view = renderCamera.GetViewMatrix();
                 projection = renderCamera.GetProjectionMatrix();
             }
-
+            else
+            {
+                GL.ClearColor(0.5f, 0, 0, 1);
+            }
 
             foreach (Renderer renderer in renderers)
             {

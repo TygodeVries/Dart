@@ -12,12 +12,12 @@ namespace Runtime.Component.Core
         /// <summary>
         /// The position of the object
         /// </summary>
-        public Vector3 position = Vector3.Zero;
+        [Inspectable] public Vector3 position = Vector3.Zero;
 
         /// <summary>
         /// The rotation, in euler angles (degrees) of the object
         /// </summary>
-        public Vector3 rotation;
+        [Inspectable] public Vector3 rotation;
 
         /// <summary>
         /// The forwards facing direction of the object.

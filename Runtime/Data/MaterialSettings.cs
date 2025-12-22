@@ -1,11 +1,6 @@
 ﻿using Runtime.Graphics.Materials;
 using Runtime.Graphics.Shaders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Runtime.Data
 {
@@ -23,12 +18,13 @@ namespace Runtime.Data
             return new Material(shaderProgram);
         }
 
-      private MaterialSettings()
-      {
-         Fragment = Vertex = "";
-      }
+        public MaterialSettings()
+        {
+            Fragment = "";
+            Vertex = "";
+        }
 
-        public string Vertex {  get; set; }
+        public string Vertex { get; set; }
         public string Fragment { get; set; }
     }
 }

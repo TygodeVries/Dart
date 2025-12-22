@@ -31,7 +31,7 @@ namespace Runtime.Graphics.Shaders
             catch (Exception e)
             {
                 Debug.Error($"Could not load ShaderProgram from files {vertex} & {fragment}! Because: " + e);
-                throw new FileNotFoundException();
+                return new ShaderProgram("error", "error");
             }
         }
 

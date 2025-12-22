@@ -12,11 +12,11 @@ namespace Project.Editor.UI
 
             ImGui.StyleColorsDark();
 
-            style.WindowRounding = 6f;
-            style.FrameRounding = 5f;
-            style.GrabRounding = 4f;
-            style.ScrollbarRounding = 6f;
-            style.TabRounding = 4f;
+            style.WindowRounding = 8f;
+            style.FrameRounding = 8f;
+            style.GrabRounding = 8f;
+            style.ScrollbarRounding = 8f;
+            style.TabRounding = 8f;
 
             style.FramePadding = new Vector2(6f, 4f);
             style.ItemSpacing = new Vector2(8f, 6f);

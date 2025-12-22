@@ -1,6 +1,7 @@
 ﻿
 using OpenTK.Graphics.OpenGL;
 using Runtime.Calc;
+using Runtime.Data;
 using Runtime.Graphics.Shaders;
 using Runtime.Scenes;
 
@@ -17,6 +18,11 @@ namespace Runtime.Graphics.Materials
 
         public bool matrixEnabled = true;
 
+        public static Material LoadFromFile(string filePath)
+        {
+            MaterialSettings settings = MaterialSettings.LoadFromFile(filePath);
+            return settings.GetMaterial();
+        }
 
         /// <summary>
         /// Start sending lighting information to any attached shaders

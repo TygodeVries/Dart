@@ -5,6 +5,7 @@ using Runtime.Graphics;
 using Runtime.Graphics.Pipeline;
 using Runtime.Plugins;
 using Runtime.Scenes;
+using Runtime.Tests;
 using static Runtime.Logging.Debug;
 
 namespace Runtime
@@ -17,6 +18,25 @@ namespace Runtime
         public static int height = 480 * 2;
         public static void Start(string path)
         {
+            Log("Starting Tests...");
+            Test[] tests = { new ValueRecordTest(), new PrefabRecordTest() };
+
+            foreach (var test in tests)
+            {
+                (TestResult result, string reason) result = test.Start();
+                if (result.result == TestResult.Success)
+                {
+                    Log($"Passed test {test.GetType()}! \"{result.reason}\"");
+                }
+
+                if (result.result == TestResult.Failure)
+                {
+                    Error($"Failed test {test.GetType()}! \"{result.reason}\"");
+                }
+            }
+
+            Log("Tests completed!");
+
             Log("Starting Dart v0.1...");
             Log($"Working from {path}");
             Directory.SetCurrentDirectory(path);
@@ -42,7 +62,7 @@ namespace Runtime
             };
 
             Log($"Creating empty scene...");
-            Scene.main = new Scene();
+            Scene.Load(new Scene());
 
             RenderCanvas window = new RenderCanvas(nativeWindowSettings);
 

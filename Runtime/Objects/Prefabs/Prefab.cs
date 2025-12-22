@@ -1,4 +1,0 @@
-﻿namespace Runtime.Objects.Prefabs
-{
-
-}

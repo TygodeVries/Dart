@@ -4,49 +4,41 @@ using Runtime.Calc;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Shaders;
 using Runtime.Logging;
+using System.Globalization;
 
 namespace Project.Editor.UI.Inspectors.Inspections
 {
     internal class MaterialAssetInspection : AssetInspection
     {
-        MaterialData? materialData;
+        private MaterialData? materialData;
+
         public override void Open()
         {
-
+            materialData = MaterialData.FromJson(GetActiveFilePath());
         }
 
         public override void Render()
         {
-            materialData = MaterialData.FromJson(GetActiveFilePath());
+            if (materialData == null)
+                return;
 
             string[] vertexShaders = AssetDatabase.GetAllAssetsOfType(".vert").ToArray();
             string[] fragmentShaders = AssetDatabase.GetAllAssetsOfType(".frag").ToArray();
 
+            // Vertex shader selector
+            RenderShaderSelector("Vertex Shader", vertexShaders, true);
 
-            // Get the current vertex shader
-            int current = vertexShaders.ToList().IndexOf(materialData.VertexShader);
-            if (current == -1)
-                current = 0;
+            // Fragment shader selector
+            RenderShaderSelector("Fragment Shader", fragmentShaders, false);
 
-            // Draw vertex UI
-            RenderShaderSelector("Vertex Shader", vertexShaders, current, true);
+            if (string.IsNullOrEmpty(materialData.VertexShader) ||
+                string.IsNullOrEmpty(materialData.FragmentShader))
+                return;
 
-            string currentVertexShader = vertexShaders[current];
-
-            // Get current fragment shader
-            current = fragmentShaders.ToList().IndexOf(materialData.FragmentShader);
-            if (current == -1)
-                current = 0;
-
-            // Draw fragment UI
-            RenderShaderSelector("Fragment Shader", fragmentShaders, current, false);
-
-            string currentFragmentShader = fragmentShaders[current];
-
-            RenderFields(currentVertexShader, currentFragmentShader, materialData);
+            RenderFields(materialData.VertexShader, materialData.FragmentShader, materialData);
         }
 
-        private void RenderShaderSelector(string title, string[] shaders, int current, bool writeToVertex)
+        private void RenderShaderSelector(string title, string[] shaders, bool writeToVertex)
         {
             if (shaders.Length == 0)
             {
@@ -54,21 +46,38 @@ namespace Project.Editor.UI.Inspectors.Inspections
                 return;
             }
 
-            if (ImGui.BeginCombo(title, Path.GetRelativePath(Editor.projectPath, shaders[current])))
+            string currentPath = writeToVertex
+                ? materialData!.VertexShader
+                : materialData!.FragmentShader;
+
+            int current = Array.IndexOf(shaders, currentPath);
+            if (current < 0)
+            {
+                Debug.Error("Could not find the shader in a list of shaders!");
+                current = 0;
+            }
+            string preview = shaders[current];
+
+            if (ImGui.BeginCombo(title, preview))
             {
                 for (int i = 0; i < shaders.Length; i++)
                 {
-                    if (ImGui.Selectable(Path.GetRelativePath(Editor.projectPath, shaders[i]), i == current))
+                    bool selected = i == current;
+
+                    string shaderPath = shaders[i];
+
+                    if (ImGui.Selectable(shaderPath, selected))
                     {
-                        current = i;
-
                         if (writeToVertex)
-                            materialData.VertexShader = shaders[i];
+                            materialData!.VertexShader = shaderPath;
                         else
-                            materialData.FragmentShader = shaders[i];
+                            materialData!.FragmentShader = shaderPath;
 
-                        materialData.Save();
+                        materialData!.Save();
                     }
+
+                    if (selected)
+                        ImGui.SetItemDefaultFocus();
                 }
 
                 ImGui.EndCombo();
@@ -80,27 +89,27 @@ namespace Project.Editor.UI.Inspectors.Inspections
             ShaderProgram shaderProgram = ShaderProgram.FromFile(vertexShader, fragmentShader);
 
             bool shouldSave = false;
-            int fieldindex = 0;
+
             foreach (Uniform uniform in shaderProgram.GetUniforms())
             {
-                fieldindex++;
                 if (!uniform.showInInspector)
                     continue;
 
-                string displayName = uniform.name.Replace("u_", "");
+                ImGui.PushID(uniform.name);
 
+                string displayName = uniform.name.Replace("u_", "");
                 ImGui.Text(displayName);
+
                 var field = materialData.DataFields
                     .FirstOrDefault(e => e.Name == uniform.name);
 
-
                 if (field == null)
                 {
-                    field = new MaterialDataField()
+                    field = new MaterialDataField
                     {
                         Name = uniform.name,
                         Type = uniform.type,
-                        Value = "default"
+                        Value = GetDefaultValue(uniform.type)
                     };
 
                     materialData.DataFields.Add(field);
@@ -109,40 +118,85 @@ namespace Project.Editor.UI.Inspectors.Inspections
 
                 if (uniform.type == "vec4")
                 {
-                    System.Numerics.Vector4 val = Vector4.Parse(field.Value).ToNumerics();
-                    if (ImGui.ColorPicker4($"vec4##{fieldindex}", ref val))
+                    var val = Vector4.Parse(field.Value).ToNumerics();
+                    if (ImGui.ColorPicker4("##vec4", ref val))
                     {
                         field.Value = new Vector4(val).ToString();
                         shouldSave = true;
                     }
                 }
-
-                if (uniform.type == "sampler2D")
+                else if (uniform.type == "vec3")
                 {
-                    List<string> textures = AssetDatabase.GetAllAssetsOfType(".png");
-                    int current = textures.IndexOf(field.Value);
-                    if (current == -1)
-                        current = 0;
-                    if (ImGui.BeginCombo($"sampler2D##{fieldindex}", Path.GetRelativePath(Editor.projectPath, textures[current])))
+                    var val = Vector3.Parse(field.Value).ToNumerics();
+                    if (ImGui.ColorPicker3("##vec3", ref val))
                     {
-                        for (int i = 0; i < textures.Count; i++)
-                        {
-                            if (ImGui.Selectable(Path.GetRelativePath(Editor.projectPath, textures[i]), i == current))
-                            {
-                                field.Value = textures[i];
-                                shouldSave = true;
-                            }
-                        }
-
-                        ImGui.EndCombo();
+                        field.Value = new Vector3(val).ToString();
+                        shouldSave = true;
                     }
                 }
+                else if (uniform.type == "float")
+                {
+                    float val = float.Parse(field.Value, CultureInfo.InvariantCulture);
+                    if (ImGui.InputFloat("##float", ref val))
+                    {
+                        field.Value = val.ToString(CultureInfo.InvariantCulture);
+                        shouldSave = true;
+                    }
+                }
+                else if (uniform.type == "sampler2D")
+                {
+                    List<string> textures = AssetDatabase.GetAllAssetsOfType(".png");
+
+                    if (textures.Count == 0)
+                    {
+                        ImGui.TextDisabled("No textures found");
+                    }
+                    else
+                    {
+                        int current = textures.IndexOf(field.Value);
+                        if (current < 0)
+                        {
+                            Debug.Error("Could not find the current shader inside of the list of active shaders!");
+                            current = 0;
+                        }
+                        string preview = textures[current];
+
+                        if (ImGui.BeginCombo("##sampler2D", preview))
+                        {
+                            for (int i = 0; i < textures.Count; i++)
+                            {
+                                bool selected = i == current;
+                                string label = textures[i];
+
+                                if (ImGui.Selectable(label, selected))
+                                {
+                                    field.Value = textures[i];
+                                    shouldSave = true;
+                                }
+
+                                if (selected)
+                                    ImGui.SetItemDefaultFocus();
+                            }
+
+                            ImGui.EndCombo();
+                        }
+                    }
+                }
+
+                ImGui.PopID();
             }
 
             if (shouldSave)
-            {
                 materialData.Save();
-            }
+        }
+
+        private static string GetDefaultValue(string type)
+        {
+            if (type == "vec4") return "0,0,0,1";
+            else if (type == "vec3") return "0,0,0";
+            else if (type == "float") return "0";
+            else if (type == "sampler2D") return "";
+            else return "";
         }
     }
 }

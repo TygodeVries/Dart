@@ -36,6 +36,12 @@ namespace Runtime.Component.Core
                 main = this;
         }
 
+        public override void Unload()
+        {
+            if (main == this)
+                main = null;
+        }
+
 
         /// <summary>
         /// Set this camera to be the main camera
@@ -78,7 +84,6 @@ namespace Runtime.Component.Core
         }
         public Raycast? GetRaycastFromMouse()
         {
-
             if (null == RenderCanvas.main)
             {
                 return null;
