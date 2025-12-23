@@ -42,7 +42,7 @@ namespace Runtime.Graphics.Materials
                 }
                 else if (field.Type == "sampler2D")
                 {
-                    material.SetTexture(field.Name, Texture.LoadFromPng(field.Value), textureIds);
+                    material.SetTexture(field.Name, Texture.LoadFromPng(Path.Join(workingDir, field.Value)), textureIds);
                     textureIds++;
                 }
             }

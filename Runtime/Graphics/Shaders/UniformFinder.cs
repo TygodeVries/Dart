@@ -8,13 +8,14 @@
             // Get individual lines of code
             string[] lines = source.Split(new char[] { ';', '}' });
             // Possible bug: this ignores the '#version 330 core' header of the files, so any files with uniforms as the first code line will not be parsed correctly.
-            // For the sake of itteration speed, I am going to ignore this for now. #TODO
+            // For the sake of iteration speed, I am going to ignore this for now. #TODO
 
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i].Trim();
                 bool isHiddenUniform = line.StartsWith("uniform");
                 bool isShownUniform = line.StartsWith("%show");
+
                 if (!isHiddenUniform && !isShownUniform)
                 {
                     continue;
@@ -22,6 +23,7 @@
 
                 Uniform uniform;
                 string[] args = line.Split(' ');
+
                 if (isHiddenUniform)
                 {
                     // 0 is for the word 'uniform'
@@ -37,6 +39,7 @@
                     string name = args[3];
                     uniform = new Uniform(type, name, true);
                 }
+
                 uniforms.Add(uniform);
             }
 

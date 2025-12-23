@@ -20,7 +20,10 @@ namespace Project.Editor.UI.Inspectors.Inspections
         public override void Render()
         {
             if (materialData == null)
+            {
+                ImGui.Text("Loading Material...");
                 return;
+            }
 
             string[] vertexShaders = AssetDatabase.GetAllAssetsOfType(".vert").ToArray();
             string[] fragmentShaders = AssetDatabase.GetAllAssetsOfType(".frag").ToArray();
@@ -35,48 +38,53 @@ namespace Project.Editor.UI.Inspectors.Inspections
                 string.IsNullOrEmpty(materialData.FragmentShader))
                 return;
 
-            RenderFields(materialData.VertexShader, materialData.FragmentShader, materialData);
+            ImGUIDrawUniformOptions(materialData.VertexShader, materialData.FragmentShader, materialData);
         }
 
         private void RenderShaderSelector(string title, string[] shaders, bool writeToVertex)
         {
             if (shaders.Length == 0)
             {
-                Debug.Warning("No shaders in selector!");
+                ImGui.Text("You have no shaders here.");
                 return;
             }
 
-            string currentPath = writeToVertex
+            string shaderPath = writeToVertex
                 ? materialData!.VertexShader
                 : materialData!.FragmentShader;
 
-            int current = Array.IndexOf(shaders, currentPath);
-            if (current < 0)
+            int currentShaderIndex = Array.IndexOf(shaders, shaderPath);
+            if (currentShaderIndex < 0)
             {
                 Debug.Error("Could not find the shader in a list of shaders!");
-                current = 0;
+                currentShaderIndex = 0; // Go to default
             }
-            string preview = shaders[current];
 
-            if (ImGui.BeginCombo(title, preview))
+            string currentShader = shaders[currentShaderIndex];
+
+            if (ImGui.BeginCombo(title, currentShader))
             {
                 for (int i = 0; i < shaders.Length; i++)
                 {
-                    bool selected = i == current;
+                    bool isSelectedShader = i == currentShaderIndex;
 
-                    string shaderPath = shaders[i];
+                    string selectedShader = shaders[i];
 
-                    if (ImGui.Selectable(shaderPath, selected))
+                    if (ImGui.Selectable(selectedShader, isSelectedShader))
                     {
+                        // When a shader is switched
+
                         if (writeToVertex)
-                            materialData!.VertexShader = shaderPath;
+                            materialData!.VertexShader = selectedShader;
                         else
-                            materialData!.FragmentShader = shaderPath;
+                            materialData!.FragmentShader = selectedShader;
+
+                        materialData.DataFields.Clear();
 
                         materialData!.Save();
                     }
 
-                    if (selected)
+                    if (isSelectedShader)
                         ImGui.SetItemDefaultFocus();
                 }
 
@@ -84,12 +92,19 @@ namespace Project.Editor.UI.Inspectors.Inspections
             }
         }
 
-        private void RenderFields(string vertexShader, string fragmentShader, MaterialData materialData)
+        /// <summary>
+        /// Showing shader fields
+        /// </summary>
+        /// <param name="vertexShader"></param>
+        /// <param name="fragmentShader"></param>
+        /// <param name="materialData"></param>
+        private void ImGUIDrawUniformOptions(string vertexShader, string fragmentShader, MaterialData materialData)
         {
-            ShaderProgram shaderProgram = ShaderProgram.FromFile(vertexShader, fragmentShader);
+            ShaderProgram shaderProgram = ShaderProgram.FromFile(Editor.projectPath + "/" + vertexShader, Editor.projectPath + "/" + fragmentShader);
 
             bool shouldSave = false;
 
+            ImGui.Text("Uniforms:");
             foreach (Uniform uniform in shaderProgram.GetUniforms())
             {
                 if (!uniform.showInInspector)
