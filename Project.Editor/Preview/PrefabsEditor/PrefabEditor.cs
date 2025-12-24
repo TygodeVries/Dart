@@ -33,6 +33,7 @@ namespace Project.Editor.Preview.PrefabsEditor
                 .AddComponent(new Transform())
                 .Build());
 
+
             return scene;
         }
     }

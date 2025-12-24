@@ -12,7 +12,7 @@ namespace Project.Editor.UI
 
             ImGui.StyleColorsDark();
 
-            style.WindowRounding = 8f;
+            style.WindowRounding = 0;
             style.FrameRounding = 8f;
             style.GrabRounding = 8f;
             style.ScrollbarRounding = 8f;

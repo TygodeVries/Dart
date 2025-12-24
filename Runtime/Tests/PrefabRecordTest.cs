@@ -35,7 +35,7 @@ namespace Runtime.Tests
             }
             else
             {
-                return (TestResult.Success, $"The values where not close enough {distance}");
+                return (TestResult.Failure, $"The values where not close enough {distance}");
             }
         }
     }

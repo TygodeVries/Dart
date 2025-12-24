@@ -19,7 +19,7 @@ namespace Runtime.Calc
 
         public static Vector4 Parse(string text)
         {
-            string[] args = text.Split(' ');
+            string[] args = text.Split(new char[] { ',', ' ', ';', ':', '|' }, StringSplitOptions.None);
             float x = float.Parse(args[0], CultureInfo.InvariantCulture);
             float y = float.Parse(args[1], CultureInfo.InvariantCulture);
             float z = float.Parse(args[2], CultureInfo.InvariantCulture);
