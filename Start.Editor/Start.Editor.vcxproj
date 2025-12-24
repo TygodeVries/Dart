@@ -127,12 +127,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Plugin.DearImGUI\Plugin.DearImGui.csproj">
-      <Project>{bb444564-31f0-b7b1-c22d-d47ca5a705d7}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Plugin.Windows.audio\Plugin.Windows.Audio.vcxproj">
-      <Project>{2005ab50-1b49-4d3a-7dc8-7203eac64f6f}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\Project.Editor\Project.Editor.csproj">
       <Project>{5c52d0af-7dd5-a3fd-9480-fa4e27ca21aa}</Project>
     </ProjectReference>

@@ -20,7 +20,6 @@ out vec3 light_direction_local;
 void main()
 {
     vec3 temp = aPosition;
-    temp = temp;
     gl_Position = uProjection * uView * uModel * vec4(temp, 1.0);
 
     Pos = vec3(uModel * vec4(aPosition, 1.0));

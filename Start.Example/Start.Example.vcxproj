@@ -136,8 +136,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\TestProject\assets\shaders\fixed.frag" />
-    <None Include="..\TestProject\assets\shaders\fixed.vert" />
+    <None Include="..\Assets.Example\assets\shaders\fixed.frag" />
+    <None Include="..\Assets.Example\assets\shaders\fixed.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Assets.Example\assets\shaders\particle_step.compute">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
