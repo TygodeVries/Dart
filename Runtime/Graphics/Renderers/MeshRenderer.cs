@@ -2,6 +2,7 @@
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Shaders;
 using Runtime.Logging;
+using Runtime.Objects;
 
 namespace Runtime.Graphics.Renderers
 {
@@ -43,6 +44,7 @@ namespace Runtime.Graphics.Renderers
         private int tbo;
 
         private Mesh? _mesh;  // backing field
+        [Inspectable]
         public Mesh? mesh
         {
             get => _mesh;

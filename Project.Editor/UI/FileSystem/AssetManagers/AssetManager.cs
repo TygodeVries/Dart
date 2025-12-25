@@ -6,6 +6,11 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
     public abstract class AssetManager
     {
         protected string? filepath;
+
+        public string? GetFilePath()
+        {
+            return filepath;
+        }
         public virtual Texture GetIcon()
         {
             return DefaultsTextures.GetFallbackTexture();

@@ -7,6 +7,8 @@ namespace Runtime.Calc
         public float x;
         public float y;
 
+        public static Vector2 One => new Vector2(1, 1);
+
         public static Vector2 Zero => new Vector2(0, 0);
 
         public Vector2(float x, float y)

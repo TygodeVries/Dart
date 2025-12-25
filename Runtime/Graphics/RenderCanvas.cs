@@ -116,8 +116,6 @@ namespace Runtime.Graphics
                 Console.WriteLine("Frame dropped!");
             }
             Scene.main.Update();
-            Mouse.current.EndOfFrame();
-            Keyboard.current.EndOfFrame();
         }
 
         int i = 0;
@@ -147,6 +145,9 @@ namespace Runtime.Graphics
 
             i++;
             SwapBuffers();
+
+            Mouse.current.EndOfFrame();
+            Keyboard.current.EndOfFrame();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Runtime.Calc;
 using Runtime.Logging;
 using System.Globalization;
+using System.Reflection;
 
 namespace Runtime.Data
 {
@@ -65,11 +66,45 @@ namespace Runtime.Data
 
                 case ValueRecordType.Vector4:
                     return Vector4.Parse(Value);
-
-                default:
-                    Debug.Error($"Unsupported type: {Type}");
-                    return null;
             }
+
+            var v = AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(a => a.GetTypes())
+                    .Where(t => typeof(AssetReference).IsAssignableFrom(t) && !t.IsAbstract);
+
+            foreach (var type in v)
+            {
+                AssetReferenceAttribute? attribute = type.GetCustomAttributes(typeof(AssetReferenceAttribute), false)
+                                   .FirstOrDefault() as AssetReferenceAttribute;
+
+                if (attribute.filetype.Contains(Path.GetExtension(Value).ToLower()))
+                {
+                    MethodInfo? method = type.GetMethod(attribute.createMethod);
+                    if (method == null)
+                    {
+                        Debug.Error($"AssetReference of type [{type.Name}] does not contain a method called {attribute.createMethod}");
+                        return null;
+                    }
+
+                    var info = method.GetParameters();
+                    if (info.Length != 1)
+                    {
+                        Debug.Error($"AssetReference of type [{type.Name}] create method [{attribute.createMethod}] contained more than 1, or none paramaters. It must always contain one, the file path.");
+                        return null;
+                    }
+
+                    if (!method.IsStatic)
+                    {
+                        Debug.Error($"AssetReference of type [{type.Name}] The creation method has to be static!");
+                    }
+
+                    // Get the created thing.
+                    return method.Invoke(null, new object[] { Value });
+                }
+            }
+
+            Debug.Log($"Could not solve {Value} of type {Type}");
+            return null;
         }
 
 
@@ -80,41 +115,46 @@ namespace Runtime.Data
                 case string s:
                     Type = ValueRecordType.String;
                     Value = s;
-                    break;
+                    return;
 
                 case float f:
                     Type = ValueRecordType.Float;
                     Value = f.ToString(CultureInfo.InvariantCulture);
-                    break;
+                    return;
 
                 case int i:
                     Type = ValueRecordType.Int;
                     Value = i.ToString(CultureInfo.InvariantCulture);
-                    break;
+                    return;
 
                 case Vector2 v2:
                     Type = ValueRecordType.Vector2;
                     Value = v2.ToString();
-                    break;
+                    return;
 
                 case Vector3 v3:
                     Type = ValueRecordType.Vector3;
                     Value = $"{v3.ToString()}";
-                    break;
+                    return;
 
                 case Vector4 v4:
                     Type = ValueRecordType.Vector4;
                     Value = $"{v4.ToString()}";
-                    break;
+                    return;
 
                 case bool b:
                     Type = ValueRecordType.Bool;
                     Value = $"{b.ToString()}";
-                    break;
+                    return;
 
                 default:
-                    Debug.Error($"Value of type {value.GetType()} is not supported!");
                     break;
+            }
+
+            if (typeof(AssetReference).IsAssignableFrom(value.GetType()))
+            {
+                Type = ValueRecordType.Asset;
+                Value = ((AssetReference)value).GetFilePath();
             }
         }
 
@@ -141,6 +181,9 @@ namespace Runtime.Data
             if (type == typeof(Vector4))
                 return ValueRecordType.Vector4;
 
+            if (typeof(AssetReference).IsAssignableFrom(type))
+                return ValueRecordType.Asset;
+
             return null;
         }
         public enum ValueRecordType
@@ -151,7 +194,8 @@ namespace Runtime.Data
             String,
             Vector2,
             Vector3,
-            Vector4
+            Vector4,
+            Asset
         }
     }
 }

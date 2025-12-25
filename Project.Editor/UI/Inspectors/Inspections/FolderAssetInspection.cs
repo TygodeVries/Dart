@@ -1,5 +1,5 @@
 ﻿using ImGuiNET;
-using 
+using Runtime.Calc;
 
 namespace Project.Editor.UI.Inspectors.Inspections
 {
@@ -7,15 +7,15 @@ namespace Project.Editor.UI.Inspectors.Inspections
     {
         public override void Open()
         {
-            color = GetActiveMetaData().GetVector4("color", new Vector4(1, 1, 1, 1));
+            color = GetActiveMetaData().GetVector4("color", new Vector4(1, 1, 1, 1)).ToNumerics();
         }
 
-        Vector4 color;
+        System.Numerics.Vector4 color;
         public override void Render()
         {
             if (ImGui.ColorPicker4("Folder Color", ref color))
             {
-                GetActiveMetaData().SetVector4("color", color);
+                GetActiveMetaData().SetVector4("color", new Vector4(color));
                 GetActiveMetaData().Save();
             }
         }

@@ -1,7 +1,7 @@
 ﻿using Project.Editor.UI.Inspectors;
+using Runtime.Calc;
 using Runtime.Logging;
 using System.Globalization;
-using 
 using System.Text.Json;
 
 namespace Project.Editor.Data
@@ -47,10 +47,10 @@ namespace Project.Editor.Data
                 string value = data[key];
                 string[] args = value.Split(' ');
                 Vector4 vector4 = new Vector4();
-                vector4.X = float.Parse(args[0], CultureInfo.InvariantCulture);
-                vector4.Y = float.Parse(args[1], CultureInfo.InvariantCulture);
-                vector4.Z = float.Parse(args[2], CultureInfo.InvariantCulture);
-                vector4.W = float.Parse(args[3], CultureInfo.InvariantCulture);
+                vector4.x = float.Parse(args[0], CultureInfo.InvariantCulture);
+                vector4.y = float.Parse(args[1], CultureInfo.InvariantCulture);
+                vector4.z = float.Parse(args[2], CultureInfo.InvariantCulture);
+                vector4.w = float.Parse(args[3], CultureInfo.InvariantCulture);
                 return vector4;
             }
 
@@ -62,7 +62,7 @@ namespace Project.Editor.Data
             if (data == null)
                 Load();
 
-            data![path] = $"{val.X.ToString(CultureInfo.InvariantCulture)} {val.Y.ToString(CultureInfo.InvariantCulture)} {val.Z.ToString(CultureInfo.InvariantCulture)} {val.W}";
+            data![path] = $"{val.x.ToString(CultureInfo.InvariantCulture)} {val.y.ToString(CultureInfo.InvariantCulture)} {val.z.ToString(CultureInfo.InvariantCulture)} {val.w}";
         }
 
         string path;

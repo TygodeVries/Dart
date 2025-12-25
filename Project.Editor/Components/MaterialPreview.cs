@@ -1,5 +1,5 @@
-﻿using Project.Editor.Data;
-using Project.Editor.UI.FileSystem.AssetManagers;
+﻿using Project.Editor.UI.FileSystem.AssetManagers;
+using Runtime;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
 using Runtime.Input;
@@ -17,7 +17,7 @@ namespace Project.Editor.Components
             this.workingDir = workingDir;
 
 
-            AssetDatabase.DatabaseRefreshed += AssetDatabase_DatabaseRefreshed;
+            Game.GetAssetDatabase().DatabaseRefreshed += AssetDatabase_DatabaseRefreshed;
         }
 
         int currentPreviewModel = 0;

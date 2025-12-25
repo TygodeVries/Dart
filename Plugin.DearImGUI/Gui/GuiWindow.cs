@@ -42,15 +42,19 @@ namespace Runtime.DearImGUI.Gui
             return "Unnamed Window";
         }
 
-        public void Begin()
+        public bool Begin()
         {
             bool isOpen = true;
-            ImGui.Begin($"{GetName()}##{GetId()}", ref isOpen, ImGuiWindowFlags.None);
+            bool visible = ImGui.Begin($"{GetName()}##{GetId()}", ref isOpen);
+
             if (!isOpen)
             {
                 GuiWindow.Disable(this);
-                return;
+                ImGui.End();
             }
+
+            return visible && isOpen;
         }
+
     }
 }

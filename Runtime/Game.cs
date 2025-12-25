@@ -12,9 +12,20 @@ using static Runtime.Logging.Debug;
 namespace Runtime
 {
     public delegate void DartEventHandler();
-
     public class Game
     {
+        private static AssetDatabase assetDatabase;
+
+        public static AssetDatabase GetAssetDatabase()
+        {
+            return assetDatabase;
+        }
+
+        public static void SetAssetDatabase(AssetDatabase assetDatabase)
+        {
+            Game.assetDatabase = assetDatabase;
+        }
+
         public static int width = 640 * 2;
         public static int height = 480 * 2;
         public static void Start(string path)
@@ -42,8 +53,12 @@ namespace Runtime
             Log($"Working from {path}");
             Directory.SetCurrentDirectory(path);
 
-			Log($"Loading {Path.Join(path, "GameSettings.json")}...");
-			GameSettings? gameSettings = Files.Load<GameSettings>("GameSettings.json");
+            Log($"Loading asset database...");
+            assetDatabase = new AssetDatabase(Directory.GetCurrentDirectory());
+            assetDatabase.Start();
+
+            Log($"Loading {Path.Join(path, "GameSettings.json")}...");
+            GameSettings? gameSettings = Files.Load<GameSettings>("GameSettings.json");
 
             if (null == gameSettings)
             {
@@ -51,21 +66,21 @@ namespace Runtime
                 return;
             }
 
-			Log("Attempting to switch to dedicated graphics card (If present)");
-			DedicatedSwitch.Switch();
+            Log("Attempting to switch to dedicated graphics card (If present)");
+            DedicatedSwitch.Switch();
 
-			Log($"Creating window of size {width}, {height}");
-			Log($"Setting window title to {gameSettings!.WindowTitle}");
-			var nativeWindowSettings = new NativeWindowSettings()
-			{
-				ClientSize = new Vector2i(width, height),
-				Title = gameSettings?.WindowTitle,
-			};
+            Log($"Creating window of size {width}, {height}");
+            Log($"Setting window title to {gameSettings!.WindowTitle}");
+            var nativeWindowSettings = new NativeWindowSettings()
+            {
+                ClientSize = new Vector2i(width, height),
+                Title = gameSettings?.WindowTitle,
+            };
 
             Log($"Creating empty scene...");
             Scene.Load(new Scene());
 
-			RenderCanvas window = new RenderCanvas(nativeWindowSettings);
+            RenderCanvas window = new RenderCanvas(nativeWindowSettings);
 
             foreach (string plugin in gameSettings!.Plugins)
             {
@@ -91,22 +106,22 @@ namespace Runtime
             Log($"Cleaning up...");
         }
 
-		public static event DartEventHandler? onReady;
-	}
+        public static event DartEventHandler? onReady;
+    }
 
-	class Program
-	{
-		public static void Main(string[] args)
-		{
-			CultureInfo.DefaultThreadCurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
-			if (0 != args.Length)
-			{
-				Game.Start(args[0]);
-			}
-			else
-			{
-				Logging.Debug.Error("(FATALITY) No project given");
-			}
-		}
-	}
+    class Program
+    {
+        public static void Main(string[] args)
+        {
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+            if (0 != args.Length)
+            {
+                Game.Start(args[0]);
+            }
+            else
+            {
+                Logging.Debug.Error("(FATALITY) No project given");
+            }
+        }
+    }
 }

@@ -41,6 +41,14 @@ namespace Runtime.DearImGUI.Backend
 
             ImguiImplOpenGL3.Init();
             RenderCanvas.main.FramebufferResize += Main_FramebufferResize;
+            RenderCanvas.main.TextInput += Main_TextInput;
+        }
+
+        private void Main_TextInput(OpenTK.Windowing.Common.TextInputEventArgs obj)
+        {
+            var io = ImGui.GetIO();
+
+            io.AddInputCharacter((uint)obj.Unicode);
         }
 
         private void Main_FramebufferResize(OpenTK.Windowing.Common.FramebufferResizeEventArgs obj)
@@ -80,14 +88,18 @@ namespace Runtime.DearImGUI.Backend
 
             foreach (GuiWindow guiWindow in guiWindows)
             {
-                if (guiWindow.WriteHeaderAndFooter)
-                    guiWindow.Begin();
-
-                guiWindow.Render();
+                bool began = true;
 
                 if (guiWindow.WriteHeaderAndFooter)
+                    began = guiWindow.Begin();
+
+                if (began)
+                    guiWindow.Render();
+
+                if (guiWindow.WriteHeaderAndFooter && began)
                     ImGui.End();
             }
+
 
             ImGui.Render();
 
@@ -104,6 +116,103 @@ namespace Runtime.DearImGUI.Backend
             }
         }
 
+        Dictionary<Keys, ImGuiKey> keyMap = new Dictionary<Keys, ImGuiKey>
+        {
+            // Letters
+            { Keys.A, ImGuiKey.A },
+            { Keys.B, ImGuiKey.B },
+            { Keys.C, ImGuiKey.C },
+            { Keys.D, ImGuiKey.D },
+            { Keys.E, ImGuiKey.E },
+            { Keys.F, ImGuiKey.F },
+            { Keys.G, ImGuiKey.G },
+            { Keys.H, ImGuiKey.H },
+            { Keys.I, ImGuiKey.I },
+            { Keys.J, ImGuiKey.J },
+            { Keys.K, ImGuiKey.K },
+            { Keys.L, ImGuiKey.L },
+            { Keys.M, ImGuiKey.M },
+            { Keys.N, ImGuiKey.N },
+            { Keys.O, ImGuiKey.O },
+            { Keys.P, ImGuiKey.P },
+            { Keys.Q, ImGuiKey.Q },
+            { Keys.R, ImGuiKey.R },
+            { Keys.S, ImGuiKey.S },
+            { Keys.T, ImGuiKey.T },
+            { Keys.U, ImGuiKey.U },
+            { Keys.V, ImGuiKey.V },
+            { Keys.W, ImGuiKey.W },
+            { Keys.X, ImGuiKey.X },
+            { Keys.Y, ImGuiKey.Y },
+            { Keys.Z, ImGuiKey.Z },
+
+            // Numbers (top row)
+            { Keys.D0, ImGuiKey._0 },
+            { Keys.D1, ImGuiKey._1 },
+            { Keys.D2, ImGuiKey._2 },
+            { Keys.D3, ImGuiKey._3 },
+            { Keys.D4, ImGuiKey._4 },
+            { Keys.D5, ImGuiKey._5 },
+            { Keys.D6, ImGuiKey._6 },
+            { Keys.D7, ImGuiKey._7 },
+            { Keys.D8, ImGuiKey._8 },
+            { Keys.D9, ImGuiKey._9 },
+
+            // Function keys
+            { Keys.F1, ImGuiKey.F1 },
+            { Keys.F2, ImGuiKey.F2 },
+            { Keys.F3, ImGuiKey.F3 },
+            { Keys.F4, ImGuiKey.F4 },
+            { Keys.F5, ImGuiKey.F5 },
+            { Keys.F6, ImGuiKey.F6 },
+            { Keys.F7, ImGuiKey.F7 },
+            { Keys.F8, ImGuiKey.F8 },
+            { Keys.F9, ImGuiKey.F9 },
+            { Keys.F10, ImGuiKey.F10 },
+            { Keys.F11, ImGuiKey.F11 },
+            { Keys.F12, ImGuiKey.F12 },
+
+            // Modifiers
+            { Keys.LeftShift, ImGuiKey.ModShift },
+            { Keys.RightShift, ImGuiKey.ModShift },
+            { Keys.LeftControl, ImGuiKey.ModCtrl },
+            { Keys.RightControl, ImGuiKey.ModCtrl },
+            { Keys.LeftAlt, ImGuiKey.ModAlt },
+            { Keys.RightAlt, ImGuiKey.ModAlt },
+            { Keys.LeftSuper, ImGuiKey.ModSuper },
+            { Keys.RightSuper, ImGuiKey.ModSuper },
+
+            // Navigation
+            { Keys.Up, ImGuiKey.UpArrow },
+            { Keys.Down, ImGuiKey.DownArrow },
+            { Keys.Left, ImGuiKey.LeftArrow },
+            { Keys.Right, ImGuiKey.RightArrow },
+
+            // Symbols and misc
+            { Keys.Enter, ImGuiKey.Enter },
+            { Keys.Escape, ImGuiKey.Escape },
+            { Keys.Tab, ImGuiKey.Tab },
+            { Keys.Backspace, ImGuiKey.Backspace },
+            { Keys.Insert, ImGuiKey.Insert },
+            { Keys.Delete, ImGuiKey.Delete },
+            { Keys.PageUp, ImGuiKey.PageUp },
+            { Keys.PageDown, ImGuiKey.PageDown },
+            { Keys.Home, ImGuiKey.Home },
+            { Keys.End, ImGuiKey.End },
+            { Keys.Space, ImGuiKey.Space },
+            { Keys.Minus, ImGuiKey.Minus },
+            { Keys.Equal, ImGuiKey.Equal },
+            { Keys.LeftBracket, ImGuiKey.LeftBracket },
+            { Keys.RightBracket, ImGuiKey.RightBracket },
+            { Keys.Backslash, ImGuiKey.Backslash },
+            { Keys.Semicolon, ImGuiKey.Semicolon },
+            { Keys.Apostrophe, ImGuiKey.Apostrophe },
+            { Keys.Comma, ImGuiKey.Comma },
+            { Keys.Period, ImGuiKey.Period },
+            { Keys.Slash, ImGuiKey.Slash },
+            { Keys.GraveAccent, ImGuiKey.GraveAccent },
+        };
+
         void InputData()
         {
             // Mouse Position
@@ -115,12 +224,10 @@ namespace Runtime.DearImGUI.Backend
             io.MouseDown[1] = Mouse.current.rightPressed;
             io.MouseDown[2] = Mouse.current.middlePressed;
 
-            Keys[] keys = (Keys[])Enum.GetValues(typeof(Keys));
-            Keyboard.current.IsPressed(Keys.A);
-
             foreach (var v in keyMap)
             {
                 bool isPressedThisFrame = Keyboard.current.IsPressedThisFrame(v.Key);
+
                 if (isPressedThisFrame)
                 {
                     io.AddKeyEvent(v.Value, true);
@@ -140,103 +247,5 @@ namespace Runtime.DearImGUI.Backend
             io.KeySuper = Keyboard.current.IsPressed(Keys.LeftSuper) || Keyboard.current.IsPressed(Keys.RightSuper);
 
         }
-
-        Dictionary<Keys, ImGuiKey> keyMap = new Dictionary<Keys, ImGuiKey>
-{
-    // Letters
-    { Keys.A, ImGuiKey.A },
-    { Keys.B, ImGuiKey.B },
-    { Keys.C, ImGuiKey.C },
-    { Keys.D, ImGuiKey.D },
-    { Keys.E, ImGuiKey.E },
-    { Keys.F, ImGuiKey.F },
-    { Keys.G, ImGuiKey.G },
-    { Keys.H, ImGuiKey.H },
-    { Keys.I, ImGuiKey.I },
-    { Keys.J, ImGuiKey.J },
-    { Keys.K, ImGuiKey.K },
-    { Keys.L, ImGuiKey.L },
-    { Keys.M, ImGuiKey.M },
-    { Keys.N, ImGuiKey.N },
-    { Keys.O, ImGuiKey.O },
-    { Keys.P, ImGuiKey.P },
-    { Keys.Q, ImGuiKey.Q },
-    { Keys.R, ImGuiKey.R },
-    { Keys.S, ImGuiKey.S },
-    { Keys.T, ImGuiKey.T },
-    { Keys.U, ImGuiKey.U },
-    { Keys.V, ImGuiKey.V },
-    { Keys.W, ImGuiKey.W },
-    { Keys.X, ImGuiKey.X },
-    { Keys.Y, ImGuiKey.Y },
-    { Keys.Z, ImGuiKey.Z },
-
-    // Numbers (top row)
-    { Keys.D0, ImGuiKey._0 },
-    { Keys.D1, ImGuiKey._1 },
-    { Keys.D2, ImGuiKey._2 },
-    { Keys.D3, ImGuiKey._3 },
-    { Keys.D4, ImGuiKey._4 },
-    { Keys.D5, ImGuiKey._5 },
-    { Keys.D6, ImGuiKey._6 },
-    { Keys.D7, ImGuiKey._7 },
-    { Keys.D8, ImGuiKey._8 },
-    { Keys.D9, ImGuiKey._9 },
-
-    // Function keys
-    { Keys.F1, ImGuiKey.F1 },
-    { Keys.F2, ImGuiKey.F2 },
-    { Keys.F3, ImGuiKey.F3 },
-    { Keys.F4, ImGuiKey.F4 },
-    { Keys.F5, ImGuiKey.F5 },
-    { Keys.F6, ImGuiKey.F6 },
-    { Keys.F7, ImGuiKey.F7 },
-    { Keys.F8, ImGuiKey.F8 },
-    { Keys.F9, ImGuiKey.F9 },
-    { Keys.F10, ImGuiKey.F10 },
-    { Keys.F11, ImGuiKey.F11 },
-    { Keys.F12, ImGuiKey.F12 },
-
-    // Modifiers
-    { Keys.LeftShift, ImGuiKey.ModShift },
-    { Keys.RightShift, ImGuiKey.ModShift },
-    { Keys.LeftControl, ImGuiKey.ModCtrl },
-    { Keys.RightControl, ImGuiKey.ModCtrl },
-    { Keys.LeftAlt, ImGuiKey.ModAlt },
-    { Keys.RightAlt, ImGuiKey.ModAlt },
-    { Keys.LeftSuper, ImGuiKey.ModSuper },
-    { Keys.RightSuper, ImGuiKey.ModSuper },
-
-    // Navigation
-    { Keys.Up, ImGuiKey.UpArrow },
-    { Keys.Down, ImGuiKey.DownArrow },
-    { Keys.Left, ImGuiKey.LeftArrow },
-    { Keys.Right, ImGuiKey.RightArrow },
-
-    // Symbols and misc
-    { Keys.Enter, ImGuiKey.Enter },
-    { Keys.Escape, ImGuiKey.Escape },
-    { Keys.Tab, ImGuiKey.Tab },
-    { Keys.Backspace, ImGuiKey.Backspace },
-    { Keys.Insert, ImGuiKey.Insert },
-    { Keys.Delete, ImGuiKey.Delete },
-    { Keys.PageUp, ImGuiKey.PageUp },
-    { Keys.PageDown, ImGuiKey.PageDown },
-    { Keys.Home, ImGuiKey.Home },
-    { Keys.End, ImGuiKey.End },
-    { Keys.Space, ImGuiKey.Space },
-    { Keys.Minus, ImGuiKey.Minus },
-    { Keys.Equal, ImGuiKey.Equal },
-    { Keys.LeftBracket, ImGuiKey.LeftBracket },
-    { Keys.RightBracket, ImGuiKey.RightBracket },
-    { Keys.Backslash, ImGuiKey.Backslash },
-    { Keys.Semicolon, ImGuiKey.Semicolon },
-    { Keys.Apostrophe, ImGuiKey.Apostrophe },
-    { Keys.Comma, ImGuiKey.Comma },
-    { Keys.Period, ImGuiKey.Period },
-    { Keys.Slash, ImGuiKey.Slash },
-    { Keys.GraveAccent, ImGuiKey.GraveAccent },
-};
-
     }
 }

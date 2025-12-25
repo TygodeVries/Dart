@@ -1,15 +1,38 @@
 ﻿using Runtime.Calc;
 using Runtime.Logging;
+using System.Timers;
+using Timer = System.Timers.Timer;
 
-namespace Project.Editor.Data
+namespace Runtime.Data
 {
     public class AssetDatabase
     {
-        private static Dictionary<string, string> assets = new Dictionary<string, string>();
+        string activeFolder;
+        public AssetDatabase(string activeFolder)
+        {
+            this.activeFolder = activeFolder;
+        }
 
-        private static double lastRefreshTime = 0;
+        private Dictionary<string, string> assets = new Dictionary<string, string>();
+        private double lastRefreshTime = 0;
+        private Timer timer;
 
-        public static void Refresh()
+        public void Refresh()
+        {
+            // Stop the old timer
+            if (timer != null)
+                timer.Stop();
+
+            // Start the new timer
+            timer = new Timer();
+            timer.AutoReset = false;
+            timer.Elapsed += RefreshLater;
+            timer.Interval = 1000; // Wait one second
+            timer.Start();
+        }
+
+
+        private void RefreshLater(object? sender, ElapsedEventArgs args)
         {
             double currentTime = DateTime.Now.Subtract(DateTime.UnixEpoch).TotalSeconds;
             Debug.Log($"Ticks since last refresh: {currentTime - lastRefreshTime}");
@@ -20,15 +43,14 @@ namespace Project.Editor.Data
 
             lastRefreshTime = currentTime;
 
-            string projectPath = Editor.projectPath;
 
-            if (!Directory.Exists(projectPath))
+            if (!Directory.Exists(activeFolder))
             {
-                Debug.Error($"Project path not found: {projectPath}");
+                Debug.Error($"Project path not found: {activeFolder}");
                 return;
             }
 
-            string[] files = Directory.GetFiles(projectPath, "*.*", SearchOption.AllDirectories);
+            string[] files = Directory.GetFiles(activeFolder, "*.*", SearchOption.AllDirectories);
 
             lock (assets)
             {
@@ -48,7 +70,7 @@ namespace Project.Editor.Data
             DatabaseRefreshed?.Invoke();
         }
 
-        public static IReadOnlyDictionary<string, string> GetAllAssets()
+        public IReadOnlyDictionary<string, string> GetAllAssets()
         {
             lock (assets)
             {
@@ -61,7 +83,7 @@ namespace Project.Editor.Data
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static List<string> GetAllAssetsOfType(string type)
+        public List<string> GetAllAssetsOfType(string type)
         {
             List<string> result = new List<string>();
 
@@ -72,9 +94,8 @@ namespace Project.Editor.Data
                 {
                     if (pair.Value == type)
                     {
-                        // Convert absolute → relative
                         string relativePath =
-                            Path.GetRelativePath(Editor.projectPath, pair.Key);
+                            Path.GetRelativePath(activeFolder, pair.Key);
 
                         result.Add(relativePath);
                     }
@@ -85,14 +106,11 @@ namespace Project.Editor.Data
         }
 
 
-        public static event Action? DatabaseRefreshed;
-
-        static double lastEditTime = DateTime.UnixEpoch.Ticks;
-
-        static FileSystemWatcher? watcher;
-        public static void Start()
+        public event Action? DatabaseRefreshed;
+        FileSystemWatcher? watcher;
+        public void Start()
         {
-            watcher = new FileSystemWatcher(Editor.projectPath);
+            watcher = new FileSystemWatcher(activeFolder);
 
             watcher.IncludeSubdirectories = true;
 
@@ -102,7 +120,6 @@ namespace Project.Editor.Data
                 MainThread.Run(() =>
                 {
                     Refresh();
-                    Debug.Log($"{args.FullPath} was changed {args.ChangeType}");
                 });
             };
             watcher.EnableRaisingEvents = true;
