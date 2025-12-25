@@ -1,10 +1,11 @@
 ﻿using Runtime.Calc;
+using Runtime.Data;
 using Runtime.Logging;
 using System.Globalization;
-
 namespace Runtime.Graphics.Renderers
 {
-    public class Mesh
+    [AssetReference(new string[] { ".obj" }, nameof(FromFileObj))]
+    public class Mesh : AssetReference
     {
         public float[] vertices;
         public uint[] indices;
@@ -218,6 +219,8 @@ namespace Runtime.Graphics.Renderers
                 };
 
                 mesh.RecalculateTangents();
+
+                mesh.SetFilePath(file);
                 return mesh;
             }
             catch (Exception e)

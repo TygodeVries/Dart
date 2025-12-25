@@ -1,4 +1,6 @@
-﻿namespace Runtime.Objects.Prefabs
+﻿using System.Text.Json;
+
+namespace Runtime.Objects.Prefabs
 {
     public class PrefabGameObject
     {
@@ -17,6 +19,19 @@
         public GameObject GetGameObject()
         {
             return GetGameObjectAsFactory().Build();
+        }
+
+        public static PrefabGameObject FromJson(string json)
+        {
+            return JsonSerializer.Deserialize<PrefabGameObject>(json);
+        }
+
+        public string ToJson(bool pretty = false)
+        {
+            JsonSerializerOptions options = new JsonSerializerOptions();
+            options.WriteIndented = pretty;
+
+            return JsonSerializer.Serialize(this, options);
         }
 
         public static PrefabGameObject FromGameObject(GameObject gameObject)

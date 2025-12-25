@@ -1,5 +1,5 @@
 ﻿using ImGuiNET;
-using Project.Editor.Data;
+using Runtime;
 using Runtime.Calc;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Shaders;
@@ -25,8 +25,8 @@ namespace Project.Editor.UI.Inspectors.Inspections
                 return;
             }
 
-            string[] vertexShaders = AssetDatabase.GetAllAssetsOfType(".vert").ToArray();
-            string[] fragmentShaders = AssetDatabase.GetAllAssetsOfType(".frag").ToArray();
+            string[] vertexShaders = Game.GetAssetDatabase().GetAllAssetsOfType(".vert").ToArray();
+            string[] fragmentShaders = Game.GetAssetDatabase().GetAllAssetsOfType(".frag").ToArray();
 
             // Vertex shader selector
             RenderShaderSelector("Vertex Shader", vertexShaders, true);
@@ -160,7 +160,7 @@ namespace Project.Editor.UI.Inspectors.Inspections
                 }
                 else if (uniform.type == "sampler2D")
                 {
-                    List<string> textures = AssetDatabase.GetAllAssetsOfType(".png");
+                    List<string> textures = Game.GetAssetDatabase().GetAllAssetsOfType(".png");
 
                     if (textures.Count == 0)
                     {

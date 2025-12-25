@@ -1,8 +1,8 @@
 ﻿using Project.Editor;
-using Project.Editor.Data;
 using Project.Editor.UI;
 using Project.Editor.UI.FileSystem;
 using Project.Editor.UI.Inspectors;
+using Runtime;
 using Runtime.Component.Core;
 using Runtime.Component.Physics;
 using Runtime.Component.Test;
@@ -25,6 +25,7 @@ namespace Editor
 
         public static void Main()
         {
+
             Style.Apply();
             Debug.Log("Loading Editor...");
             string[] args = Environment.GetCommandLineArgs();
@@ -41,11 +42,14 @@ namespace Editor
                 }
             }
 
-            GuiWindow.Enable(new NavBarUI());
+            GuiWindow.Enable(new Headerbar());
             GuiWindow.Enable(new ProjectWindow());
             GuiWindow.Enable(new InspectorWindow());
 
-            AssetDatabase.Start();
+            Debug.Log("Overriding asset database to use open project instead.");
+
+            Game.SetAssetDatabase(new Runtime.Data.AssetDatabase(Project.Editor.Editor.projectPath));
+            Game.GetAssetDatabase().Start();
 
 
             Mesh? mesh = Mesh.FromFileObj("assets\\models\\modelpreview_sphere.obj");
@@ -76,7 +80,7 @@ namespace Editor
                    mesh = mesh
                }).AddComponent(new RaycastTester(t)).Build());
 
-            AssetDatabase.Refresh();
+            Game.GetAssetDatabase().Refresh();
 
             TextureMaterialField.fallback = DefaultsTextures.GetFallbackTexture();
         }

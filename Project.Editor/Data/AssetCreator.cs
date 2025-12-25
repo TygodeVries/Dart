@@ -1,5 +1,8 @@
 ﻿using ImGuiNET;
+using Runtime.Component.Core;
 using Runtime.Graphics.Materials;
+using Runtime.Objects;
+using Runtime.Objects.Prefabs;
 
 namespace Project.Editor.Data
 {
@@ -11,6 +14,20 @@ namespace Project.Editor.Data
             {
                 CreateMaterial(folder);
             }
+
+            if (ImGui.MenuItem("Prefab"))
+            {
+                CreatePrefab(folder);
+            }
+        }
+
+        private static void CreatePrefab(string folder)
+        {
+            GameObjectFactory factory = new GameObjectFactory()
+                .AddComponent<Transform>();
+
+            PrefabGameObject prefab = PrefabGameObject.FromGameObject(factory.Build());
+            File.WriteAllText(Path.Join(folder, "Untitled.prefab"), prefab.ToJson(true));
         }
 
         private static void CreateMaterial(string folder)

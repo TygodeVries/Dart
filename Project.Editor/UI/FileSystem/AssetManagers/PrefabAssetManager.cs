@@ -1,13 +1,11 @@
 ﻿using Project.Editor.Preview;
-using Project.Editor.Preview.PrefabsEditor;
 using Project.Editor.UI.FileSystem.FileInspectors;
 using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Inspectors.Inspections;
 using Runtime.Component.Core;
 using Runtime.Graphics;
-using Runtime.Graphics.Materials;
-using Runtime.Graphics.Renderers;
 using Runtime.Objects;
+using Runtime.Objects.Prefabs;
 using Runtime.Scenes;
 
 namespace Project.Editor.UI.FileSystem.AssetManagers
@@ -31,16 +29,29 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             return icon;
         }
 
+
         public override void OnOpen()
         {
-            PrefabEditor prefabEditor = new PrefabEditor(filepath);
-            prefabEditor.Open();
+            Scene scene = new Scene();
+            Scene.Load(scene);
+            CreateSceneCamera();
 
+            string json = File.ReadAllText(GetFilePath());
+            gameObject = PrefabGameObject.FromJson(json).GetGameObject();
+            gameObject.EnableUpdates = false; // Avoid it from moving
+
+            scene.Instantiate(gameObject);
+
+            GameObjectInspection inspection = new GameObjectInspection(gameObject);
+            InspectorWindow.GetActive().SetInspection(inspection);
+        }
+
+        private GameObject gameObject;
+
+        private void CreateSceneCamera()
+        {
             Camera sceneCamera = new Camera();
             sceneCamera.SetAsMain();
-
-            Material material = Material.LoadFromFile($"{Editor.projectPath}/assets/materials/untitled.material");
-            Mesh mesh = Mesh.FromFileObj("assets/models/cube.obj");
 
             Scene.main.Instantiate(new GameObjectFactory()
                 .AddComponent(new Transform()
@@ -49,14 +60,6 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
                 })
                 .AddComponent(sceneCamera)
                 .AddComponent(new CameraPreview())
-                .Build());
-
-            Scene.main.Instantiate(new GameObjectFactory()
-                .AddComponent(new Transform())
-                .AddComponent(new MeshRenderer(material)
-                {
-                    mesh = mesh
-                })
                 .Build());
         }
     }

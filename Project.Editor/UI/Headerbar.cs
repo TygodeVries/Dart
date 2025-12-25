@@ -1,5 +1,6 @@
 ﻿using ImGuiNET;
 using Project.Editor.UI.FileSystem;
+using Project.Editor.UI.Generic;
 using Project.Editor.UI.Inspectors;
 using Runtime.DearImGUI.Gui;
 
@@ -8,10 +9,10 @@ namespace Project.Editor.UI
     /// <summary>
     /// The nav bar is the ui at the top of the screen.
     /// </summary>
-    internal class NavBarUI : GuiWindow
+    internal class Headerbar : GuiWindow
     {
 
-        public NavBarUI()
+        public Headerbar()
         {
             WriteHeaderAndFooter = false;
         }
@@ -25,8 +26,21 @@ namespace Project.Editor.UI
 
             DrawPlayButton();
             Window();
-
+            Test();
             ImGui.EndMainMenuBar();
+        }
+
+        private void Test()
+        {
+            if (ImGui.BeginMenu("Test"))
+            {
+                if (ImGui.MenuItem("Asset Selector"))
+                {
+                    GuiWindow.Enable(new AssetSelectorWindow(".png"));
+                }
+
+                ImGui.EndMenu();
+            }
         }
 
         private void Window()

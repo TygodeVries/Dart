@@ -118,11 +118,6 @@ namespace Project.Editor.UI.FileSystem
                 }
                 ImGui.Image(assetManager.GetIcon().Handle, new Vector2(100, 100).ToNumerics(), default(Vector2).ToNumerics(), Vector2.One.ToNumerics(), Vector4.One.ToNumerics(), borderColor.ToNumerics());
 
-                if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && selectedFile == file)
-                {
-                    assetManager.OnOpen();
-                }
-
                 if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
                 {
                     if (assetManager.GetInspection() is AssetInspection assetInspection)
@@ -130,8 +125,17 @@ namespace Project.Editor.UI.FileSystem
                         assetInspection.SetFilePath(file);
                     }
 
-                    selectedFile = file;
                     InspectorWindow.GetActive().SetInspection(assetManager.GetInspection());
+                }
+
+                if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && selectedFile == file)
+                {
+                    assetManager.OnOpen();
+                }
+
+                if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
+                {
+                    selectedFile = file;
                 }
 
                 ImGui.Text(fileName);

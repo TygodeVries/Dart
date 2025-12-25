@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
+using Runtime.Data;
 using Runtime.Logging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -6,7 +7,8 @@ using SixLabors.ImageSharp.Processing;
 
 namespace Runtime.Graphics
 {
-    public class Texture : IDisposable
+    [AssetReference(new string[] { ".png" }, nameof(LoadFromPng))]
+    public class Texture : AssetReference
     {
         byte[] pixels;
         public int width;
@@ -78,7 +80,7 @@ namespace Runtime.Graphics
             GL.BindTexture(TextureTarget.Texture2d, Handle);
         }
 
-        public void Dispose()
+        ~Texture()
         {
             if (Handle != 0)
             {
