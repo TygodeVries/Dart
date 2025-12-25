@@ -1,13 +1,8 @@
-﻿using OpenTK.Mathematics;
+﻿using Runtime.Calc;
+using Runtime.Component.Core;
 using Runtime.Graphics;
-using Runtime.Graphics.Pipeline;
 using Runtime.Objects;
 using Runtime.Scenes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Runtime.Component.Lighting
 {
@@ -19,7 +14,7 @@ namespace Runtime.Component.Lighting
         public override void OnLoad()
         {
             // Just like the point light, we need to keep track of ourselfs
-            LightManager? lightManager = Scene.main.GetLightManager() as LightManager;
+            LightManager? lightManager = Scene.main.GetLightManager();
             if (lightManager == null)
             {
                 Console.WriteLine("The SunLight component can not be used without the DefaultLightManager!");
@@ -32,7 +27,14 @@ namespace Runtime.Component.Lighting
         /// <summary>
         /// The direction the sun is facing
         /// </summary>
-        public Vector3 direction = new Vector3(1, 1, 1);
+        public Vector3 GetDirection()
+        {
+            Transform transform = GetComponent<Transform>();
+            if (transform == null)
+                return new Vector3(1, 1, 1);
+
+            return transform.GetForwards();
+        }
 
         /// <summary>
         /// The color of the sun

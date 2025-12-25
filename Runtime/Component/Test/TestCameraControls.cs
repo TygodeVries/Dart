@@ -1,60 +1,54 @@
-﻿using OpenTK.Mathematics;
-using OpenTK.Windowing.GraphicsLibraryFramework;
-using Runtime.Component.Core;
+﻿using OpenTK.Windowing.GraphicsLibraryFramework;
 using Runtime.Calc;
+using Runtime.Component.Core;
 using Runtime.Input;
 using Runtime.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Runtime.Component.Test
 {
-	/// <summary>
-	/// Simple camera controls, usefull for testing.
-	/// </summary>
-	public class TestCameraControls : IComponent
-	{
-		public override void Update()
-		{
-			float deltaX = 0;
-			if (Keyboard.current.IsPressed(Keys.A))
-				deltaX = -1;
+    /// <summary>
+    /// Simple camera controls, usefull for testing.
+    /// </summary>
+    public class TestCameraControls : IComponent
+    {
+        public override void Update()
+        {
+            float deltaX = 0;
+            if (Keyboard.current.IsPressed(Keys.A))
+                deltaX = -1;
 
-			if (Keyboard.current.IsPressed(Keys.D))
-				deltaX = 1;
-
-
-			float deltaY = 0;
-			if (Keyboard.current.IsPressed(Keys.Q))
-				deltaY = -1;
-
-			if (Keyboard.current.IsPressed(Keys.E))
-				deltaY = 1;
-
-			float deltaZ = 0;
-			if (Keyboard.current.IsPressed(Keys.W))
-				deltaZ = -1;
-
-			if (Keyboard.current.IsPressed(Keys.S))
-				deltaZ = 1;
-
-			float speed = 4;
-
-			Transform? tr = GetComponent<Transform>();
-			if (null != tr)
-			{
-				tr.position += tr.GetForwards() * -deltaZ * (float)Time.deltaTime * speed;
-				tr.position += tr.GetRight() * deltaX * (float)Time.deltaTime * speed;
+            if (Keyboard.current.IsPressed(Keys.D))
+                deltaX = 1;
 
 
-				// Rotating
-				tr.Rotate(0, -Mouse.current.mouseDelta.X / 10, 0);
-				tr.Rotate(Mouse.current.mouseDelta.Y / 10, 0, 0);
-			}
-		}
+            float deltaY = 0;
+            if (Keyboard.current.IsPressed(Keys.Q))
+                deltaY = -1;
 
-	}
+            if (Keyboard.current.IsPressed(Keys.E))
+                deltaY = 1;
+
+            float deltaZ = 0;
+            if (Keyboard.current.IsPressed(Keys.W))
+                deltaZ = -1;
+
+            if (Keyboard.current.IsPressed(Keys.S))
+                deltaZ = 1;
+
+            float speed = 4;
+
+            Transform? tr = GetComponent<Transform>();
+            if (null != tr)
+            {
+                tr.position += tr.GetForwards() * -deltaZ * (float)Time.deltaTime * speed;
+                tr.position += tr.GetRight() * deltaX * (float)Time.deltaTime * speed;
+
+
+                // Rotating
+                tr.Rotate(0, -Mouse.current.mouseDelta.x / 10, 0);
+                tr.Rotate(Mouse.current.mouseDelta.y / 10, 0, 0);
+            }
+        }
+
+    }
 }

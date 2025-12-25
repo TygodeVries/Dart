@@ -4,11 +4,6 @@ using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
 using Runtime.Graphics.Pipeline;
 using Runtime.Scenes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FeatureTestProject
 {
@@ -46,7 +41,7 @@ namespace FeatureTestProject
                     $"Cur: {Time.frameRate:F1} Avg: {avg:F1} | Min: {min:F1} | Max: {max:F1}",
                     min - 5,
                     max + 5,
-                    new System.Numerics.Vector2(0, 80)
+                    new Vector2(0, 80).ToNumerics()
                 );
             }
 
@@ -58,7 +53,7 @@ namespace FeatureTestProject
                 }
             }
 
-            if(Scene.main != null)
+            if (Scene.main != null)
             {
                 if (ImGui.CollapsingHeader("Lighting"))
                 {

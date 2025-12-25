@@ -1,12 +1,12 @@
 ﻿using ImGuiNET;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+using Runtime.Calc;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
 using Runtime.Graphics.Pipeline;
 using Runtime.Input;
 using Runtime.Logging;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Runtime.DearImGUI.Backend
 {
@@ -29,7 +29,7 @@ namespace Runtime.DearImGUI.Backend
             io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
             io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;
 
-            io.DisplaySize = new System.Numerics.Vector2(RenderCanvas.main!.FramebufferSize.X, RenderCanvas.main!.FramebufferSize.Y);
+            io.DisplaySize = new Vector2(RenderCanvas.main!.FramebufferSize.X, RenderCanvas.main!.FramebufferSize.Y).ToNumerics();
             ImGui.StyleColorsDark();
 
             ImGuiStylePtr style = ImGui.GetStyle();
@@ -46,33 +46,53 @@ namespace Runtime.DearImGUI.Backend
         private void Main_FramebufferResize(OpenTK.Windowing.Common.FramebufferResizeEventArgs obj)
         {
             io = ImGui.GetIO();
-            io.DisplaySize = new System.Numerics.Vector2(RenderCanvas.main.FramebufferSize.X, RenderCanvas.main.FramebufferSize.Y);
+            io.DisplaySize = new Vector2(RenderCanvas.main.FramebufferSize.X, RenderCanvas.main.FramebufferSize.Y).ToNumerics();
 
-            io.DisplayFramebufferScale = new System.Numerics.Vector2(
+            io.DisplayFramebufferScale = new Vector2(
                 (float)RenderCanvas.main.FramebufferSize.X / RenderCanvas.main.Size.X,
                 (float)RenderCanvas.main.FramebufferSize.Y / RenderCanvas.main.Size.Y
-            );
+            ).ToNumerics();
         }
 
         public static ImGuiRenderPass? instance;
         public static List<GuiWindow> guiWindows = new List<GuiWindow>();
         public override void Pass()
         {
+            foreach (GuiWindow guiWindow in GuiWindow.windowsToOpen)
+            {
+                guiWindow.InitId();
+                guiWindows.Add(guiWindow);
+            }
+
+            GuiWindow.windowsToOpen.Clear();
+
+            while (GuiWindow.windowsToClose.Count > 0)
+            {
+                guiWindows.Remove(GuiWindow.windowsToClose.Dequeue());
+            }
+
+            GuiWindow.windowsToClose.Clear();
+
             InputData();
 
             ImguiImplOpenGL3.NewFrame();
             ImGui.NewFrame();
 
-            foreach(GuiWindow guiWindow in guiWindows)
+            foreach (GuiWindow guiWindow in guiWindows)
             {
+                if (guiWindow.WriteHeaderAndFooter)
+                    guiWindow.Begin();
+
                 guiWindow.Render();
+
+                if (guiWindow.WriteHeaderAndFooter)
+                    ImGui.End();
             }
 
             ImGui.Render();
 
-
             GL.Viewport(0, 0, RenderCanvas.main!.FramebufferSize.X, RenderCanvas.main!.FramebufferSize.Y);
-            
+
             ImguiImplOpenGL3.RenderDrawData(ImGui.GetDrawData());
 
             if (ImGui.GetIO().ConfigFlags.HasFlag(ImGuiConfigFlags.ViewportsEnable))
@@ -88,19 +108,20 @@ namespace Runtime.DearImGUI.Backend
         {
             // Mouse Position
             Vector2 mousePos = Mouse.current.position;
-            io.MousePos = new System.Numerics.Vector2(mousePos.X, mousePos.Y);
+            io.MousePos = Mouse.current.position.ToNumerics();
+            io.AddMouseWheelEvent(Mouse.current.scroll.x, Mouse.current.scroll.y);
 
             io.MouseDown[0] = Mouse.current.leftPressed;
             io.MouseDown[1] = Mouse.current.rightPressed;
             io.MouseDown[2] = Mouse.current.middlePressed;
 
-            Keys[] keys = (Keys[]) Enum.GetValues(typeof(Keys));
+            Keys[] keys = (Keys[])Enum.GetValues(typeof(Keys));
             Keyboard.current.IsPressed(Keys.A);
 
             foreach (var v in keyMap)
             {
                 bool isPressedThisFrame = Keyboard.current.IsPressedThisFrame(v.Key);
-                if(isPressedThisFrame)
+                if (isPressedThisFrame)
                 {
                     io.AddKeyEvent(v.Value, true);
                 }

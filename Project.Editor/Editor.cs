@@ -1,22 +1,20 @@
 ﻿using Runtime.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.Editor
 {
     public class Editor
     {
         public static string projectPath = "D:\\Games\\Dart\\Assets.Example";
+        public static string exeLocation = "D:\\Games\\Dart\\Runtime\\bin\\Debug\\net8.0\\runtime.exe";
 
         static System.Diagnostics.Process? gameProcess;
+
+        /// <summary>
+        /// Load up user's game executable.
+        /// </summary>
         public static void StartGame()
         {
             Debug.Log("Starting Game...");
-            string exeLocation = "D:\\Games\\Dart\\Runtime\\bin\\Debug\\net8.0\\runtime.exe";
             var startInfo = new System.Diagnostics.ProcessStartInfo
             {
                 FileName = exeLocation,
@@ -35,6 +33,11 @@ namespace Project.Editor
             gameProcess.Exited += GameProcess_Exited;
         }
 
+        /// <summary>
+        /// Get's called from the game's running executable.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private static void GameProcess_Exited(object? sender, EventArgs e)
         {
             Debug.Log("Game Closed. (Process Exited)");
@@ -42,6 +45,9 @@ namespace Project.Editor
             gameProcess = null;
         }
 
+        /// <summary>
+        /// Stop the game if its running
+        /// </summary>
         public static void StopGame()
         {
             gameProcess?.Kill();
@@ -49,6 +55,10 @@ namespace Project.Editor
             gameProcess = null;
         }
 
+        /// <summary>
+        /// If the user's game is currently running
+        /// </summary>
+        /// <returns>True if its running, false if its not.</returns>
         public static bool IsGameRunning()
         {
             return gameProcess == null;

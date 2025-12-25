@@ -1,16 +1,15 @@
 ﻿
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
-using Runtime.Graphics;
+using Runtime.Calc;
+using Runtime.Data;
 using Runtime.Graphics.Shaders;
 using Runtime.Scenes;
-using System;
-
 
 namespace Runtime.Graphics.Materials
 {
-    public class Material
+    public class Material : IDisposable
     {
+
         ShaderProgram shader;
         public Material(ShaderProgram shader)
         {
@@ -19,6 +18,11 @@ namespace Runtime.Graphics.Materials
 
         public bool matrixEnabled = true;
 
+        public static Material LoadFromFile(string filePath)
+        {
+            MaterialSettings settings = MaterialSettings.LoadFromFile(filePath);
+            return settings.GetMaterial();
+        }
 
         /// <summary>
         /// Start sending lighting information to any attached shaders
@@ -34,7 +38,7 @@ namespace Runtime.Graphics.Materials
             shader.Use();
             foreach (var field in materialFields.Values)
             {
-                field.Upload(shader);    
+                field.Upload(shader);
             }
         }
 
@@ -58,6 +62,11 @@ namespace Runtime.Graphics.Materials
                 Matrix4MaterialField materialField = new Matrix4MaterialField(field, matrix);
                 materialFields.Add(field, materialField);
             }
+        }
+
+        public void Dispose()
+        {
+            Scene.main.GetLightManager().RemoveEffected(this);
         }
 
         public void SetFloat(string field, float f)
@@ -98,6 +107,27 @@ namespace Runtime.Graphics.Materials
             else
             {
                 Vector3MaterialField materialField = new Vector3MaterialField(field, vector);
+                materialFields.Add(field, materialField);
+            }
+        }
+
+        public void SetVector4(string field, Vector4 vector)
+        {
+            if (materialFields.ContainsKey(field))
+            {
+                if (materialFields[field] is Vector4MaterialField)
+                {
+                    ((Vector4MaterialField)materialFields[field]).vector = vector;
+                }
+                else
+                {
+                    Console.WriteLine($"{field} is already set as {materialFields[field].GetType()}. It can not also be a Vector4.");
+                    return;
+                }
+            }
+            else
+            {
+                Vector4MaterialField materialField = new Vector4MaterialField(field, vector);
                 materialFields.Add(field, materialField);
             }
         }
@@ -192,7 +222,7 @@ namespace Runtime.Graphics.Materials
                 if (materialFields[field] is TextureMaterialField)
                 {
                     ((TextureMaterialField)materialFields[field]).texture = texture;
-                    ((TextureMaterialField)materialFields[field]).id = id;
+                    ((TextureMaterialField)materialFields[field]).id = Random.Shared.Next(100000);
                 }
                 else
                 {
@@ -208,7 +238,7 @@ namespace Runtime.Graphics.Materials
         }
     }
 
-    abstract class MaterialField
+    public abstract class MaterialField
     {
         public MaterialField(string field) { this.field = field; }
         public string field;
@@ -225,6 +255,19 @@ namespace Runtime.Graphics.Materials
         public override void Upload(ShaderProgram shader)
         {
             shader.SetVector3(field, vector);
+        }
+    }
+
+    class Vector4MaterialField : MaterialField
+    {
+        public Vector4 vector;
+        public Vector4MaterialField(string field, Vector4 vector) : base(field)
+        {
+            this.vector = vector;
+        }
+        public override void Upload(ShaderProgram shader)
+        {
+            shader.SetVector4(field, vector);
         }
     }
 
@@ -268,7 +311,7 @@ namespace Runtime.Graphics.Materials
         }
     }
 
-    class TextureMaterialField : MaterialField
+    public class TextureMaterialField : MaterialField
     {
         public int id;
         public Texture texture;
@@ -278,9 +321,15 @@ namespace Runtime.Graphics.Materials
             this.texture = texture;
         }
 
+        public static Texture fallback;
+
         public override void Upload(ShaderProgram shader)
         {
-            texture.Use((TextureUnit) (((Int64) TextureUnit.Texture0) + id));
+            if (texture == null)
+            {
+                texture = fallback;
+            }
+            texture.Use((TextureUnit)(((Int64)TextureUnit.Texture0) + id));
             shader.SetTextureId(field, id);
         }
     }

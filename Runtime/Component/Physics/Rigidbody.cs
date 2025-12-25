@@ -1,15 +1,8 @@
-﻿using OpenTK.Mathematics;
+﻿using Runtime.Calc;
 using Runtime.Component.Core;
-using Runtime.Physics;
-using Runtime.Calc;
+using Runtime.Logging;
 using Runtime.Objects;
 using Runtime.Scenes;
-using Runtime.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Runtime.Component.Physics
 {
@@ -25,10 +18,10 @@ namespace Runtime.Component.Physics
             }
 
             // Move by a spesific amount
-            Move(velocity * (float) Time.deltaTime);
+            Move(velocity * (float)Time.deltaTime);
 
             // Add a gravity force
-            velocity += new Vector3(0, -7, 0) * (float) Time.deltaTime;
+            velocity += new Vector3(0, -7, 0) * (float)Time.deltaTime;
         }
 
         /// <summary>
@@ -38,24 +31,24 @@ namespace Runtime.Component.Physics
 
         public void Move(Vector3 delta)
         {
-             if (GetComponent<Transform>() is Transform t)
-             {
+            if (GetComponent<Transform>() is Transform t)
+            {
                 t.position += delta;
                 ICollider? collider = GetComponent<ICollider>();
                 if (collider == null)
                 {
-                   Console.WriteLine("Rigid body has no collider attached!");
-                   return;
+                    Console.WriteLine("Rigid body has no collider attached!");
+                    return;
                 }
                 bool hasAnyOverlap = Scene.main!.physicsSolver.HasAnyOverlap(collider);
                 if (hasAnyOverlap)
                 {
-                   // Undo!!
-                   t.position -= delta;
-                   velocity = Vector3.Zero;
+                    // Undo!!
+                    t.position -= delta;
+                    velocity = Vector3.Zero;
                 }
-             }
-             else
+            }
+            else
                 Debug.Error("Rigidbody without Transform");
         }
     }

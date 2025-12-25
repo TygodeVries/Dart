@@ -5,31 +5,51 @@ using Runtime.Graphics;
 using Runtime.Graphics.Pipeline;
 using Runtime.Plugins;
 using Runtime.Scenes;
+using Runtime.Tests;
 using System.Globalization;
 using static Runtime.Logging.Debug;
 
 namespace Runtime
 {
-	public delegate void DartEventHandler();
+    public delegate void DartEventHandler();
 
-	public class Game
-	{
-		public static int width = 640 * 2;
-		public static int height = 480 * 2;
-		public static void Start(string path)
-		{
-			Log("Starting Dart v0.1...");
-			Log($"Working from {path}");
-			Directory.SetCurrentDirectory(path);
+    public class Game
+    {
+        public static int width = 640 * 2;
+        public static int height = 480 * 2;
+        public static void Start(string path)
+        {
+            Log("Starting Tests...");
+            Test[] tests = { new ValueRecordTest(), new PrefabRecordTest() };
+
+            foreach (var test in tests)
+            {
+                (TestResult result, string reason) result = test.Start();
+                if (result.result == TestResult.Success)
+                {
+                    Log($"Passed test {test.GetType()}! \"{result.reason}\"");
+                }
+
+                if (result.result == TestResult.Failure)
+                {
+                    Error($"Failed test {test.GetType()}! \"{result.reason}\"");
+                }
+            }
+
+            Log("Tests completed!");
+
+            Log("Starting Dart v0.1...");
+            Log($"Working from {path}");
+            Directory.SetCurrentDirectory(path);
 
 			Log($"Loading {Path.Join(path, "GameSettings.json")}...");
 			GameSettings? gameSettings = Files.Load<GameSettings>("GameSettings.json");
 
-			if (null == gameSettings)
-			{
-				Log("GameSettings.json not loaded");
-				return;
-			}
+            if (null == gameSettings)
+            {
+                Log("GameSettings.json not loaded");
+                return;
+            }
 
 			Log("Attempting to switch to dedicated graphics card (If present)");
 			DedicatedSwitch.Switch();
@@ -42,34 +62,34 @@ namespace Runtime
 				Title = gameSettings?.WindowTitle,
 			};
 
-			Log($"Creating empty scene...");
-			Scene.main = new Scene();
+            Log($"Creating empty scene...");
+            Scene.Load(new Scene());
 
 			RenderCanvas window = new RenderCanvas(nativeWindowSettings);
 
-			foreach (string plugin in gameSettings!.Plugins)
-			{
-				AssemblyLoader.LoadPlugin(plugin);
-			}
-			IGraphicsPipeline graphicsPipeline = new DefaultGraphicsPipeline();
-			Log($"Using graphicsPipeline: {graphicsPipeline}.");
-			window.SetGraphicsPipeline(graphicsPipeline);
+            foreach (string plugin in gameSettings!.Plugins)
+            {
+                AssemblyLoader.LoadPlugin(plugin);
+            }
+            IGraphicsPipeline graphicsPipeline = new DefaultGraphicsPipeline();
+            Log($"Using graphicsPipeline: {graphicsPipeline}.");
+            window.SetGraphicsPipeline(graphicsPipeline);
 
-			if (File.Exists(gameSettings!.CodePath))
-			{
-				Log($"Loading user code from {gameSettings.CodePath}");
-				AssemblyLoader.LoadAndRun(gameSettings.CodePath);
-			}
-			else
-			{
-				Error($"Could not load user code from path {gameSettings!.CodePath}. File not found!");
-			}
+            if (File.Exists(gameSettings!.CodePath))
+            {
+                Log($"Loading user code from {gameSettings.CodePath}");
+                AssemblyLoader.LoadAndRun(gameSettings.CodePath);
+            }
+            else
+            {
+                Error($"Could not load user code from path {gameSettings!.CodePath}. File not found!");
+            }
 
-			onReady?.Invoke();
-			Log($"Opening window...");
-			window.Run(); // Keeps the thread blocked until closed.
-			Log($"Cleaning up...");
-		}
+            onReady?.Invoke();
+            Log($"Opening window...");
+            window.Run(); // Keeps the thread blocked until closed.
+            Log($"Cleaning up...");
+        }
 
 		public static event DartEventHandler? onReady;
 	}
