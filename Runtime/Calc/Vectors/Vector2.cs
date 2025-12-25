@@ -38,16 +38,16 @@ namespace Runtime.Calc
             return (a.x * b.x) + (a.y * b.y);
         }
 
-        public Vector2(OpenTK.Mathematics.Vector2 vector3)
+        public Vector2(OpenTK.Mathematics.Vector2 vector2)
         {
-            this.x = vector3.X;
-            this.y = vector3.Y;
+            this.x = vector2.X;
+            this.y = vector2.Y;
         }
 
-        public Vector2(System.Numerics.Vector2 vector3)
+        public Vector2(System.Numerics.Vector2 vector2)
         {
-            this.x = vector3.X;
-            this.y = vector3.Y;
+            this.x = vector2.X;
+            this.y = vector2.Y;
         }
 
         public static Vector2 operator +(Vector2 a, Vector2 b)

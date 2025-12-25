@@ -29,7 +29,7 @@ namespace Runtime.DearImGUI.Backend
             io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
             io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;
 
-            io.DisplaySize = new System.Numerics.Vector2(RenderCanvas.main!.FramebufferSize.X, RenderCanvas.main!.FramebufferSize.Y);
+            io.DisplaySize = new Vector2(RenderCanvas.main!.FramebufferSize.X, RenderCanvas.main!.FramebufferSize.Y).ToNumerics();
             ImGui.StyleColorsDark();
 
             ImGuiStylePtr style = ImGui.GetStyle();
@@ -46,12 +46,12 @@ namespace Runtime.DearImGUI.Backend
         private void Main_FramebufferResize(OpenTK.Windowing.Common.FramebufferResizeEventArgs obj)
         {
             io = ImGui.GetIO();
-            io.DisplaySize = new System.Numerics.Vector2(RenderCanvas.main.FramebufferSize.X, RenderCanvas.main.FramebufferSize.Y);
+            io.DisplaySize = new Vector2(RenderCanvas.main.FramebufferSize.X, RenderCanvas.main.FramebufferSize.Y).ToNumerics();
 
-            io.DisplayFramebufferScale = new System.Numerics.Vector2(
+            io.DisplayFramebufferScale = new Vector2(
                 (float)RenderCanvas.main.FramebufferSize.X / RenderCanvas.main.Size.X,
                 (float)RenderCanvas.main.FramebufferSize.Y / RenderCanvas.main.Size.Y
-            );
+            ).ToNumerics();
         }
 
         public static ImGuiRenderPass? instance;

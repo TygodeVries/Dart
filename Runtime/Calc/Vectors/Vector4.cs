@@ -55,9 +55,9 @@ namespace Runtime.Calc
             return new OpenTK.Mathematics.Vector4(x, y, z, w);
         }
 
-        public System.Numerics.Vector4 ToNumerics()
+        public Vector4 ToNumerics()
         {
-            return new System.Numerics.Vector4(x, y, z, w);
+            return new Vector4(x, y, z, w);
         }
 
         public static Vector4 operator /(Vector4 a, float b)
