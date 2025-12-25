@@ -1,0 +1,76 @@
+#version 430 core
+
+layout (local_size_x=1, local_size_y = 1, local_size_z = 1)  in;
+
+struct state_t
+{
+    vec4 position;
+    vec4 prev_pos;
+    vec4 life_time;
+    vec4 padding;
+};
+
+layout (binding=0)
+buffer output_l
+{
+    state_t _output[];
+};
+
+layout (binding=1)
+buffer input_l
+{
+    state_t _input[];
+};
+
+layout (binding=2)
+buffer new_l
+{
+    state_t _genesis[];
+};
+
+layout (binding=3)
+buffer elements_l
+{
+    uint _element[];
+};
+
+layout (binding = 0)
+uniform atomic_uint genesis_counter;
+layout (binding=0, offset = 4)
+uniform atomic_uint element_counter;
+layout (location = 0)
+uniform int genesis_total;
+
+// One step is 10 ms
+void main()
+{
+    uint x = gl_GlobalInvocationID.x;
+    
+    if (_input[x].life_time.x >= 0)
+    {
+        float a = _input[x].life_time.a;
+        _output[x].prev_pos = _input[x].position;
+        _output[x].position = (1.0f + a) * _input[x].position - a * _input[x].prev_pos;
+        _output[x].life_time = _input[x].life_time;
+        _output[x].life_time.x = _input[x].life_time.x - _input[x].life_time.y;
+        uint e = atomicCounterIncrement(element_counter);
+        _element[e] = x;
+    }
+    else
+    {
+        uint g = atomicCounterIncrement(genesis_counter);
+        if (g < genesis_total)
+        {
+            
+            _output[x].position = _genesis[g].position;
+            _output[x].prev_pos = _genesis[g].prev_pos;
+            _output[x].life_time = _genesis[g].life_time;
+            _output[x].padding = _genesis[g].padding;
+        }
+        else
+        {
+            _output[x].life_time.x = -1;
+        }
+    }
+
+}

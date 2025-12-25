@@ -6,6 +6,7 @@ using Runtime.Graphics.Pipeline;
 using Runtime.Plugins;
 using Runtime.Scenes;
 using Runtime.Tests;
+using System.Globalization;
 using static Runtime.Logging.Debug;
 
 namespace Runtime
@@ -41,8 +42,8 @@ namespace Runtime
             Log($"Working from {path}");
             Directory.SetCurrentDirectory(path);
 
-            Log($"Loading {Path.Join(path, "GameSettings.json")}...");
-            GameSettings? gameSettings = Files.Load<GameSettings>("GameSettings.json");
+			Log($"Loading {Path.Join(path, "GameSettings.json")}...");
+			GameSettings? gameSettings = Files.Load<GameSettings>("GameSettings.json");
 
             if (null == gameSettings)
             {
@@ -50,21 +51,21 @@ namespace Runtime
                 return;
             }
 
-            Log("Attempting to switch to dedicated graphics card (If present)");
-            DedicatedSwitch.Switch();
+			Log("Attempting to switch to dedicated graphics card (If present)");
+			DedicatedSwitch.Switch();
 
-            Log($"Creating window of size {width}, {height}");
-            Log($"Setting window title to {gameSettings!.WindowTitle}");
-            var nativeWindowSettings = new NativeWindowSettings()
-            {
-                ClientSize = new Vector2i(width, height),
-                Title = gameSettings?.WindowTitle,
-            };
+			Log($"Creating window of size {width}, {height}");
+			Log($"Setting window title to {gameSettings!.WindowTitle}");
+			var nativeWindowSettings = new NativeWindowSettings()
+			{
+				ClientSize = new Vector2i(width, height),
+				Title = gameSettings?.WindowTitle,
+			};
 
             Log($"Creating empty scene...");
             Scene.Load(new Scene());
 
-            RenderCanvas window = new RenderCanvas(nativeWindowSettings);
+			RenderCanvas window = new RenderCanvas(nativeWindowSettings);
 
             foreach (string plugin in gameSettings!.Plugins)
             {
@@ -90,21 +91,22 @@ namespace Runtime
             Log($"Cleaning up...");
         }
 
-        public static event DartEventHandler? onReady;
-    }
+		public static event DartEventHandler? onReady;
+	}
 
-    class Program
-    {
-        public static void Main(string[] args)
-        {
-            if (0 != args.Length)
-            {
-                Game.Start(args[0]);
-            }
-            else
-            {
-                Logging.Debug.Error("(FATALITY) No project given");
-            }
-        }
-    }
+	class Program
+	{
+		public static void Main(string[] args)
+		{
+			CultureInfo.DefaultThreadCurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+			if (0 != args.Length)
+			{
+				Game.Start(args[0]);
+			}
+			else
+			{
+				Logging.Debug.Error("(FATALITY) No project given");
+			}
+		}
+	}
 }

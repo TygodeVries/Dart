@@ -18,7 +18,7 @@
     <LocalDebuggerCommand>$(SolutionDir)Assets.Example\bin\Runtime.exe</LocalDebuggerCommand>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerDebuggerType>ManagedCore</LocalDebuggerDebuggerType>
+    <LocalDebuggerDebuggerType>NativeWithManagedCore</LocalDebuggerDebuggerType>
     <LocalDebuggerCommandArguments>Assets.Example</LocalDebuggerCommandArguments>
     <LocalDebuggerCommandArgumentsHistory>Assets.Example|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>

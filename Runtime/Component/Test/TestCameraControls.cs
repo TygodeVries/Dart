@@ -37,14 +37,14 @@ namespace Runtime.Component.Test
 
             float speed = 4;
 
-            Transform tr = GetComponent<Transform>()!;
-            tr.position += tr.GetForwards() * -deltaZ * (float)Time.deltaTime * speed;
-            tr.position += tr.GetRight() * deltaX * (float)Time.deltaTime * speed;
-
-
-            // Rotating
-            if (Mouse.current.leftPressed)
+            Transform? tr = GetComponent<Transform>();
+            if (null != tr)
             {
+                tr.position += tr.GetForwards() * -deltaZ * (float)Time.deltaTime * speed;
+                tr.position += tr.GetRight() * deltaX * (float)Time.deltaTime * speed;
+
+
+                // Rotating
                 tr.Rotate(0, -Mouse.current.mouseDelta.x / 10, 0);
                 tr.Rotate(Mouse.current.mouseDelta.y / 10, 0, 0);
             }

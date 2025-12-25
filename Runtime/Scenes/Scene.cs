@@ -33,7 +33,6 @@ namespace Runtime.Scenes
 
             gameObjects.Clear();
         }
-        List<GameObject> gameObjects = new List<GameObject>();
         public void Instantiate(GameObject game)
         {
             gameObjects.Add(game);
@@ -50,12 +49,38 @@ namespace Runtime.Scenes
         public static Scene main { get; private set; } = new Scene();
 
         public PhysicsSolver physicsSolver = new PhysicsSolver();
+
+        List<IManager> managers = new List<IManager>();
+        List<GameObject> gameObjects = new List<GameObject>();
+
+
+        public void AddManager<T>(T manager) where T : IManager
+        {
+            managers.Add(manager);
+            manager.OnLoad();
+        }
+        public T? GetManager<T>() where T : IManager
+        {
+            foreach (IManager item in managers)
+            {
+                if (item.GetType() == typeof(T))
+                    return (T)item;
+            }
+            return default(T);
+        }
+
         public Scene()
         {
         }
 
         public void Update()
         {
+            foreach (IManager manager in managers)
+            {
+                if (manager is IUpdatableManager updatable)
+                    updatable.Update();
+            }
+
             foreach (GameObject obj in gameObjects)
             {
                 obj.Update();
