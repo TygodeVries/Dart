@@ -31,6 +31,7 @@ namespace Project.Editor.Preview.PrefabsEditor
             scene.Instantiate(new GameObjectFactory()
                 .AddComponent(camera)
                 .AddComponent(new Transform())
+                .AddComponent(new CameraPreview())
                 .Build());
 
 

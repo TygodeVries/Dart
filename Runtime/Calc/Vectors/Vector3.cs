@@ -113,9 +113,9 @@ namespace Runtime.Calc
             return new OpenTK.Mathematics.Vector3(x, y, z);
         }
 
-        public Vector3 ToNumerics()
+        public System.Numerics.Vector3 ToNumerics()
         {
-            return new Vector3(x, y, z);
+            return new System.Numerics.Vector3(x, y, z);
         }
 
         public float Magnitude()

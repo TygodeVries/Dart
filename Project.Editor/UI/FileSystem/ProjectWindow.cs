@@ -3,10 +3,10 @@ using Project.Editor.Data;
 using Project.Editor.UI.FileSystem.FileInspectors;
 using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Inspectors.Inspections;
+using Runtime.Calc;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
 using Runtime.Logging;
-using 
 
 namespace Project.Editor.UI.FileSystem
 {
@@ -80,7 +80,7 @@ namespace Project.Editor.UI.FileSystem
                 MetaData metaData = MetaData.Get(directory);
 
                 Vector4 color = metaData.GetVector4("color", new Vector4(1, 1, 1, 1));
-                ImGui.Image(folderTexture.Handle, new Vector2(100, 100), uv, uv2, color);
+                ImGui.Image(folderTexture.Handle, new Vector2(100, 100).ToNumerics(), uv.ToNumerics(), uv2.ToNumerics(), color.ToNumerics());
 
                 if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && selectedFolder == directory)
                 {
@@ -116,7 +116,7 @@ namespace Project.Editor.UI.FileSystem
                 {
                     borderColor = new Vector4(0, 0, 1, 1);
                 }
-                ImGui.Image(assetManager.GetIcon().Handle, new Vector2(100, 100), default(Vector2), Vector2.One, Vector4.One, borderColor);
+                ImGui.Image(assetManager.GetIcon().Handle, new Vector2(100, 100).ToNumerics(), default(Vector2).ToNumerics(), Vector2.One.ToNumerics(), Vector4.One.ToNumerics(), borderColor.ToNumerics());
 
                 if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && selectedFile == file)
                 {

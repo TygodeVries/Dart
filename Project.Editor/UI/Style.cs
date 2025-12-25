@@ -1,5 +1,5 @@
 ﻿using ImGuiNET;
-using 
+using Runtime.Calc;
 
 namespace Project.Editor.UI
 {
@@ -18,9 +18,9 @@ namespace Project.Editor.UI
             style.ScrollbarRounding = 8f;
             style.TabRounding = 8f;
 
-            style.FramePadding = new Vector2(6f, 4f);
-            style.ItemSpacing = new Vector2(8f, 6f);
-            style.WindowPadding = new Vector2(10f, 10f);
+            style.FramePadding = new Vector2(6f, 4f).ToNumerics();
+            style.ItemSpacing = new Vector2(8f, 6f).ToNumerics();
+            style.WindowPadding = new Vector2(10f, 10f).ToNumerics();
 
 
             var io = ImGui.GetIO();

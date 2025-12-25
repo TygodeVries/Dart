@@ -9,6 +9,9 @@ namespace Runtime.Calc
         public float z;
         public float w;
 
+        public static Vector4 One => new Vector4(1, 1, 1, 1);
+        public static Vector4 Zero => new Vector4(0, 0, 0, 0);
+
         public Vector4(float x, float y, float z, float w)
         {
             this.x = x;
@@ -55,9 +58,9 @@ namespace Runtime.Calc
             return new OpenTK.Mathematics.Vector4(x, y, z, w);
         }
 
-        public Vector4 ToNumerics()
+        public System.Numerics.Vector4 ToNumerics()
         {
-            return new Vector4(x, y, z, w);
+            return new System.Numerics.Vector4(x, y, z, w);
         }
 
         public static Vector4 operator /(Vector4 a, float b)
