@@ -1,5 +1,7 @@
 ﻿using Runtime.Calc;
 using Runtime.Logging;
+using System.Timers;
+using Timer = System.Timers.Timer;
 
 namespace Project.Editor.Data
 {
@@ -9,7 +11,23 @@ namespace Project.Editor.Data
 
         private static double lastRefreshTime = 0;
 
+        private static Timer timer;
         public static void Refresh()
+        {
+            // Stop the old timer
+            if (timer != null)
+                timer.Stop();
+
+            // Start the new timer
+            timer = new Timer();
+            timer.AutoReset = false;
+            timer.Elapsed += RefreshLater;
+            timer.Interval = 1000; // Wait one second
+            timer.Start();
+        }
+
+
+        private static void RefreshLater(object? sender, ElapsedEventArgs args)
         {
             double currentTime = DateTime.Now.Subtract(DateTime.UnixEpoch).TotalSeconds;
             Debug.Log($"Ticks since last refresh: {currentTime - lastRefreshTime}");
@@ -102,7 +120,6 @@ namespace Project.Editor.Data
                 MainThread.Run(() =>
                 {
                     Refresh();
-                    Debug.Log($"{args.FullPath} was changed {args.ChangeType}");
                 });
             };
             watcher.EnableRaisingEvents = true;
