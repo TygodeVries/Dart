@@ -50,6 +50,7 @@ namespace Runtime.DearImGUI.Gui
             if (!isOpen)
             {
                 GuiWindow.Disable(this);
+                ImGui.End();
             }
 
             return visible && isOpen;

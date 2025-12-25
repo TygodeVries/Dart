@@ -24,9 +24,12 @@ namespace Project.Editor.UI.Generic
 
             foreach (string file in files)
             {
-                if (ImGui.Button(file))
+                if (file.ToLower().Contains(searchText.ToLower()))
                 {
-                    OnSelect?.Invoke(new AssetSelectionResult(file));
+                    if (ImGui.Button(file))
+                    {
+                        OnSelect?.Invoke(new AssetSelectionResult(file));
+                    }
                 }
             }
         }
