@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using Runtime.Calc;
+using Runtime.Data;
 using Runtime.Logging;
 
 namespace Runtime.Graphics.Shaders
@@ -19,18 +20,19 @@ namespace Runtime.Graphics.Shaders
             GL.UseProgram(shaderProgramId);
         }
 
-        public static ShaderProgram FromFile(string vertex, string fragment)
+        public static ShaderProgram FromFile(Asset vertex, Asset fragment)
         {
             try
             {
-                string vertexContent = File.ReadAllText(vertex);
-                string fragmentContent = File.ReadAllText(fragment);
+                Debug.Log($"Loading from shader path: {vertex.GetSystemPath()}");
+                string vertexContent = File.ReadAllText(vertex.GetSystemPath());
+                string fragmentContent = File.ReadAllText(fragment.GetSystemPath());
 
                 return new ShaderProgram(vertexContent, fragmentContent);
             }
             catch (Exception e)
             {
-                Debug.Error($"Could not load ShaderProgram from files {vertex} & {fragment}! Because: " + e);
+                Debug.Error($"Could not load ShaderProgram from files {vertex.GetPath()} & {fragment.GetPath()}! Because: {e} at {e.StackTrace}");
                 return new ShaderProgram("error", "error");
             }
         }
@@ -53,6 +55,8 @@ namespace Runtime.Graphics.Shaders
         string fragmentSource;
         public ShaderProgram(string vertexShader, string fragmentShader)
         {
+
+            Debug.Log($"Vertex shader is: {vertexShader}");
             if (vertexShader.Length < 20)
             {
                 Debug.Log($"VertexShader does not look like source code, please be aware. {vertexShader}");
@@ -81,19 +85,37 @@ namespace Runtime.Graphics.Shaders
             GL.ShaderSource(vertex, CleanDartTokens(vertexSource));
             GL.CompileShader(vertex);
 
+            GL.GetShaderi(vertex, ShaderParameterName.CompileStatus, out int vStatus);
+            if (vStatus == 0)
+            {
+                GL.GetShaderInfoLog(vertex, out string vLog);
+                Debug.Error($"Vertex shader compile error:\n{vLog}");
+                return;
+            }
+
             int fragment = GL.CreateShader(ShaderType.FragmentShader);
             GL.ShaderSource(fragment, CleanDartTokens(fragmentSource));
             GL.CompileShader(fragment);
+
+            GL.GetShaderi(fragment, ShaderParameterName.CompileStatus, out int fStatus);
+            if (fStatus == 0)
+            {
+                GL.GetShaderInfoLog(fragment, out string fLog);
+                Debug.Error($"Fragment shader compile error:\n{fLog}");
+                return;
+            }
 
             int program = GL.CreateProgram();
             GL.AttachShader(program, vertex);
             GL.AttachShader(program, fragment);
             GL.LinkProgram(program);
-            GL.ValidateProgram(program);
 
-            if (GL.GetError() != 0)
+            GL.GetProgrami(program, ProgramProperty.LinkStatus, out int linkStatus);
+            if (linkStatus == 0)
             {
-                Debug.Error("Shader complication resulted in an error!" + GL.GetError());
+                GL.GetProgramInfoLog(program, out string pLog);
+                Debug.Error($"Program link error:\n{pLog}");
+                return;
             }
 
             GL.DeleteShader(vertex);
@@ -102,14 +124,6 @@ namespace Runtime.Graphics.Shaders
             shaderProgramId = program;
             compiled = true;
 
-            string infoLog;
-            GL.GetShaderInfoLog(fragment, out infoLog);
-            if (infoLog.Length > 3)
-                Debug.Error($"Compiling fragment shader resulted an an error: {infoLog}");
-
-            GL.GetShaderInfoLog(vertex, out infoLog);
-            if (infoLog.Length > 3)
-                Debug.Error($"Compiling vertex shader resulted an an error: {infoLog}");
         }
 
 
@@ -203,63 +217,63 @@ namespace Runtime.Graphics.Shaders
             }
         }
     }
-    public class ComputeShaderProgram 
+    public class ComputeShaderProgram
     {
-		bool compiled = false;
-		private int shaderProgramId;
+        bool compiled = false;
+        private int shaderProgramId;
         string sourceContent;
-		public void Use()
-		{
-			if (!compiled)
-				Compile();
+        public void Use()
+        {
+            if (!compiled)
+                Compile();
 
-			GL.UseProgram(shaderProgramId);
-		}
-		public static ComputeShaderProgram FromFile(string source)
-		{
-			string sourceContent = File.ReadAllText(source);
+            GL.UseProgram(shaderProgramId);
+        }
+        public static ComputeShaderProgram FromFile(string source)
+        {
+            string sourceContent = File.ReadAllText(source);
 
-			return new ComputeShaderProgram(sourceContent);
-		}
+            return new ComputeShaderProgram(sourceContent);
+        }
 
-		public ComputeShaderProgram(string source)
-		{
-			if (source.Length < 20)
-			{
-				Debug.Log($"ComputeShader does not look like source code, please be aware. {source}");
-			}
+        public ComputeShaderProgram(string source)
+        {
+            if (source.Length < 20)
+            {
+                Debug.Log($"ComputeShader does not look like source code, please be aware. {source}");
+            }
 
 
 
-			this.sourceContent = source;
-		}
+            this.sourceContent = source;
+        }
 
-		public void Compile()
-		{
-			int compute = GL.CreateShader(ShaderType.ComputeShader);
-			GL.ShaderSource(compute, sourceContent);
-			GL.CompileShader(compute);
+        public void Compile()
+        {
+            int compute = GL.CreateShader(ShaderType.ComputeShader);
+            GL.ShaderSource(compute, sourceContent);
+            GL.CompileShader(compute);
 
-			int program = GL.CreateProgram();
-			GL.AttachShader(program, compute);
-			GL.LinkProgram(program);
-			GL.ValidateProgram(program);
+            int program = GL.CreateProgram();
+            GL.AttachShader(program, compute);
+            GL.LinkProgram(program);
+            GL.ValidateProgram(program);
 
-			if (GL.GetError() != 0)
-			{
-				Debug.Error("Shader complication resulted in an error!" + GL.GetError());
-			}
+            if (GL.GetError() != 0)
+            {
+                Debug.Error("Shader complication resulted in an error!" + GL.GetError());
+            }
 
-			shaderProgramId = program;
-			compiled = true;
+            shaderProgramId = program;
+            compiled = true;
 
-			string infoLog;
-			GL.GetShaderInfoLog(compute, out infoLog);
-			if (infoLog.Length > 3)
-				Debug.Error($"Compiling fragment shader resulted an an error: {infoLog}");
+            string infoLog;
+            GL.GetShaderInfoLog(compute, out infoLog);
+            if (infoLog.Length > 3)
+                Debug.Error($"Compiling fragment shader resulted an an error: {infoLog}");
 
             GL.DeleteShader(compute);
-		}
+        }
         public void Check()
         {
             ErrorCode error = GL.GetError();
@@ -268,10 +282,10 @@ namespace Runtime.Graphics.Shaders
                 Debug.Error($"OpenGL error {error}");
             }
         }
-      public void Barrier()
-      {
-         GL.MemoryBarrier(MemoryBarrierMask.ShaderStorageBarrierBit | MemoryBarrierMask.AtomicCounterBarrierBit);
-      }
+        public void Barrier()
+        {
+            GL.MemoryBarrier(MemoryBarrierMask.ShaderStorageBarrierBit | MemoryBarrierMask.AtomicCounterBarrierBit);
+        }
         public void Dispatch(uint x)
         {
             Dispatch(x, 1, 1);
@@ -296,16 +310,16 @@ namespace Runtime.Graphics.Shaders
             Check();
             return buffer;
         }
-        public int GenerateAtomicBuffer(uint count_of_uints) 
+        public int GenerateAtomicBuffer(uint count_of_uints)
         {
-			int buffer = GL.GenBuffer();
-			GL.BindBuffer(BufferTarget.AtomicCounterBuffer, buffer);
+            int buffer = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.AtomicCounterBuffer, buffer);
             Check();
-			GL.BufferData(BufferTarget.AtomicCounterBuffer, (nint)count_of_uints * sizeof(uint), 0, BufferUsage.StaticRead);
+            GL.BufferData(BufferTarget.AtomicCounterBuffer, (nint)count_of_uints * sizeof(uint), 0, BufferUsage.StaticRead);
             Check();
-			return buffer;
-		}
-		public void BindComputeBuffer(int buffer, uint bind_point)
+            return buffer;
+        }
+        public void BindComputeBuffer(int buffer, uint bind_point)
         {
             Use();
             GL.BindBufferBase(BufferTarget.ShaderStorageBuffer, bind_point, buffer);
@@ -316,7 +330,7 @@ namespace Runtime.Graphics.Shaders
             GL.BindBufferBase(BufferTarget.AtomicCounterBuffer, bind_point, buffer);
         }
 
-        public unsafe void SetComputeBufferData<T>(int buffer, int offset, T[] data) where T: struct
+        public unsafe void SetComputeBufferData<T>(int buffer, int offset, T[] data) where T : struct
         {
             GL.BindBuffer(BufferTarget.ShaderStorageBuffer, buffer);
             fixed (T* ptr = data)
@@ -327,10 +341,10 @@ namespace Runtime.Graphics.Shaders
 
         public void SetAtomicBufferData(int buffer, int offset, uint[] data)
         {
-			GL.BindBuffer(BufferTarget.AtomicCounterBuffer, buffer);
-			GL.BufferSubData(BufferTarget.AtomicCounterBuffer, offset * sizeof(uint), data.Length * sizeof(uint), data);
-		}
-		public unsafe void ReadComputeBufferData<T>(int buffer, int offset, T[] data) where T: struct
+            GL.BindBuffer(BufferTarget.AtomicCounterBuffer, buffer);
+            GL.BufferSubData(BufferTarget.AtomicCounterBuffer, offset * sizeof(uint), data.Length * sizeof(uint), data);
+        }
+        public unsafe void ReadComputeBufferData<T>(int buffer, int offset, T[] data) where T : struct
         {
             GL.MemoryBarrier(MemoryBarrierMask.ShaderStorageBarrierBit);
             GL.BindBuffer(BufferTarget.ShaderStorageBuffer, buffer);
@@ -341,21 +355,21 @@ namespace Runtime.Graphics.Shaders
         }
         public void ReadAtomicBufferData(int buffer, int offset, uint[] data)
         {
-			GL.MemoryBarrier(MemoryBarrierMask.AtomicCounterBarrierBit);
+            GL.MemoryBarrier(MemoryBarrierMask.AtomicCounterBarrierBit);
             Check();
-			GL.BindBuffer(BufferTarget.AtomicCounterBuffer, buffer);
+            GL.BindBuffer(BufferTarget.AtomicCounterBuffer, buffer);
             Check();
-			GL.GetBufferSubData(BufferTarget.AtomicCounterBuffer, offset * sizeof(uint), data.Length * sizeof(uint), data);
+            GL.GetBufferSubData(BufferTarget.AtomicCounterBuffer, offset * sizeof(uint), data.Length * sizeof(uint), data);
             Check();
-		}
+        }
         public void DeleteBuffer(int buffer)
         {
             if (buffer != 0)
-               GL.DeleteBuffer(buffer);
+                GL.DeleteBuffer(buffer);
         }
         public unsafe uint SizeOf<T>()
         {
             return (uint)sizeof(T);
         }
-	}
+    }
 }

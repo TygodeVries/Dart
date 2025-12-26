@@ -75,10 +75,16 @@ namespace Runtime.Objects
             components.Add(component);
             componentMap[type] = component;
             component.gameObject = this;
+
+            if (hasBeenLoaded)
+                component.OnLoad();
         }
 
+
+        bool hasBeenLoaded = false;
         public void OnLoad()
         {
+            hasBeenLoaded = true;
             foreach (IComponent component in components)
             {
                 component.OnLoad();

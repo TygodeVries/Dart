@@ -1,6 +1,10 @@
 ﻿using ImGuiNET;
+using Project.Editor.UI.Generic;
+using Runtime;
+using Runtime.Data;
 using Runtime.DearImGUI.Gui;
 using Runtime.Objects;
+using System.Reflection;
 
 namespace Project.Editor.UI.Inspectors.Inspections
 {
@@ -23,6 +27,18 @@ namespace Project.Editor.UI.Inspectors.Inspections
                         Type componentType = component.GetType();
                         gameObject.RemoveComponent(componentType);
                     }
+
+                    FieldInfo[] fieldInfos = component.GetType().GetFields();
+                    foreach (FieldInfo info in fieldInfos)
+                    {
+                        DrawInspectableMember(info, info.FieldType, () => info.GetValue(component), v => info.SetValue(component, v));
+                    }
+
+                    PropertyInfo[] propertyInfos = component.GetType().GetProperties();
+                    foreach (PropertyInfo info in propertyInfos)
+                    {
+                        DrawInspectableMember(info, info.PropertyType, () => info.GetValue(component), v => info.SetValue(component, v));
+                    }
                 }
             }
 
@@ -36,6 +52,56 @@ namespace Project.Editor.UI.Inspectors.Inspections
                     gameObject.AddComponent((IComponent)Activator.CreateInstance(type));
                     GuiWindow.Disable(guiWindow);
                 };
+            }
+        }
+
+        void DrawInspectableMember(MemberInfo member, Type valueType, Func<object?> getter, Action<object?> setter)
+        {
+            InspectableAttribute? attribute =
+                member.GetCustomAttribute<InspectableAttribute>();
+
+            if (attribute == null)
+                return;
+
+            ImGui.Text(member.Name);
+
+            var record = ValueRecord.ValueRecordTypeFromType(valueType);
+            if (record == null)
+                return;
+
+            if (record == ValueRecord.ValueRecordType.Asset)
+            {
+                object? value = getter();
+
+                if (value == null)
+                {
+                    ImGui.Text("No value selected.");
+                }
+                else
+                {
+                    AssetReference assetReference = (AssetReference)value;
+                    Asset? asset = assetReference.GetAsset();
+                    ImGui.Text(asset != null ? asset.GetPath() : "[Instance]");
+                }
+
+                if (ImGui.Button("Select##" + member.Name))
+                {
+                    AssetReferenceAttribute? att =
+                        valueType.GetCustomAttribute<AssetReferenceAttribute>();
+
+                    if (att == null)
+                        return;
+
+                    AssetSelectorWindow window =
+                        new AssetSelectorWindow(att.filetype.First(), Game.GetAssetDatabase());
+
+                    window.OnSelect += selected =>
+                    {
+                        setter(selected.CreateInstance(valueType));
+                    };
+
+                    GuiWindow.Enable(window);
+                }
             }
         }
     }

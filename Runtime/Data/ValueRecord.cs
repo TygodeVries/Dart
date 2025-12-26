@@ -154,7 +154,7 @@ namespace Runtime.Data
             if (typeof(AssetReference).IsAssignableFrom(value.GetType()))
             {
                 Type = ValueRecordType.Asset;
-                Value = ((AssetReference)value).GetFilePath();
+                Value = ((AssetReference)value).GetAsset().GetPath();
             }
         }
 

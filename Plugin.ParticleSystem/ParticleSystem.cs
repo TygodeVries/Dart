@@ -221,7 +221,7 @@ namespace Runtime.Graphics
             GL.BindVertexArray(vertexArray);
 
             // load some shaders, TODO: these files need to be copied from the plugin to the project assests folder
-            shader = ShaderProgram.FromFile("assets/shaders/plugin.particlesystem/particle_draw.vert", "assets/shaders/plugin.particlesystem/particle_draw.frag");
+            shader = ShaderProgram.FromFile(Game.GetAssetDatabase().GetAsset("assets/shaders/plugin.particlesystem/particle_draw.vert"), Game.GetAssetDatabase().GetAsset("assets/shaders/plugin.particlesystem/particle_draw.frag"));
 
             Runtime.Graphics.RenderCanvas.main?.GetGraphicsPipeline()?.AddRenderer(this);
 

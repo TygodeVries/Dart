@@ -6,6 +6,7 @@ using Runtime;
 using Runtime.Component.Core;
 using Runtime.Component.Physics;
 using Runtime.Component.Test;
+using Runtime.Data;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
@@ -25,7 +26,7 @@ namespace Editor
 
         public static void Main()
         {
-
+            EditorUtils.LoadAssetDatabase();
             Style.Apply();
             Debug.Log("Loading Editor...");
             string[] args = Environment.GetCommandLineArgs();
@@ -34,11 +35,11 @@ namespace Editor
             {
                 if (args[cx] == "-p")
                 {
-                    Project.Editor.Editor.projectPath = args[cx + 1];
+                    Project.Editor.EditorUtils.projectPath = args[cx + 1];
                 }
                 if (args[cx] == "-e")
                 {
-                    Project.Editor.Editor.exeLocation = args[cx + 1];
+                    Project.Editor.EditorUtils.exeLocation = args[cx + 1];
                 }
             }
 
@@ -48,15 +49,16 @@ namespace Editor
 
             Debug.Log("Overriding asset database to use open project instead.");
 
-            Game.SetAssetDatabase(new Runtime.Data.AssetDatabase(Project.Editor.Editor.projectPath));
+            Game.SetAssetDatabase(new AssetDatabase(EditorUtils.projectPath));
             Game.GetAssetDatabase().Start();
 
 
-            Mesh? mesh = Mesh.FromFileObj("assets\\models\\modelpreview_sphere.obj");
-            Mesh? mesh2 = Mesh.FromFileObj("assets\\models\\modelpreview_box.obj");
+            AssetDatabase assets = EditorUtils.GetAssetDatabase();
+            Mesh? mesh = Mesh.FromFileObj(assets.GetAsset("assets/models/modelpreview_sphere.obj"));
+            Mesh? mesh2 = Mesh.FromFileObj(assets.GetAsset("assets/models/modelpreview_box.obj"));
 
             Material? material = new Material(
-               Runtime.Graphics.Shaders.ShaderProgram.FromFile("assets\\shaders\\previews\\model_untextured.vert", "assets\\shaders\\previews\\model_untextured.frag"));
+               Runtime.Graphics.Shaders.ShaderProgram.FromFile(assets.GetAsset("assets\\shaders\\previews\\model_untextured.vert"), assets.GetAsset("assets\\shaders\\previews\\model_untextured.frag")));
 
             GameObject cam;
             Scene.main.Instantiate(cam = new Runtime.Objects.GameObjectFactory()

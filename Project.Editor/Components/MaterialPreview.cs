@@ -1,5 +1,6 @@
 ﻿using Project.Editor.UI.FileSystem.AssetManagers;
 using Runtime;
+using Runtime.Data;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
 using Runtime.Input;
@@ -9,15 +10,17 @@ namespace Project.Editor.Components
 {
     internal class MaterialPreview : IComponent
     {
-        string materialPath;
+        Asset materialAsset;
         string workingDir;
-        public MaterialPreview(string materialPath, string workingDir)
+        AssetDatabase assetDatabase;
+        public MaterialPreview(Asset materialAsset, string workingDir)
         {
-            this.materialPath = materialPath;
+            this.assetDatabase = Game.GetAssetDatabase();
+            this.materialAsset = materialAsset;
             this.workingDir = workingDir;
 
 
-            Game.GetAssetDatabase().DatabaseRefreshed += AssetDatabase_DatabaseRefreshed;
+            assetDatabase.DatabaseRefreshed += AssetDatabase_DatabaseRefreshed;
         }
 
         int currentPreviewModel = 0;
@@ -41,8 +44,8 @@ namespace Project.Editor.Components
 
 
                 Debug.Log("Redid material");
-                MaterialData materialData = MaterialData.FromJson(Path.Combine(workingDir, materialPath));
-                Material mat = materialData.CreateMaterial(workingDir);
+                MaterialData materialData = MaterialData.FromJson(materialAsset);
+                Material mat = materialData.CreateMaterial(assetDatabase);
 
                 GetComponent<MeshRenderer>()?.SetMaterial(mat);
             }

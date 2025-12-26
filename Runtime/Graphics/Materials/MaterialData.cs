@@ -1,4 +1,5 @@
 ﻿using Runtime.Calc;
+using Runtime.Data;
 using Runtime.Graphics.Shaders;
 using Runtime.Logging;
 using System.Globalization;
@@ -18,9 +19,9 @@ namespace Runtime.Graphics.Materials
 
         public required List<MaterialDataField> DataFields { get; set; }
 
-        public Material CreateMaterial(string workingDir = "")
+        public Material CreateMaterial(AssetDatabase database)
         {
-            Material material = new Material(ShaderProgram.FromFile(Path.Combine(workingDir, VertexShader), Path.Combine(workingDir, FragmentShader)));
+            Material material = new Material(ShaderProgram.FromFile(database.GetAsset(VertexShader), database.GetAsset(FragmentShader)));
 
             if (Lit)
                 material.EnableLightData();
@@ -42,7 +43,7 @@ namespace Runtime.Graphics.Materials
                 }
                 else if (field.Type == "sampler2D")
                 {
-                    material.SetTexture(field.Name, Texture.LoadFromPng(Path.Join(workingDir, field.Value)), textureIds);
+                    material.SetTexture(field.Name, Texture.LoadFromPng(database.GetAsset(field.Value)), textureIds);
                     textureIds++;
                 }
             }
@@ -50,11 +51,12 @@ namespace Runtime.Graphics.Materials
             return material;
         }
 
-        public static MaterialData FromJson(string file)
+        public static MaterialData FromJson(Asset asset)
         {
+            string file = asset.GetSystemPath();
             if (!File.Exists(file))
             {
-                Debug.Error($"Tried to load a file, but the file did not exist {file}");
+                Debug.Error($"Tried to load a file, but the asset file did not exist {file}");
                 // #TODO go to a backup material
             }
 

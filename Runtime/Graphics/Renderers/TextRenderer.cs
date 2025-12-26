@@ -1,6 +1,7 @@
 ﻿
 using Runtime.Calc;
 using Runtime.Component.Core;
+using Runtime.Data;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Shaders;
 using Runtime.Logging;
@@ -10,29 +11,29 @@ namespace Runtime.Graphics.Renderers
     {
         private static Material? worldTextMaterial;
         private static Material? uiTextMaterial;
-        public static void LoadTextMaterials()
+        public void LoadTextMaterials()
         {
-            ShaderProgram worldTextShader = ShaderProgram.FromFile("assets/shaders/worldText.vert", "assets/shaders/worldText.frag");
+            ShaderProgram worldTextShader = ShaderProgram.FromFile(Game.GetAssetDatabase().GetAsset("assets/shaders/worldText.vert"), Game.GetAssetDatabase().GetAsset("assets/shaders/worldText.frag"));
             worldTextShader.Compile();
 
             worldTextMaterial = new Material(worldTextShader);
-            worldTextMaterial.SetTexture("u_Texture", Texture.LoadFromPng("assets/fonts/download.png"), 0);
+            worldTextMaterial.SetTexture("u_Texture", Texture.LoadFromPng(font.texture), 0);
 
-            ShaderProgram uiTextShader = ShaderProgram.FromFile("assets/shaders/uiText.vert", "assets/shaders/uiText.frag");
+            ShaderProgram uiTextShader = ShaderProgram.FromFile(Game.GetAssetDatabase().GetAsset("assets/shaders/uiText.vert"), Game.GetAssetDatabase().GetAsset("assets/shaders/uiText.frag"));
             uiTextShader.Compile();
 
             uiTextMaterial = new Material(uiTextShader)
             {
                 matrixEnabled = false
             };
-            uiTextMaterial.SetTexture("u_Texture", Texture.LoadFromPng("assets/fonts/download.png"), 0);
+            uiTextMaterial.SetTexture("u_Texture", Texture.LoadFromPng(font.texture), 0);
         }
 
 
         public float fontSize = 0.1f;
         public float characterDistance = 0.5f;
 
-        CharacterMap characterMap = new CharacterMap();
+        Font? font;
 
         public void Apply()
         {
@@ -41,6 +42,12 @@ namespace Runtime.Graphics.Renderers
 
         public override void OnLoad()
         {
+            if (font == null)
+            {
+                font = new Font(Game.GetAssetDatabase().GetAsset("assets/fonts/download.png"));
+            }
+
+            LoadTextMaterials();
             Apply();
             base.OnLoad();
         }
@@ -101,7 +108,7 @@ namespace Runtime.Graphics.Renderers
             ind.Add(startIndex + 3);
             ind.Add(startIndex);
 
-            uvs.AddRange(characterMap.GetCharacterUv(c));
+            uvs.AddRange(font.GetCharacterUv(c));
         }
 
         public TextRenderer(TextSpace textSpace)
@@ -154,8 +161,14 @@ namespace Runtime.Graphics.Renderers
         Camera
     }
 
-    public class CharacterMap
+    public class Font
     {
+        public Font(Asset texture)
+        {
+            this.texture = texture;
+        }
+
+        public Asset texture;
         string fontText = " 1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,.<>/?!@#$%^&*()";
         public Vector2[] GetCharacterUv(char c)
         {

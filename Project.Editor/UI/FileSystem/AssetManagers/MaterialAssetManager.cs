@@ -32,11 +32,11 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             // #Todo: Make this be a small preview of the model 
 
             previewMeshes = new Mesh[] {
-                Mesh.FromFileObj("assets/models/ModelPreview_Sphere.obj")!,
-                Mesh.FromFileObj("assets/models/ModelPreview_Box.obj")!
+                Mesh.FromFileObj(EditorUtils.GetAssetDatabase().GetAsset("assets/models/ModelPreview_Sphere.obj"))!,
+                Mesh.FromFileObj(EditorUtils.GetAssetDatabase().GetAsset("assets/models/ModelPreview_Box.obj"))!
             };
 
-            icon = Texture.LoadFromPng("assets/textures/icons/material.png");
+            icon = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/material.png"));
         }
 
         public override Texture GetIcon()
@@ -49,9 +49,9 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             Debug.Log("Creating model preview...");
 
             Scene.Load(new Scene());
-            MaterialData materialData = MaterialData.FromJson(filepath!);
+            MaterialData materialData = MaterialData.FromJson(asset!);
 
-            Material material = materialData.CreateMaterial(Editor.projectPath);
+            Material material = materialData.CreateMaterial(asset.GetDatabase());
 
             Debug.Log("Creating display object...");
             Scene.main.Instantiate(new GameObjectFactory()
@@ -59,7 +59,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
                 {
                     mesh = previewMeshes[0]
                 })
-                .AddComponent(new MaterialPreview(filepath!, Editor.projectPath))
+                .AddComponent(new MaterialPreview(asset!, EditorUtils.projectPath))
                 .AddComponent(new Transform())
                 .AddComponent(new RotationPreview(false))
                 .Build());

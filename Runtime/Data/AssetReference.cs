@@ -1,16 +1,19 @@
-﻿namespace Runtime.Data
+﻿using Runtime.Logging;
+using System.Reflection;
+
+namespace Runtime.Data
 {
     public abstract class AssetReference
     {
-        private string? path;
-        public string? GetFilePath()
+        private Asset? asset;
+        public Asset? GetAsset()
         {
-            return path;
+            return asset;
         }
 
-        public void SetFilePath(string path)
+        public void SetAsset(Asset asset)
         {
-            this.path = path;
+            this.asset = asset;
         }
     }
 
@@ -24,6 +27,32 @@
         {
             this.createMethod = createMethod;
             this.filetype = filetype;
+        }
+
+
+        public object CreateInstance(Type type, Asset asset)
+        {
+            MethodInfo? method = type.GetMethod(createMethod);
+            if (method == null)
+            {
+                Debug.Error($"AssetReference of type [{type.Name}] does not contain a method called {createMethod}");
+                return null;
+            }
+
+            var info = method.GetParameters();
+            if (info.Length != 1)
+            {
+                Debug.Error($"AssetReference of type [{type.Name}] create method [{createMethod}] contained more than 1, or none paramaters. It must always contain one, the file path.");
+                return null;
+            }
+
+            if (!method.IsStatic)
+            {
+                Debug.Error($"AssetReference of type [{type.Name}] The creation method has to be static!");
+            }
+
+            // Get the created thing.
+            return method.Invoke(null, new object[] { asset });
         }
     }
 }

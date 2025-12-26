@@ -7,7 +7,8 @@ using Runtime.Scenes;
 
 namespace Runtime.Graphics.Materials
 {
-    public class Material : IDisposable
+    [AssetReference(new string[] { ".material" }, nameof(LoadFromJson))]
+    public class Material : AssetReference
     {
 
         ShaderProgram shader;
@@ -18,10 +19,13 @@ namespace Runtime.Graphics.Materials
 
         public bool matrixEnabled = true;
 
-        public static Material LoadFromFile(string filePath)
+        public static Material LoadFromJson(Asset asset)
         {
-            MaterialSettings settings = MaterialSettings.LoadFromFile(filePath);
-            return settings.GetMaterial();
+            MaterialData settings = MaterialData.FromJson(asset);
+            Material material = settings.CreateMaterial(asset.GetDatabase());
+            material.SetAsset(asset);
+
+            return material;
         }
 
         /// <summary>

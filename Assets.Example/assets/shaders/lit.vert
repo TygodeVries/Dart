@@ -20,7 +20,7 @@ out vec3 light_direction_local;
 void main()
 {
     vec3 temp = aPosition;
-    gl_Position = uProjection * uView * uModel * vec4(temp, 1.0);
+    gl_Position = u_Projection * u_View * u_Model * vec4(temp, 1.0);
 
     Pos = vec3(u_Model * vec4(aPosition, 1.0));
     Normal = normal;

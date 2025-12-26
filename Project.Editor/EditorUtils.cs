@@ -1,11 +1,24 @@
-﻿using Runtime.Logging;
+﻿using Runtime.Data;
+using Runtime.Logging;
 
 namespace Project.Editor
 {
-    public class Editor
+    public class EditorUtils
     {
         public static string projectPath = "D:\\Games\\Dart\\Assets.Example";
         public static string exeLocation = "D:\\Games\\Dart\\Runtime\\bin\\Debug\\net8.0\\runtime.exe";
+
+        public static AssetDatabase GetAssetDatabase()
+        {
+            return assets;
+        }
+
+        static AssetDatabase assets;
+        public static void LoadAssetDatabase()
+        {
+            assets = new AssetDatabase(Directory.GetCurrentDirectory());
+            assets.Start();
+        }
 
         static System.Diagnostics.Process? gameProcess;
 

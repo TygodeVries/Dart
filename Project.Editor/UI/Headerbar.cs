@@ -2,6 +2,7 @@
 using Project.Editor.UI.FileSystem;
 using Project.Editor.UI.Generic;
 using Project.Editor.UI.Inspectors;
+using Runtime;
 using Runtime.DearImGUI.Gui;
 
 namespace Project.Editor.UI
@@ -36,7 +37,7 @@ namespace Project.Editor.UI
             {
                 if (ImGui.MenuItem("Asset Selector"))
                 {
-                    GuiWindow.Enable(new AssetSelectorWindow(".png"));
+                    GuiWindow.Enable(new AssetSelectorWindow(".png", Game.GetAssetDatabase()));
                 }
 
                 ImGui.EndMenu();
@@ -66,18 +67,18 @@ namespace Project.Editor.UI
         /// </summary>
         private void DrawPlayButton()
         {
-            if (Editor.IsGameRunning())
+            if (EditorUtils.IsGameRunning())
             {
                 if (ImGui.Button("Play"))
                 {
-                    Editor.StartGame();
+                    EditorUtils.StartGame();
                 }
             }
             else
             {
                 if (ImGui.Button("Stop"))
                 {
-                    Editor.StopGame();
+                    EditorUtils.StopGame();
                 }
             }
         }

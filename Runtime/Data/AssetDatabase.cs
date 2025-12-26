@@ -8,6 +8,21 @@ namespace Runtime.Data
     public class AssetDatabase
     {
         string activeFolder;
+        public string GetFolder()
+        {
+            return activeFolder;
+        }
+
+        public string GetAssetPath(string path)
+        {
+            return Path.Join(GetFolder(), path);
+        }
+
+        public Asset GetAsset(string path)
+        {
+            return new Asset(this, path);
+        }
+
         public AssetDatabase(string activeFolder)
         {
             this.activeFolder = activeFolder;
@@ -83,9 +98,9 @@ namespace Runtime.Data
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public List<string> GetAllAssetsOfType(string type)
+        public List<Asset> GetAllAssetsOfType(string type)
         {
-            List<string> result = new List<string>();
+            List<Asset> result = new List<Asset>();
 
             var content = GetAllAssets();
             lock (content)
@@ -94,10 +109,7 @@ namespace Runtime.Data
                 {
                     if (pair.Value == type)
                     {
-                        string relativePath =
-                            Path.GetRelativePath(activeFolder, pair.Key);
-
-                        result.Add(relativePath);
+                        result.Add(Asset.FromSystemPath(this, pair.Key));
                     }
                 }
             }
