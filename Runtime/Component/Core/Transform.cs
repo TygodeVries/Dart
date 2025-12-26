@@ -1,10 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using Runtime.Calc;
 using Runtime.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Runtime.Component.Core
 {
@@ -17,12 +12,12 @@ namespace Runtime.Component.Core
         /// <summary>
         /// The position of the object
         /// </summary>
-        public Vector3 position = Vector3.Zero;
+        [Inspectable] public Vector3 position = Vector3.Zero;
 
         /// <summary>
         /// The rotation, in euler angles (degrees) of the object
         /// </summary>
-        public Vector3 rotation;
+        [Inspectable] public Vector3 rotation;
 
         /// <summary>
         /// The forwards facing direction of the object.
@@ -31,19 +26,21 @@ namespace Runtime.Component.Core
         public Vector3 GetForwards()
         {
             Vector3 radians = new Vector3(
-                MathHelper.DegreesToRadians(rotation.X),
-                MathHelper.DegreesToRadians(rotation.Y),
-                MathHelper.DegreesToRadians(rotation.Z));
+                OpenTK.Mathematics.MathHelper.DegreesToRadians(rotation.x),
+                OpenTK.Mathematics.MathHelper.DegreesToRadians(rotation.y),
+                OpenTK.Mathematics.MathHelper.DegreesToRadians(rotation.z));
 
-            float pitch = radians.X;
-            float yaw = radians.Y;
+            // Yaw (Y), Pitch (X)
+            float yaw = radians.y;
+            float pitch = radians.x;
 
             float x = MathF.Cos(pitch) * MathF.Sin(yaw);
-            float y = -MathF.Sin(pitch);
+            float y = MathF.Sin(pitch);
             float z = MathF.Cos(pitch) * MathF.Cos(yaw);
 
-            return new Vector3(x, y, z);
+            return new Vector3(x, y, z).Normalized();
         }
+
 
         /// <summary>
         /// The direction of the right side
@@ -85,19 +82,19 @@ namespace Runtime.Component.Core
         public Matrix4 GetMatrix()
         {
             Vector3 radians = new Vector3(
-                MathHelper.DegreesToRadians(rotation.X),
-                MathHelper.DegreesToRadians(rotation.Y),
-                MathHelper.DegreesToRadians(rotation.Z));
+                OpenTK.Mathematics.MathHelper.DegreesToRadians(rotation.x),
+                OpenTK.Mathematics.MathHelper.DegreesToRadians(rotation.y),
+                OpenTK.Mathematics.MathHelper.DegreesToRadians(rotation.z));
 
-            Matrix4 rotX = Matrix4.CreateRotationX(radians.X);
-            Matrix4 rotY = Matrix4.CreateRotationY(radians.Y);
-            Matrix4 rotZ = Matrix4.CreateRotationZ(radians.Z);
-
-            Matrix4 rotationMatrix = rotZ * rotX * rotY;
+            Matrix4 rotationMatrix =
+                Matrix4.CreateRotationY(radians.y) *
+                Matrix4.CreateRotationX(radians.x) *
+                Matrix4.CreateRotationZ(radians.z);
 
             Matrix4 translationMatrix = Matrix4.CreateTranslation(position);
 
             return rotationMatrix * translationMatrix;
         }
+
     }
 }

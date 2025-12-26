@@ -1,35 +1,55 @@
 ﻿using ImGuiNET;
+using Project.Editor.Data;
 using Project.Editor.UI.FileSystem.FileInspectors;
+using Project.Editor.UI.Inspectors;
+using Project.Editor.UI.Inspectors.Inspections;
+using Runtime.Calc;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Runtime.Logging;
 
 namespace Project.Editor.UI.FileSystem
 {
     internal class ProjectWindow : GuiWindow
     {
+        public override string GetName()
+        {
+            return "Project";
+        }
+
+        string[] hiddenFiles = new string[]
+        {
+            ".meta",
+            ".mtl"
+        };
         Texture folderTexture;
         public ProjectWindow()
         {
             folderTexture = Texture.LoadFromPng("assets/textures/icons/folder.png");
         }
 
-         string browsePath = "assets";
+        string selectedFolder = "";
+        string selectedFile = "";
+
+        string browsePath = "assets";
         public override void Render()
         {
             // Get all files we need to draw
-            string[] directories = Directory.GetDirectories(Path.Combine(Editor.projectPath, browsePath));
-            string[] files = Directory.GetFiles(Path.Combine(Editor.projectPath, browsePath));
+            string[] directories;
+            string[] files;
+            try
+            {
 
+                directories = Directory.GetDirectories(Path.Combine(Editor.projectPath, browsePath));
+                files = Directory.GetFiles(Path.Combine(Editor.projectPath, browsePath));
+            }
+            catch (Exception e)
+            {
+                Debug.Error("Could not open directory: " + e.Message);
+                return;
+            }
             // Add a back button
             string currentPath = Path.Combine(Editor.projectPath, browsePath);
-           
-            ImGui.Begin("Project");
 
             if (ImGui.Button("..."))
             {
@@ -45,16 +65,36 @@ namespace Project.Editor.UI.FileSystem
             // Calculate the columns count
             float buttonWidth = 100;
             float windowWidth = ImGui.GetContentRegionAvail().X;
-            ImGui.Columns((int) Math.Max(1, windowWidth / buttonWidth), "?", false);
-            
+            ImGui.Columns((int)Math.Max(1, windowWidth / buttonWidth), "?", false);
+
             // Draw all directies
             foreach (string directory in directories)
             {
                 // Draw the image
                 string folderName = Path.GetFileName(directory);
-                if (ImGui.ImageButton(folderName, folderTexture.Handle, new System.Numerics.Vector2(100, 100)))
+
+
+                Vector2 uv = default(Vector2);
+                Vector2 uv2 = new Vector2(1f, 1f);
+
+                MetaData metaData = MetaData.Get(directory);
+
+                Vector4 color = metaData.GetVector4("color", new Vector4(1, 1, 1, 1));
+                ImGui.Image(folderTexture.Handle, new Vector2(100, 100).ToNumerics(), uv.ToNumerics(), uv2.ToNumerics(), color.ToNumerics());
+
+                if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && selectedFolder == directory)
                 {
                     browsePath = Path.GetRelativePath(Editor.projectPath, directory);
+                    Debug.Log("Opening folder: " + browsePath);
+                }
+
+                if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
+                {
+                    selectedFolder = directory;
+
+                    FolderAssetInspection inspection = new FolderAssetInspection();
+                    inspection.SetFilePath(directory);
+                    InspectorWindow.GetActive().SetInspection(inspection);
                 }
 
                 // Draw the file name
@@ -66,16 +106,60 @@ namespace Project.Editor.UI.FileSystem
             foreach (string file in files)
             {
                 string fileName = Path.GetFileName(file);
-                if (ImGui.ImageButton(fileName, FileInspector.GetInspector(file).GetIcon(file).Handle, new System.Numerics.Vector2(100, 100)))
+
+                if (hiddenFiles.Contains(Path.GetExtension(fileName)))
+                    continue;
+
+                AssetManager assetManager = AssetManager.GetAssetManager(file);
+                Vector4 borderColor = Vector4.Zero;
+                if (selectedFile == file)
                 {
-                    
+                    borderColor = new Vector4(0, 0, 1, 1);
                 }
+                ImGui.Image(assetManager.GetIcon().Handle, new Vector2(100, 100).ToNumerics(), default(Vector2).ToNumerics(), Vector2.One.ToNumerics(), Vector4.One.ToNumerics(), borderColor.ToNumerics());
+
+                if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
+                {
+                    if (assetManager.GetInspection() is AssetInspection assetInspection)
+                    {
+                        assetInspection.SetFilePath(file);
+                    }
+
+                    InspectorWindow.GetActive().SetInspection(assetManager.GetInspection());
+                }
+
+                if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && selectedFile == file)
+                {
+                    assetManager.OnOpen();
+                }
+
+                if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
+                {
+                    selectedFile = file;
+                }
+
                 ImGui.Text(fileName);
                 ImGui.NextColumn();
             }
 
+            if (ImGui.BeginPopupContextWindow($"FolderContext_", ImGuiPopupFlags.MouseButtonRight | ImGuiPopupFlags.NoOpenOverItems))
+            {
+                if (ImGui.BeginMenu("Create"))
+                {
+                    AssetCreator.GUI(currentPath);
+                    // Action
+                    ImGui.EndMenu();
+                }
+
+                if (ImGui.MenuItem("Open Folder in Explorer"))
+                {
+                    System.Diagnostics.Process.Start("explorer.exe", currentPath);
+                }
+
+                ImGui.EndPopup();
+            }
+
             ImGui.Columns(1); // Reset
-            ImGui.End();
         }
     }
 }

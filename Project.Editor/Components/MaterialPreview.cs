@@ -1,0 +1,55 @@
+﻿using Project.Editor.UI.FileSystem.AssetManagers;
+using Runtime;
+using Runtime.Graphics.Materials;
+using Runtime.Graphics.Renderers;
+using Runtime.Input;
+using Runtime.Logging;
+using Runtime.Objects;
+namespace Project.Editor.Components
+{
+    internal class MaterialPreview : IComponent
+    {
+        string materialPath;
+        string workingDir;
+        public MaterialPreview(string materialPath, string workingDir)
+        {
+            this.materialPath = materialPath;
+            this.workingDir = workingDir;
+
+
+            Game.GetAssetDatabase().DatabaseRefreshed += AssetDatabase_DatabaseRefreshed;
+        }
+
+        int currentPreviewModel = 0;
+        public override void Update()
+        {
+            if (Keyboard.current.IsPressedThisFrame(OpenTK.Windowing.GraphicsLibraryFramework.Keys.Space))
+            {
+                currentPreviewModel++;
+
+                if (currentPreviewModel >= MaterialAssetManager.previewMeshes.Length)
+                    currentPreviewModel = 0;
+
+                GetComponent<MeshRenderer>().SetMesh(MaterialAssetManager.previewMeshes[currentPreviewModel]);
+            }
+        }
+
+        private void AssetDatabase_DatabaseRefreshed()
+        {
+            try
+            {
+
+
+                Debug.Log("Redid material");
+                MaterialData materialData = MaterialData.FromJson(Path.Combine(workingDir, materialPath));
+                Material mat = materialData.CreateMaterial(workingDir);
+
+                GetComponent<MeshRenderer>()?.SetMaterial(mat);
+            }
+            catch (Exception e)
+            {
+                Debug.Error("Failed to create material: " + e);
+            }
+        }
+    }
+}

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Runtime.Logging;
 
 namespace Runtime.Objects
 {
@@ -11,8 +7,46 @@ namespace Runtime.Objects
         private Dictionary<Type, IComponent> componentMap = new();
         private List<IComponent> components = new();
 
+        public void Unload()
+        {
+            foreach (var component in components)
+            {
+                component.Unload();
+            }
+        }
+
+        public void RemoveComponent<T>()
+        {
+            componentMap.Remove(typeof(T));
+
+            components.RemoveAll((c) =>
+            {
+                return c.GetType() == typeof(T);
+            });
+        }
+
+        public void RemoveComponent(Type type)
+        {
+            componentMap.Remove(type);
+
+            components.RemoveAll((c) =>
+            {
+                return c.GetType() == type;
+            });
+
+            Debug.Log("Removed Component!");
+        }
+
+        public List<IComponent> GetComponents()
+        {
+            return new List<IComponent>(components);
+        }
+
         public T? GetComponent<T>() where T : IComponent
         {
+            if (null == this)
+                return null;
+
             // Try to get by exact type first
             if (componentMap.TryGetValue(typeof(T), out var exactMatch))
             {
@@ -51,11 +85,22 @@ namespace Runtime.Objects
             }
         }
 
+        public bool EnableUpdates = true;
         public void Update()
         {
+            if (!EnableUpdates)
+                return;
+
             foreach (IComponent component in components)
             {
-                component.Update();
+                try
+                {
+                    component.Update();
+                }
+                catch (Exception e)
+                {
+                    Debug.Error($"Failed to update {component.GetType()}! " + e);
+                }
             }
         }
     }

@@ -1,18 +1,60 @@
-﻿using Runtime.DearImGUI.Backend;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ImGuiNET;
+using Runtime.DearImGUI.Backend;
 
 namespace Runtime.DearImGUI.Gui
 {
     public abstract class GuiWindow
     {
+        public bool WriteHeaderAndFooter = true;
+        private int? id;
+        public int GetId()
+        {
+            return id.Value;
+        }
+
+        internal void InitId()
+        {
+            id = 0;
+            foreach (GuiWindow guiWindow in ImGuiRenderPass.guiWindows)
+            {
+                if (this.GetName() == guiWindow.GetName())
+                {
+                    id++;
+                }
+            }
+        }
+
+        internal static Queue<GuiWindow> windowsToOpen = new Queue<GuiWindow>();
+        internal static Queue<GuiWindow> windowsToClose = new Queue<GuiWindow>();
         public static void Enable(GuiWindow window)
         {
-            ImGuiRenderPass.guiWindows.Add(window);
+            windowsToOpen.Enqueue(window);
         }
+
+        public static void Disable(GuiWindow window)
+        {
+            windowsToClose.Enqueue(window);
+        }
+
         public abstract void Render();
+        public virtual string GetName()
+        {
+            return "Unnamed Window";
+        }
+
+        public bool Begin()
+        {
+            bool isOpen = true;
+            bool visible = ImGui.Begin($"{GetName()}##{GetId()}", ref isOpen);
+
+            if (!isOpen)
+            {
+                GuiWindow.Disable(this);
+                ImGui.End();
+            }
+
+            return visible && isOpen;
+        }
+
     }
 }

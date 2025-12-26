@@ -1,7 +1,6 @@
 ﻿using ImGuiNET;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
-using System;
+using OpenTK.Mathematics; // Don't touch
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 

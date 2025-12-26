@@ -1,0 +1,1 @@
+{"VertexShader":"assets\\Shaders\\lit.vert","FragmentShader":"assets\\Shaders\\unlit.frag","Lit":true,"DataFields":[{"Name":"u_Color","Type":"vec4","Value":"1 0.6970954 0 1"}]}

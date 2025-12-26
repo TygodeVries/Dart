@@ -1,5 +1,4 @@
 ﻿using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using Runtime.Calc;
@@ -7,12 +6,6 @@ using Runtime.Graphics.Pipeline;
 using Runtime.Input;
 using Runtime.Logging;
 using Runtime.Scenes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static OpenTK.Platform.Native.macOS.MacOSCursorComponent;
 
 namespace Runtime.Graphics
 {
@@ -35,19 +28,20 @@ namespace Runtime.Graphics
 
         public static RenderCanvas? main;
         public RenderCanvas(NativeWindowSettings settings)
-         : base(GameWindowSettings.Default, settings) 
-         { 
-            if (main == null) main = this; 
-            Unload += () => {
-               Debug.Log("Unloading...");
-               }; 
-         }
+         : base(GameWindowSettings.Default, settings)
+        {
+            if (main == null) main = this;
+            Unload += () =>
+            {
+                Debug.Log("Unloading...");
+            };
+        }
 
         protected override void OnLoad()
         {
             Keyboard.current.EndOfFrame();
             Mouse.current.EndOfFrame();
-
+            Mouse.current.scroll = new Vector2();
 
             Debug.Log("Loading render canvas...");
             base.OnLoad();
@@ -80,15 +74,15 @@ namespace Runtime.Graphics
 
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
-            Mouse.current.mouseDelta = e.Delta;
-            Mouse.current.position = e.Position;
+            Mouse.current.mouseDelta = new Vector2(e.Delta);
+            Mouse.current.position = new Vector2(e.Position);
         }
 
         protected override void OnResize(ResizeEventArgs e)
         {
-            base.OnResize(e);
             Game.width = e.Width;
             Game.height = e.Height;
+            base.OnResize(e);
         }
 
 
@@ -98,6 +92,11 @@ namespace Runtime.Graphics
             base.OnKeyDown(e);
         }
 
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            Mouse.current.scroll.x = e.OffsetX;
+            Mouse.current.scroll.y = e.OffsetY;
+        }
         protected override void OnKeyUp(KeyboardKeyEventArgs e)
         {
             Keyboard.current.SetKeyState(e.Key, false);
@@ -106,7 +105,8 @@ namespace Runtime.Graphics
 
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
-            if(args.Time < 0.2f)
+            MainThread.Update();
+            if (args.Time < 0.2f)
             {
                 Time.deltaTime = args.Time;
             }
@@ -116,8 +116,6 @@ namespace Runtime.Graphics
                 Console.WriteLine("Frame dropped!");
             }
             Scene.main.Update();
-            Mouse.current.EndOfFrame();
-            Keyboard.current.EndOfFrame();
         }
 
         int i = 0;
@@ -134,7 +132,7 @@ namespace Runtime.Graphics
             if (i == 500 - 1)
             {
                 double avr = 0;
-                for(int a = 0; a < 500; a++)
+                for (int a = 0; a < 500; a++)
                 {
                     avr += frames[a];
                 }
@@ -147,6 +145,9 @@ namespace Runtime.Graphics
 
             i++;
             SwapBuffers();
+
+            Mouse.current.EndOfFrame();
+            Keyboard.current.EndOfFrame();
         }
     }
 }

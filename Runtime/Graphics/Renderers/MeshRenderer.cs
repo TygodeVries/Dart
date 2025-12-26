@@ -1,14 +1,8 @@
 ﻿using OpenTK.Graphics.OpenGL;
-using Runtime.Graphics;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Shaders;
 using Runtime.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
+using Runtime.Objects;
 
 namespace Runtime.Graphics.Renderers
 {
@@ -18,9 +12,20 @@ namespace Runtime.Graphics.Renderers
         {
 
         }
-        
+
         public MeshRenderer(Material material)
         {
+            this.material = material;
+        }
+
+        public void SetMaterial(Material material)
+        {
+            // Delete the old material
+            if (this.material != null)
+            {
+                this.material.Dispose();
+            }
+
             this.material = material;
         }
 
@@ -39,6 +44,7 @@ namespace Runtime.Graphics.Renderers
         private int tbo;
 
         private Mesh? _mesh;  // backing field
+        [Inspectable]
         public Mesh? mesh
         {
             get => _mesh;
@@ -48,7 +54,7 @@ namespace Runtime.Graphics.Renderers
         public void SetMesh(Mesh mesh)
         {
             if (mesh != null)
-               Upload(mesh);
+                Upload(mesh);
             _mesh = mesh;
         }
 
@@ -130,7 +136,7 @@ namespace Runtime.Graphics.Renderers
                 return;
             }
             material?.Use();
-            
+
             GL.BindVertexArray(vao);
             GL.DrawElements(PrimitiveType.Triangles, indexCount, DrawElementsType.UnsignedInt, 0);
         }

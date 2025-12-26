@@ -1,13 +1,8 @@
-﻿using OpenTK.Mathematics;
+﻿using Runtime.Calc;
 using Runtime.Component.Core;
 using Runtime.Graphics;
-using Runtime.Objects;
 using Runtime.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Runtime.Objects;
 using Runtime.Scenes;
 
 namespace Runtime.Component.Lighting
@@ -20,13 +15,13 @@ namespace Runtime.Component.Lighting
         public override void OnLoad()
         {
             // Try to add ourselfs to the scene's light manager, we need to keep track of this to send this data to our renderers.
-            LightManager defaultLightManager = Scene.main.GetLightManager() as LightManager;
+            LightManager defaultLightManager = Scene.main.GetLightManager();
             if (null != defaultLightManager)
             {
-               defaultLightManager.GetPointLights().Add(this);
+                defaultLightManager.GetPointLights().Add(this);
             }
             else
-               Debug.Log("PointLight used without DefaultLightManager");
+                Debug.Log("PointLight used without DefaultLightManager");
         }
 
         /// <summary>
@@ -37,8 +32,8 @@ namespace Runtime.Component.Lighting
         public Vector3 GetPosition()
         {
             Transform? transform = GetComponent<Transform>();
-            if(transform == null)
-               return Vector3.Zero;
+            if (transform == null)
+                return Vector3.Zero;
 
             return transform.position;
         }
