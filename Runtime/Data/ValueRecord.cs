@@ -28,6 +28,7 @@ namespace Runtime.Data
             if (value == null)
             {
                 Debug.Error($"You can not create a record for value of null on record {name}!");
+                return;
             }
             var v = ValueRecordTypeFromType(value!.GetType());
 
@@ -99,7 +100,7 @@ namespace Runtime.Data
                     }
 
                     // Get the created thing.
-                    return method.Invoke(null, new object[] { Value });
+                    return method.Invoke(null, new object[] { Game.GetAssetDatabase().GetAsset(Value)sd });
                 }
             }
 

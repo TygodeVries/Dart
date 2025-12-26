@@ -124,7 +124,7 @@ namespace Project.Editor.UI.FileSystem
                 {
                     if (assetManager.GetInspection() is AssetInspection assetInspection)
                     {
-                        assetInspection.SetAsset(Game.GetAssetDatabase().GetAsset(file));
+                        assetInspection.SetAsset(assetManager.GetAsset());
                     }
 
                     InspectorWindow.GetActive().SetInspection(assetManager.GetInspection());

@@ -3,7 +3,9 @@ using Project.Editor.UI.Generic;
 using Runtime;
 using Runtime.Data;
 using Runtime.DearImGUI.Gui;
+using Runtime.Logging;
 using Runtime.Objects;
+using Runtime.Objects.Prefabs;
 using System.Reflection;
 
 namespace Project.Editor.UI.Inspectors.Inspections
@@ -11,9 +13,11 @@ namespace Project.Editor.UI.Inspectors.Inspections
     public class GameObjectInspection : Inspection
     {
         GameObject gameObject;
-        public GameObjectInspection(GameObject gameObject)
+        Asset asset;
+        public GameObjectInspection(GameObject gameObject, Asset asset)
         {
             this.gameObject = gameObject;
+            this.asset = asset;
         }
 
         public override void Render()
@@ -51,10 +55,17 @@ namespace Project.Editor.UI.Inspectors.Inspections
                 {
                     gameObject.AddComponent((IComponent)Activator.CreateInstance(type));
                     GuiWindow.Disable(guiWindow);
+                    Save();
                 };
             }
         }
 
+        public void Save()
+        {
+            Debug.Log("Saving prefab...");
+            PrefabGameObject prefab = PrefabGameObject.FromGameObject(gameObject);
+            File.WriteAllText(asset.GetSystemPath(), prefab.ToJson());
+        }
         void DrawInspectableMember(MemberInfo member, Type valueType, Func<object?> getter, Action<object?> setter)
         {
             InspectableAttribute? attribute =
@@ -98,6 +109,7 @@ namespace Project.Editor.UI.Inspectors.Inspections
                     window.OnSelect += selected =>
                     {
                         setter(selected.CreateInstance(valueType));
+                        Save();
                     };
 
                     GuiWindow.Enable(window);

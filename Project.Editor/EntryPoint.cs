@@ -26,7 +26,6 @@ namespace Editor
 
         public static void Main()
         {
-            EditorUtils.LoadAssetDatabase();
             Style.Apply();
             Debug.Log("Loading Editor...");
             string[] args = Environment.GetCommandLineArgs();
@@ -42,6 +41,8 @@ namespace Editor
                     Project.Editor.EditorUtils.exeLocation = args[cx + 1];
                 }
             }
+
+            EditorUtils.LoadAssetDatabase();
 
             GuiWindow.Enable(new Headerbar());
             GuiWindow.Enable(new ProjectWindow());

@@ -42,7 +42,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
 
             scene.Instantiate(gameObject);
 
-            GameObjectInspection inspection = new GameObjectInspection(gameObject);
+            GameObjectInspection inspection = new GameObjectInspection(gameObject, asset);
             InspectorWindow.GetActive().SetInspection(inspection);
         }
 

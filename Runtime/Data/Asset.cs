@@ -10,6 +10,13 @@
             this.assetDatabase = database;
             this.systempath = database.GetAssetPath(path);
             this.path = path;
+
+            if (path.Contains(":")) // In case we accedentally pass a system path
+            {
+                Asset asset = FromSystemPath(database, path);
+                this.path = asset.path;
+                this.systempath = asset.systempath;
+            }
         }
 
         public static Asset FromSystemPath(AssetDatabase database, string path)
