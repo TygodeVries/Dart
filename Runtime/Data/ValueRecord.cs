@@ -100,7 +100,7 @@ namespace Runtime.Data
                     }
 
                     // Get the created thing.
-                    return method.Invoke(null, new object[] { Game.GetAssetDatabase().GetAsset(Value)sd });
+                    return method.Invoke(null, new object[] { Game.GetAssetDatabase().GetAsset(Value) });
                 }
             }
 
