@@ -17,6 +17,8 @@ namespace Runtime.Component.Test
         {
             Vector3 goalDelta = Vector3.Zero;
             flightSpeed += Mouse.current.scroll.y * 1f;
+            if (flightSpeed < 0)
+                flightSpeed = 0;
 
             if (Keyboard.current.IsPressed(Keys.A))
                 goalDelta.x = -1;
