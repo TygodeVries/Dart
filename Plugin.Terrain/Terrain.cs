@@ -18,11 +18,11 @@ namespace Runtime.Plugin.Terrain
 		TerrainPiece[] GetNeighbors(TerrainPiece x);
 		Vector4 GetVector(TerrainPiece x);
 	}
-	public class PathFinder: Renderer
+	public class PathFinder
 	{
 		PriorityQueue<TerrainPiece, double> boundary = new PriorityQueue<TerrainPiece, double>();
 		SortedDictionary<TerrainPiece, TerrainPiece> ss = new SortedDictionary<TerrainPiece, TerrainPiece>();
-		Terrain terrain;
+		Terrain? terrain;
 		public PathFinder()
 		{
 
@@ -41,28 +41,6 @@ namespace Runtime.Plugin.Terrain
 				ss.Add(item, start);
 				boundary.Enqueue(item, terrain.EstimateDistance(item, end) + terrain.TransitionCost(start, item));
 			}
-		}
-		ShaderProgram program;
-		public override void OnLoad()
-		{
-			program = ShaderProgram.FromFile("assets\\shaders\\lit.vert", "assets\\shaders\\unlit.frag");
-			program.Compile();
-			base.OnLoad();
-		}
-		public override void Render()
-		{
-			program.Use();
-			TerrainPiece[] keys = ss.Keys.ToArray();
-			TerrainPiece[] values = ss.Values.ToArray();
-			Vector4[] a = new Vector4[ss.Count * 2];
-			for (int cx = 0; cx < ss.Count; cx++)
-			{
-				a[2 * cx] = terrain.GetVector(keys[cx]);
-				a[2 * cx + 1] = terrain.GetVector(values[cx]);
-			}
-		//	GL.VertexAttribPointer(0, 4, VertexAttribPointerType.Double, true, 0, a);
-			GL.DrawArrays(PrimitiveType.Lines, 0, a.Length);
-
 		}
 
 		public bool Step(Terrain terrain, TerrainPiece end)
