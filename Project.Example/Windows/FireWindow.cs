@@ -3,6 +3,7 @@ using ImGuiNET;
 using Runtime.Audio;
 using Runtime.DearImGUI.Gui;
 using Runtime.Objects;
+using Runtime.Plugin.Terrain;
 using Runtime.WindowsNative;
 using System;
 using System.Collections.Generic;
@@ -14,21 +15,29 @@ namespace Project.Example.Windows
 {
 	internal class FireWindow: GuiWindow
 	{
-		GameObject? emitter;
+		Terrain terrain;
+		TerrainPiece start, end;
+		PathFinder pathfinder;
 		public
-		FireWindow(GameObject emitter)
+		FireWindow(PathFinder finder, Terrain terrain, TerrainPiece start, TerrainPiece end)
 		{
-			this.emitter = emitter;
+			pathfinder = finder;
+			this.terrain = terrain;
+			this.start = start;
+			this.end = end;
 		}
 		public override void Render()
 		{
-			ImGui.Begin("Fire!");
+			ImGui.Begin("Path");
 
-			if (ImGui.Button("Fire!"))
+			if (ImGui.Button("Init"))
 			{
-				emitter?.GetComponent<ParticleTest>()?.Fire();
+				pathfinder.Init(terrain, start, end);
 			}
-
+			if (ImGui.Button("Step"))
+			{
+				pathfinder.Step(terrain, end);
+			}
 			ImGui.End();
 		}
 
