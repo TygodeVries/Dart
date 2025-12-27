@@ -15,7 +15,7 @@ namespace Runtime.Objects.Prefabs
             prefab.type = component.GetType().AssemblyQualifiedName;
             prefab.overrides = new List<ValueRecord>();
 
-            FieldInfo[] infos = component.GetType().GetFields();
+            FieldInfo[] infos = component.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
             foreach (FieldInfo info in infos)
             {
                 if (!Attribute.IsDefined(info, typeof(InspectableAttribute)))
@@ -51,7 +51,7 @@ namespace Runtime.Objects.Prefabs
             IComponent comp = (IComponent)Activator.CreateInstance(typeInstance);
 
             PropertyInfo[] propertyInfos = comp.GetType().GetProperties();
-            FieldInfo[] infos = comp.GetType().GetFields();
+            FieldInfo[] infos = comp.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
             foreach (ValueRecord value in overrides)
             {
                 FieldInfo? v = infos.FirstOrDefault((e) =>

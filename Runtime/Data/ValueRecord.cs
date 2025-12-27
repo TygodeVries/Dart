@@ -43,8 +43,11 @@ namespace Runtime.Data
             SetValue(value);
         }
 
-        public object GetValue()
+        public object? GetValue()
         {
+            if (Type == ValueRecordType.Null)
+                return null;
+
             switch (Type)
             {
                 case ValueRecordType.String:
@@ -111,6 +114,12 @@ namespace Runtime.Data
 
         public void SetValue(object value)
         {
+            if (value == null)
+            {
+                Type = ValueRecordType.Null;
+                return;
+            }
+
             switch (value)
             {
                 case string s:
@@ -154,13 +163,24 @@ namespace Runtime.Data
 
             if (typeof(AssetReference).IsAssignableFrom(value.GetType()))
             {
-                Type = ValueRecordType.Asset;
-                Value = ((AssetReference)value).GetAsset().GetPath();
+                Asset? asset = ((AssetReference)value).GetAsset();
+                if (asset != null)
+                {
+                    Type = ValueRecordType.Asset;
+                    Value = asset.GetPath();
+                }
+                else
+                {
+                    Type = ValueRecordType.Null;
+                }
             }
         }
 
         public static ValueRecordType? ValueRecordTypeFromType(Type type)
         {
+            if (type == null)
+                return ValueRecordType.Null;
+
             if (type == typeof(bool))
                 return ValueRecordType.Bool;
 
@@ -196,7 +216,8 @@ namespace Runtime.Data
             Vector2,
             Vector3,
             Vector4,
-            Asset
+            Asset,
+            Null
         }
     }
 }

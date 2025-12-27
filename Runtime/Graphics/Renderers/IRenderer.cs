@@ -42,5 +42,11 @@ namespace Runtime.Graphics.Renderers
             RenderCanvas.main!.GetGraphicsPipeline()?.AddRenderer(this);
             base.OnLoad();
         }
+
+        public override void Unload()
+        {
+            RenderCanvas.main!.GetGraphicsPipeline()?.RemoveRenderer(this);
+            base.Unload();
+        }
     }
 }

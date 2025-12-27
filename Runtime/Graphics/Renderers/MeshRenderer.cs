@@ -121,7 +121,7 @@ namespace Runtime.Graphics.Renderers
 
             if (material == null)
             {
-                Debug.Log("Material is null!");
+                material = Material.CreateFallback();
                 return;
             }
 

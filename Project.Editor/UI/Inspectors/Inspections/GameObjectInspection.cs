@@ -26,13 +26,16 @@ namespace Project.Editor.UI.Inspectors.Inspections
             {
                 if (ImGui.CollapsingHeader(component.GetType().Name))
                 {
-                    if (ImGui.Button("Remove"))
+
+                    if (ImGui.Button($"Remove##{component.GetType().Name}"))
                     {
                         Type componentType = component.GetType();
                         gameObject.RemoveComponent(componentType);
+                        Save();
+                        return;
                     }
 
-                    FieldInfo[] fieldInfos = component.GetType().GetFields();
+                    FieldInfo[] fieldInfos = component.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
                     foreach (FieldInfo info in fieldInfos)
                     {
                         DrawInspectableMember(info, info.FieldType, () => info.GetValue(component), v => info.SetValue(component, v));
@@ -75,27 +78,45 @@ namespace Project.Editor.UI.Inspectors.Inspections
                 return;
 
             ImGui.Text(member.Name);
-
+            ImGui.SameLine();
             var record = ValueRecord.ValueRecordTypeFromType(valueType);
             if (record == null)
                 return;
+
+
+            if (record == ValueRecord.ValueRecordType.Bool)
+            {
+                object? value = getter();
+
+                bool currentValue = value is bool b && b;
+
+                if (ImGui.Checkbox($"##{member.Name}", ref currentValue))
+                {
+                    setter(currentValue);
+                    Save();
+                }
+
+                return;
+            }
+
 
             if (record == ValueRecord.ValueRecordType.Asset)
             {
                 object? value = getter();
 
+                string text = "";
                 if (value == null)
                 {
-                    ImGui.Text("No value selected.");
+                    text = "No value selected";
                 }
                 else
                 {
                     AssetReference assetReference = (AssetReference)value;
                     Asset? asset = assetReference.GetAsset();
-                    ImGui.Text(asset != null ? asset.GetPath() : "[Instance]");
+                    text = asset != null ? asset.GetPath() : "[Instance]";
                 }
 
-                if (ImGui.Button("Select##" + member.Name))
+                if (ImGui.Button($"{text}##" + member.Name))
                 {
                     AssetReferenceAttribute? att =
                         valueType.GetCustomAttribute<AssetReferenceAttribute>();
