@@ -22,14 +22,6 @@ namespace Project.Example.Windows
 		}
 		public override void Render()
 		{
-			ImGui.Begin("Fire!");
-
-			if (ImGui.Button("Fire!"))
-			{
-				emitter?.GetComponent<ParticleTest>()?.Fire();
-			}
-
-			ImGui.End();
 		}
 
 	}
