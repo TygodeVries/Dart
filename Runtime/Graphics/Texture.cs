@@ -14,7 +14,7 @@ namespace Runtime.Graphics
         byte[] pixels;
         public int width;
         public int height;
-        public int Handle;
+        public int Handle = 0;
         public bool isUploaded = false;
         public Texture(int width, int height, byte[] pixels)
         {
@@ -25,6 +25,7 @@ namespace Runtime.Graphics
 
         public static Texture LoadFromPng(Asset asset, int maxWidth = 8192, int maxHeight = 8192, bool upload = true)
         {
+            Debug.Log($"Creating texture of {maxWidth}, {maxHeight}, {upload}");
             string path = asset.GetSystemPath();
             if (!File.Exists(path))
             {
@@ -52,28 +53,50 @@ namespace Runtime.Graphics
 
             byte[] pixels = new byte[4 * image.Width * image.Height];
             image.CopyPixelDataTo(pixels);
+            image.Dispose();
 
             Texture texture = new Texture(image.Width, image.Height, pixels);
             if (upload) texture.Upload();
 
-            image.Dispose();
             return texture;
         }
 
         public void Upload()
         {
-            Handle = GL.GenTexture();
-            GL.BindTexture(TextureTarget.Texture2d, Handle);
-            GL.TexParameterf(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-            GL.TexParameterf(TextureTarget.Texture2d, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
-            GL.TexParameterf(TextureTarget.Texture2d, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
-            GL.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
-            Debug.Log($"Uploading texture of {width}x{height}");
+            if (isUploaded)
+                return;
 
-            if (GL.GetError() != ErrorCode.NoError)
-                Debug.Log($"OpenGL has an error: {GL.GetError()}");
+            MainThread.Run(() =>
+            {
+                isUploaded = true;
 
-            isUploaded = true;
+                if (Handle == 0)
+                    Handle = GL.GenTexture();
+
+                if (GL.GetError() != ErrorCode.NoError)
+                    Debug.Log($"AAAH OpenGL has an error: {GL.GetError()}");
+
+                GL.BindBuffer(BufferTarget.PixelUnpackBuffer, 0);
+                if (GL.GetError() != ErrorCode.NoError)
+                    Debug.Log($"OpenGL has an error: {GL.GetError()}");
+                GL.BindTexture(TextureTarget.Texture2d, Handle);
+                if (GL.GetError() != ErrorCode.NoError)
+                    Debug.Log($"1OpenGL has an error: {GL.GetError()}");
+                GL.TexParameterf(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+                if (GL.GetError() != ErrorCode.NoError)
+                    Debug.Log($"2OpenGL has an error: {GL.GetError()}");
+                GL.TexParameterf(TextureTarget.Texture2d, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+                if (GL.GetError() != ErrorCode.NoError)
+                    Debug.Log($"3OpenGL has an error: {GL.GetError()}");
+                GL.TexParameterf(TextureTarget.Texture2d, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+                if (GL.GetError() != ErrorCode.NoError)
+                    Debug.Log($"4OpenGL has an error: {GL.GetError()}");
+                GL.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
+                Debug.Log($"Uploading texture of {width}x{height}");
+
+                if (GL.GetError() != ErrorCode.NoError)
+                    Debug.Log($"5OpenGL has an error: {GL.GetError()}");
+            });
         }
 
         public void Use(TextureUnit textureUnit)

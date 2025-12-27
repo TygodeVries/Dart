@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using Runtime.Data;
+using System.Text.Json;
 
 namespace Runtime.Objects.Prefabs
 {
@@ -8,7 +9,7 @@ namespace Runtime.Objects.Prefabs
 
         public GameObjectFactory GetGameObjectAsFactory()
         {
-            GameObjectFactory factory = new GameObjectFactory();
+            GameObjectFactory factory = new GameObjectFactory(asset);
             foreach (PrefabComponent component in components)
             {
                 factory.AddComponent(component.GetComponent());
@@ -21,7 +22,18 @@ namespace Runtime.Objects.Prefabs
             return GetGameObjectAsFactory().Build();
         }
 
-        public static PrefabGameObject FromJson(string json)
+        public static PrefabGameObject FromFile(Asset asset)
+        {
+            if (asset == null)
+                throw new NullReferenceException();
+            PrefabGameObject prefab = FromJson(File.ReadAllText(asset.GetSystemPath()));
+            prefab.asset = asset;
+            return prefab;
+        }
+
+        public Asset? asset = null;
+
+        private static PrefabGameObject FromJson(string json)
         {
             return JsonSerializer.Deserialize<PrefabGameObject>(json);
         }

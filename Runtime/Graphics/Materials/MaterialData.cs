@@ -43,6 +43,12 @@ namespace Runtime.Graphics.Materials
                 }
                 else if (field.Type == "sampler2D")
                 {
+                    if (!File.Exists(database.GetAsset(field.Value).GetSystemPath()))
+                    {
+                        Debug.Error($"Texture for material was not found! {field.Value}   IN   {database.GetAsset(field.Value).GetSystemPath()}");
+                        break;
+                    }
+
                     material.SetTexture(field.Name, Texture.LoadFromPng(database.GetAsset(field.Value)), textureIds);
                     textureIds++;
                 }

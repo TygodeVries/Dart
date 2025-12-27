@@ -62,6 +62,7 @@ namespace Editor
                Runtime.Graphics.Shaders.ShaderProgram.FromFile(assets.GetAsset("assets\\shaders\\previews\\model_untextured.vert"), assets.GetAsset("assets\\shaders\\previews\\model_untextured.frag")));
 
             GameObject cam;
+
             Scene.main.Instantiate(cam = new Runtime.Objects.GameObjectFactory()
                .AddComponent<Camera>()
                .AddComponent<Transform>()

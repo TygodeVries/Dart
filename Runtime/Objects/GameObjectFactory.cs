@@ -1,11 +1,16 @@
-﻿namespace Runtime.Objects
+﻿using Runtime.Data;
+
+namespace Runtime.Objects
 {
     public class GameObjectFactory
     {
         GameObject gameObject;
-        public GameObjectFactory()
+        Asset? asset;
+        public GameObjectFactory(Asset? asset = null)
         {
             gameObject = new GameObject();
+            gameObject.SetAsset(asset);
+            this.asset = asset;
         }
         public GameObjectFactory AddComponent(IComponent component)
         {

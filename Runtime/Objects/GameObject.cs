@@ -1,9 +1,19 @@
-﻿using Runtime.Logging;
+﻿using Runtime.Data;
+using Runtime.Logging;
+using Runtime.Objects.Prefabs;
 
 namespace Runtime.Objects
 {
-    public class GameObject
+    [AssetReference(new string[] { ".prefab" }, nameof(LoadFromFile))]
+    public class GameObject : AssetReference
     {
+
+        public static GameObject LoadFromFile(Asset asset)
+        {
+            GameObject gameObject = PrefabGameObject.FromFile(asset).GetGameObject();
+            return gameObject;
+        }
+
         private Dictionary<Type, IComponent> componentMap = new();
         private List<IComponent> components = new();
 

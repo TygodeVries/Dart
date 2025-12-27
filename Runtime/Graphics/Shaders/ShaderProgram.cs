@@ -24,7 +24,6 @@ namespace Runtime.Graphics.Shaders
         {
             try
             {
-                Debug.Log($"Loading from shader path: {vertex.GetSystemPath()}");
                 string vertexContent = File.ReadAllText(vertex.GetSystemPath());
                 string fragmentContent = File.ReadAllText(fragment.GetSystemPath());
 
@@ -55,8 +54,6 @@ namespace Runtime.Graphics.Shaders
         string fragmentSource;
         public ShaderProgram(string vertexShader, string fragmentShader)
         {
-
-            Debug.Log($"Vertex shader is: {vertexShader}");
             if (vertexShader.Length < 20)
             {
                 Debug.Log($"VertexShader does not look like source code, please be aware. {vertexShader}");

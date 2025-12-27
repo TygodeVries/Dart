@@ -25,11 +25,7 @@ namespace Runtime.Graphics.Pipeline
                     {
                         case DebugSeverity.DebugSeverityNotification:
                             break;
-                        case DebugSeverity.DebugSeverityLow:
-                            break;
-                        case DebugSeverity.DebugSeverityMedium:
-                            break;
-                        case DebugSeverity.DebugSeverityHigh:
+                        default:
                             Debug.Log($"OpenGL:" + str);
                             break;
                     }
