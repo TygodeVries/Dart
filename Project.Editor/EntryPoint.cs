@@ -65,7 +65,7 @@ namespace Editor
             Scene.main.Instantiate(cam = new Runtime.Objects.GameObjectFactory()
                .AddComponent<Camera>()
                .AddComponent<Transform>()
-               .AddComponent<TestCameraControls>().Build());
+               .AddComponent<FlightCamera>().Build());
 
             cam.GetComponent<Camera>().SetAsMain();
 

@@ -59,7 +59,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
                     position = new Runtime.Calc.Vector3(0, 0, 0)
                 })
                 .AddComponent(sceneCamera)
-                .AddComponent(new TestCameraControls())
+                .AddComponent(new FlightCamera())
                 .Build()
                 );
 

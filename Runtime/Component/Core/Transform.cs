@@ -54,6 +54,19 @@ namespace Runtime.Component.Core
             return right.Normalized();
         }
 
+        /// <summary>
+        /// The direction of the up side
+        /// </summary>
+        /// <returns>A vector with magnitude 1</returns>
+        public Vector3 GetUp()
+        {
+            Vector3 forward = GetForwards();
+            Vector3 right = GetRight();
+
+            Vector3 up = Vector3.Cross(right, forward);
+            return up.Normalized();
+        }
+
 
         /// <summary>
         /// Rotate the object by the specified amount.

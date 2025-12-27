@@ -28,7 +28,7 @@ namespace FeatureTestProject
                 new GameObjectFactory()
                     .AddComponent<ParticleEmitter>()
                     .AddComponent<ParticleTest>()
-                    .AddComponent<TestCameraControls>()
+                    .AddComponent<FlightCamera>()
                     .AddComponent<Transform>()
                     .Build()
             );

@@ -1,4 +1,6 @@
-﻿using Runtime.Calc;
+﻿using OpenTK.Windowing.Common;
+using Runtime.Calc;
+using Runtime.Graphics;
 using Runtime.Logging;
 
 namespace Runtime.Input
@@ -11,6 +13,12 @@ namespace Runtime.Input
         {
             Debug.Log("Activated Mouse!");
         }
+
+        public void SetCursorState(CursorState state)
+        {
+            RenderCanvas.main.CursorState = state;
+        }
+
         /// <summary>
         /// Cleanup at the end of a frame
         /// </summary>
