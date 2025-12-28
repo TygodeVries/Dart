@@ -1,9 +1,4 @@
 ﻿using Runtime.Graphics.Renderers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Runtime.Graphics.Pipeline
 {
@@ -12,6 +7,7 @@ namespace Runtime.Graphics.Pipeline
         void Render();
         void Initialize() { }
         void AddRenderer(Renderer renderer) { }
+        void RemoveRenderer(Renderer renderer) { }
 
         void AddRenderPass(RenderPass pass) { }
     }

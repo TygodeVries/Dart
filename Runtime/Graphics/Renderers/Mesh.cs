@@ -124,8 +124,9 @@ namespace Runtime.Graphics.Renderers
             }
         }
 
-        public static Mesh? FromFileObj(string file)
+        public static Mesh? FromFileObj(Asset asset)
         {
+            string file = asset.GetSystemPath();
             List<Vector3> positions = new List<Vector3>();
             List<Vector3> normals = new List<Vector3>();
             List<Vector2> texcoords = new List<Vector2>();
@@ -220,7 +221,7 @@ namespace Runtime.Graphics.Renderers
 
                 mesh.RecalculateTangents();
 
-                mesh.SetFilePath(file);
+                mesh.SetAsset(asset);
                 return mesh;
             }
             catch (Exception e)

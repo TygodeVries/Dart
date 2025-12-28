@@ -13,7 +13,7 @@ namespace Project.Editor
         {
             if (fallbackTexture == null)
             {
-                fallbackTexture = Texture.LoadFromPng("assets/textures/icons/Unknown.png");
+                fallbackTexture = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/Unknown.png"));
             }
 
             return fallbackTexture;
@@ -29,7 +29,7 @@ namespace Project.Editor
         {
             if (loadingTexture == null)
             {
-                loadingTexture = Texture.LoadFromPng("assets/textures/icons/loading.png");
+                loadingTexture = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/loading.png"));
             }
 
             return loadingTexture;

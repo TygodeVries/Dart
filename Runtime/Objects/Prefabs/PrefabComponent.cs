@@ -15,8 +15,19 @@ namespace Runtime.Objects.Prefabs
             prefab.type = component.GetType().AssemblyQualifiedName;
             prefab.overrides = new List<ValueRecord>();
 
-            FieldInfo[] infos = component.GetType().GetFields();
+            FieldInfo[] infos = component.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
             foreach (FieldInfo info in infos)
+            {
+                if (!Attribute.IsDefined(info, typeof(InspectableAttribute)))
+                    continue;
+
+                object? value = info.GetValue(component);
+
+                prefab.overrides.Add(new ValueRecord(info.Name, value));
+            }
+
+            PropertyInfo[] propertyInfos = component.GetType().GetProperties();
+            foreach (PropertyInfo info in propertyInfos)
             {
                 if (!Attribute.IsDefined(info, typeof(InspectableAttribute)))
                     continue;
@@ -39,15 +50,35 @@ namespace Runtime.Objects.Prefabs
 
             IComponent comp = (IComponent)Activator.CreateInstance(typeInstance);
 
-            FieldInfo[] infos = comp.GetType().GetFields();
+            PropertyInfo[] propertyInfos = comp.GetType().GetProperties();
+            FieldInfo[] infos = comp.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
             foreach (ValueRecord value in overrides)
             {
-                FieldInfo v = infos.First((e) =>
+                FieldInfo? v = infos.FirstOrDefault((e) =>
                 {
                     return e.Name == value.Name;
-                });
+                }, null);
 
-                v.SetValue(comp, value.GetValue());
+                if (v != null)
+                {
+                    v.SetValue(comp, value.GetValue());
+                }
+                else
+                {
+                    PropertyInfo? p = propertyInfos.FirstOrDefault((e) =>
+                    {
+                        return e.Name == value.Name;
+                    }, null);
+
+                    if (p != null)
+                    {
+                        p.SetValue(comp, value.GetValue());
+                    }
+                    else
+                    {
+                        Debug.Error($"Could not find field or property named {value.Name} on {comp.GetType()}");
+                    }
+                }
             }
 
             return comp;

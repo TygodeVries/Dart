@@ -11,7 +11,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
         Texture icon;
         public VertexShaderAssetManager()
         {
-            icon = Texture.LoadFromPng("assets/textures/icons/vertexshader.png");
+            icon = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/vertexshader.png"));
         }
 
         public override Texture GetIcon()

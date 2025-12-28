@@ -3,7 +3,9 @@ using Project.Editor.Data;
 using Project.Editor.UI.FileSystem.FileInspectors;
 using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Inspectors.Inspections;
+using Runtime;
 using Runtime.Calc;
+using Runtime.Data;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
 using Runtime.Logging;
@@ -25,7 +27,7 @@ namespace Project.Editor.UI.FileSystem
         Texture folderTexture;
         public ProjectWindow()
         {
-            folderTexture = Texture.LoadFromPng("assets/textures/icons/folder.png");
+            folderTexture = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/folder.png"));
         }
 
         string selectedFolder = "";
@@ -40,8 +42,8 @@ namespace Project.Editor.UI.FileSystem
             try
             {
 
-                directories = Directory.GetDirectories(Path.Combine(Editor.projectPath, browsePath));
-                files = Directory.GetFiles(Path.Combine(Editor.projectPath, browsePath));
+                directories = Directory.GetDirectories(Path.Combine(EditorUtils.projectPath, browsePath));
+                files = Directory.GetFiles(Path.Combine(EditorUtils.projectPath, browsePath));
             }
             catch (Exception e)
             {
@@ -49,15 +51,15 @@ namespace Project.Editor.UI.FileSystem
                 return;
             }
             // Add a back button
-            string currentPath = Path.Combine(Editor.projectPath, browsePath);
+            string currentPath = Path.Combine(EditorUtils.projectPath, browsePath);
 
             if (ImGui.Button("..."))
             {
                 string? parent = Directory.GetParent(currentPath)?.FullName;
 
-                if (parent != null && parent.StartsWith(Editor.projectPath))
+                if (parent != null && parent.StartsWith(EditorUtils.projectPath))
                 {
-                    browsePath = Path.GetRelativePath(Editor.projectPath, parent);
+                    browsePath = Path.GetRelativePath(EditorUtils.projectPath, parent);
                 }
             }
 
@@ -77,14 +79,14 @@ namespace Project.Editor.UI.FileSystem
                 Vector2 uv = default(Vector2);
                 Vector2 uv2 = new Vector2(1f, 1f);
 
-                MetaData metaData = MetaData.Get(directory);
+                MetaData metaData = MetaData.FromMetaFile(Game.GetAssetDatabase().GetAsset(directory));
 
                 Vector4 color = metaData.GetVector4("color", new Vector4(1, 1, 1, 1));
                 ImGui.Image(folderTexture.Handle, new Vector2(100, 100).ToNumerics(), uv.ToNumerics(), uv2.ToNumerics(), color.ToNumerics());
 
                 if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && selectedFolder == directory)
                 {
-                    browsePath = Path.GetRelativePath(Editor.projectPath, directory);
+                    browsePath = Path.GetRelativePath(EditorUtils.projectPath, directory);
                     Debug.Log("Opening folder: " + browsePath);
                 }
 
@@ -93,7 +95,7 @@ namespace Project.Editor.UI.FileSystem
                     selectedFolder = directory;
 
                     FolderAssetInspection inspection = new FolderAssetInspection();
-                    inspection.SetFilePath(directory);
+                    inspection.SetAsset(Game.GetAssetDatabase().GetAsset(directory));
                     InspectorWindow.GetActive().SetInspection(inspection);
                 }
 
@@ -110,7 +112,7 @@ namespace Project.Editor.UI.FileSystem
                 if (hiddenFiles.Contains(Path.GetExtension(fileName)))
                     continue;
 
-                AssetManager assetManager = AssetManager.GetAssetManager(file);
+                AssetManager assetManager = AssetManager.GetAssetManager(Asset.FromSystemPath(Game.GetAssetDatabase(), file));
                 Vector4 borderColor = Vector4.Zero;
                 if (selectedFile == file)
                 {
@@ -122,7 +124,7 @@ namespace Project.Editor.UI.FileSystem
                 {
                     if (assetManager.GetInspection() is AssetInspection assetInspection)
                     {
-                        assetInspection.SetFilePath(file);
+                        assetInspection.SetAsset(assetManager.GetAsset());
                     }
 
                     InspectorWindow.GetActive().SetInspection(assetManager.GetInspection());

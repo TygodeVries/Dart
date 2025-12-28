@@ -1,5 +1,6 @@
 ﻿using Project.Editor.UI.Inspectors;
 using Runtime.Calc;
+using Runtime.Data;
 using Runtime.Logging;
 using System.Globalization;
 using System.Text.Json;
@@ -13,8 +14,9 @@ namespace Project.Editor.Data
     public class MetaData
     {
         private static Dictionary<string, MetaData> metaDataCache = new Dictionary<string, MetaData>();
-        public static MetaData Get(string path)
+        public static MetaData FromMetaFile(Asset asset)
         {
+            string path = asset.GetSystemPath();
             if (metaDataCache.ContainsKey(path))
             {
                 return metaDataCache[path];
@@ -32,7 +34,7 @@ namespace Project.Editor.Data
                 metaDataFilePath = path + ".meta";
             }
 
-            MetaData metaData = new MetaData(metaDataFilePath);
+            MetaData metaData = new MetaData(Asset.FromSystemPath(asset.GetDatabase(), metaDataFilePath));
             metaData.Load();
             return metaData;
         }
@@ -65,16 +67,17 @@ namespace Project.Editor.Data
             data![path] = $"{val.x.ToString(CultureInfo.InvariantCulture)} {val.y.ToString(CultureInfo.InvariantCulture)} {val.z.ToString(CultureInfo.InvariantCulture)} {val.w}";
         }
 
-        string path;
-        public MetaData(string path)
+        Asset asset;
+        public MetaData(Asset asset)
         {
-            this.path = path;
+            this.asset = asset;
         }
 
         private Dictionary<string, string>? data;
 
         public void Load()
         {
+            string path = asset.GetSystemPath();
             data = null;
             if (File.Exists(path))
             {
@@ -101,6 +104,7 @@ namespace Project.Editor.Data
 
         public void Save()
         {
+            string path = asset.GetSystemPath();
             try
             {
                 File.WriteAllText(path, JsonSerializer.Serialize(data));

@@ -1,15 +1,16 @@
 ﻿using Project.Editor.UI.Inspectors;
+using Runtime.Data;
 using Runtime.Graphics;
 
 namespace Project.Editor.UI.FileSystem.FileInspectors
 {
     public abstract class AssetManager
     {
-        protected string? filepath;
+        protected Asset? asset;
 
-        public string? GetFilePath()
+        public Asset? GetAsset()
         {
-            return filepath;
+            return asset;
         }
         public virtual Texture GetIcon()
         {
@@ -36,9 +37,9 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
 
         private static Dictionary<string, AssetManager> cache = new Dictionary<string, AssetManager>();
         private static IEnumerable<Type>? assetManager;
-        public static AssetManager GetAssetManager(string filepath)
+        public static AssetManager GetAssetManager(Asset asset)
         {
-            string fileType = Path.GetExtension(filepath).ToLower();
+            string fileType = Path.GetExtension(asset.GetPath()).ToLower();
             var inspectorType = typeof(AssetManager);
 
             // Get all fileInspectors
@@ -51,7 +52,7 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
 
             if (cache.ContainsKey(fileType))
             {
-                cache[fileType].filepath = filepath;
+                cache[fileType].asset = asset;
                 return cache[fileType];
             }
 
@@ -64,7 +65,7 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
                 {
                     AssetManager fileInspector = (AssetManager)Activator.CreateInstance(type)!;
                     cache.Add(fileType, fileInspector);
-                    cache[fileType].filepath = filepath;
+                    cache[fileType].asset = asset;
                     return fileInspector;
                 }
             }

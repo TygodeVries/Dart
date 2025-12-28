@@ -13,19 +13,8 @@ namespace Runtime.Graphics.Renderers
 
         }
 
-        public MeshRenderer(Material material)
+        public MeshRenderer(Material? material = null)
         {
-            this.material = material;
-        }
-
-        public void SetMaterial(Material material)
-        {
-            // Delete the old material
-            if (this.material != null)
-            {
-                this.material.Dispose();
-            }
-
             this.material = material;
         }
 
@@ -48,10 +37,10 @@ namespace Runtime.Graphics.Renderers
         public Mesh? mesh
         {
             get => _mesh;
-            set => SetMesh(value!);
+            set => SetMesh(value);
         }
 
-        public void SetMesh(Mesh mesh)
+        public void SetMesh(Mesh? mesh)
         {
             if (mesh != null)
                 Upload(mesh);
@@ -60,7 +49,7 @@ namespace Runtime.Graphics.Renderers
 
         private int indexCount;
 
-        public void Upload(Mesh mesh)
+        private void Upload(Mesh mesh)
         {
             _mesh = mesh;
             // Delete old stuff
@@ -126,15 +115,16 @@ namespace Runtime.Graphics.Renderers
         {
             if (mesh == null)
             {
-                Debug.Error("Mesh on renderer is null!");
+                Debug.Log("Mesh is null!");
                 return;
             }
 
             if (material == null)
             {
-                Debug.Error("Material on renderer is null!");
+                material = Material.CreateFallback();
                 return;
             }
+
             material?.Use();
 
             GL.BindVertexArray(vao);

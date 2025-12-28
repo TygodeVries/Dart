@@ -17,25 +17,25 @@ namespace Runtime.Objects
 
         public void RemoveComponent<T>()
         {
-            componentMap.Remove(typeof(T));
-
-            components.RemoveAll((c) =>
-            {
-                return c.GetType() == typeof(T);
-            });
+            RemoveComponent(typeof(T));
         }
 
         public void RemoveComponent(Type type)
         {
-            componentMap.Remove(type);
-
-            components.RemoveAll((c) =>
+            components.RemoveAll(c =>
             {
-                return c.GetType() == type;
+                if (type.IsAssignableFrom(c.GetType()))
+                {
+                    c.Unload();
+                    return true;
+                }
+                return false;
             });
 
-            Debug.Log("Removed Component!");
+            componentMap.Remove(type);
+            Debug.Log($"Removed Component {type.Name}");
         }
+
 
         public List<IComponent> GetComponents()
         {
@@ -75,10 +75,16 @@ namespace Runtime.Objects
             components.Add(component);
             componentMap[type] = component;
             component.gameObject = this;
+
+            if (hasBeenLoaded)
+                component.OnLoad();
         }
 
+
+        bool hasBeenLoaded = false;
         public void OnLoad()
         {
+            hasBeenLoaded = true;
             foreach (IComponent component in components)
             {
                 component.OnLoad();

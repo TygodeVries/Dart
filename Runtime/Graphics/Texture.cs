@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
+using Runtime.Calc;
 using Runtime.Data;
 using Runtime.Logging;
 using SixLabors.ImageSharp;
@@ -22,8 +23,9 @@ namespace Runtime.Graphics
             this.pixels = pixels;
         }
 
-        public static Texture LoadFromPng(string path, int maxWidth = 8192, int maxHeight = 8192, bool upload = true)
+        public static Texture LoadFromPng(Asset asset, int maxWidth = 8192, int maxHeight = 8192, bool upload = true)
         {
+            string path = asset.GetSystemPath();
             if (!File.Exists(path))
             {
                 Debug.Error($"Failed to load image from path {path}. File does not exist!");
@@ -84,8 +86,11 @@ namespace Runtime.Graphics
         {
             if (Handle != 0)
             {
-                GL.DeleteTexture(Handle);
-                Handle = 0;
+                MainThread.Run(() =>
+                {
+                    GL.DeleteTexture(Handle);
+                    Handle = 0;
+                });
             }
         }
     }

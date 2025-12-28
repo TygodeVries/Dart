@@ -1,21 +1,38 @@
 ﻿using Runtime.Graphics.Materials;
-using Runtime.Graphics.Shaders;
 using Runtime.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Runtime.Graphics.Renderers
 {
     public abstract class Renderer : IComponent
     {
-        protected Material? material;
+        private Material? _material;
+
+        public void SetMaterial(Material material)
+        {
+            this.material = material;
+        }
+
+        [Inspectable]
+        public Material? material
+        {
+            get
+            {
+                return _material;
+            }
+            set
+            {
+                if (this._material != null)
+                {
+                    this._material.Dispose();
+                }
+
+                _material = value;
+            }
+        }
 
         public Material? GetMaterial()
         {
-            return material;
+            return _material;
         }
 
         public abstract void Render();
@@ -24,6 +41,12 @@ namespace Runtime.Graphics.Renderers
         {
             RenderCanvas.main!.GetGraphicsPipeline()?.AddRenderer(this);
             base.OnLoad();
+        }
+
+        public override void Unload()
+        {
+            RenderCanvas.main!.GetGraphicsPipeline()?.RemoveRenderer(this);
+            base.Unload();
         }
     }
 }

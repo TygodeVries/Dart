@@ -1,16 +1,24 @@
 ﻿using ImGuiNET;
-using Runtime;
+using Runtime.Data;
 using Runtime.DearImGUI.Gui;
+using Runtime.Logging;
+using System.Reflection;
 
 namespace Project.Editor.UI.Generic
 {
     public class AssetSelectorWindow : GuiWindow
     {
 
-        List<string> files;
-        public AssetSelectorWindow(string filetype)
+        List<Asset> assets;
+        public AssetSelectorWindow(string filetype, AssetDatabase assetDatabase)
         {
-            files = Game.GetAssetDatabase().GetAllAssetsOfType(filetype);
+            Debug.Log("Creating selection window for type " + filetype);
+            assets = assetDatabase.GetAllAssetsOfType(filetype);
+        }
+
+        public override string GetName()
+        {
+            return "Select an Asset";
         }
 
         private byte[] search = new byte[128];
@@ -22,13 +30,15 @@ namespace Project.Editor.UI.Generic
 
             string searchText = GetString(search);
 
-            foreach (string file in files)
+            foreach (Asset asset in assets)
             {
-                if (file.ToLower().Contains(searchText.ToLower()))
+                if (asset.GetPath().ToLower().Contains(searchText.ToLower()))
                 {
-                    if (ImGui.Button(file))
+                    if (ImGui.Button(asset.GetPath()))
                     {
-                        OnSelect?.Invoke(new AssetSelectionResult(file));
+                        OnSelect?.Invoke(new AssetSelectionResult(asset));
+
+                        GuiWindow.Disable(this);
                     }
                 }
             }
@@ -47,11 +57,17 @@ namespace Project.Editor.UI.Generic
 
     public class AssetSelectionResult
     {
-        public string FilePath;
+        public Asset asset;
 
-        public AssetSelectionResult(string filePath)
+        public AssetSelectionResult(Asset asset)
         {
-            FilePath = filePath;
+            this.asset = asset;
+        }
+
+        public object CreateInstance(Type type)
+        {
+            AssetReferenceAttribute att = type.GetCustomAttribute<AssetReferenceAttribute>();
+            return att.CreateInstance(type, asset);
         }
     }
 }

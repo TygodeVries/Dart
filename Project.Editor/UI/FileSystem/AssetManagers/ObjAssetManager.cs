@@ -27,10 +27,10 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
         public ObjAssetManager()
         {
             // #Todo: Make this be a small preview of the model 
-            icon = Texture.LoadFromPng("assets/textures/icons/model.png");
+            icon = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/model.png"));
 
             // Load a default shader
-            material = new Material(ShaderProgram.FromFile("assets/shaders/previews/model_untextured.vert", "assets/shaders/previews/model_untextured.frag"));
+            material = new Material(ShaderProgram.FromFile(EditorUtils.GetAssetDatabase().GetAsset("assets/shaders/previews/model_untextured.vert"), EditorUtils.GetAssetDatabase().GetAsset("assets/shaders/previews/model_untextured.frag")));
             material.SetVector3("tintColor", new Vector3(1, 1, 1));
         }
 
@@ -43,7 +43,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
 
         public override void OnOpen()
         {
-            Mesh? mesh = Mesh.FromFileObj(filepath!);
+            Mesh? mesh = Mesh.FromFileObj(asset!);
             if (mesh == null)
             {
                 Debug.Error("Failed to load mesh, null!");
