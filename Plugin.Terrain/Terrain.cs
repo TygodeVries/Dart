@@ -4,6 +4,8 @@ using Runtime.Calc;
 using Runtime.Graphics.Renderers;
 using OpenTK.Graphics.OpenGL;
 using Runtime.Graphics.Shaders;
+using Runtime.Objects;
+
 namespace Runtime.Plugin.Terrain
 {
 	public interface TerrainPiece:IComparable
@@ -18,27 +20,45 @@ namespace Runtime.Plugin.Terrain
 		TerrainPiece[] GetNeighbors(TerrainPiece x);
 		Vector4 GetVector(TerrainPiece x);
 	}
-	public class PathFinder
+	public class PathFinder: IComponent
 	{
 		PriorityQueue<TerrainPiece, double> boundary = new PriorityQueue<TerrainPiece, double>();
-		SortedDictionary<TerrainPiece, TerrainPiece> ss = new SortedDictionary<TerrainPiece, TerrainPiece>();
+		SortedDictionary<TerrainPiece, TerrainPiece> exploredSet = new SortedDictionary<TerrainPiece, TerrainPiece>();
 		Terrain? terrain;
 		public PathFinder()
 		{
 
 		}
+        public override void Update()
+        {
+			if (null == terrain)
+				return;
+            Graphics.Pipeline.GizmoRenderPass gizmo = Runtime.Graphics.Pipeline.GizmoRenderPass.GetInstance();
+
+			TerrainPiece[] keys = exploredSet.Keys.ToArray<TerrainPiece>();
+            TerrainPiece[] values = exploredSet.Values.ToArray<TerrainPiece>();
+
+            for (int cx = 0; cx < exploredSet.Keys.Count; cx++)
+			{
+				Vector4 a = terrain.GetVector(keys[cx]);
+				Vector4 b = terrain.GetVector(values[cx]);
+
+				gizmo.AddLine(a, b);
+			}
+        }
 		public TerrainPiece? Backtrace(TerrainPiece x)
 		{
-			return ss[x];
+			return exploredSet[x];
 		}
 		public void Init(Terrain terrain, TerrainPiece start, TerrainPiece end)
 		{
-			ss.Clear();
+			this.terrain = terrain;
+			exploredSet.Clear();
 			boundary.Clear();
 			TerrainPiece[] nn = terrain.GetNeighbors(start);
 			foreach (TerrainPiece item in nn)
 			{
-				ss.Add(item, start);
+				exploredSet.Add(item, start);
 				boundary.Enqueue(item, terrain.EstimateDistance(item, end) + terrain.TransitionCost(start, item));
 			}
 		}
@@ -51,9 +71,9 @@ namespace Runtime.Plugin.Terrain
 			TerrainPiece[] nn = terrain.GetNeighbors(current);
 			foreach (TerrainPiece item in nn)
 			{
-				if (!ss.ContainsKey(item))
+				if (!exploredSet.ContainsKey(item))
 				{
-					ss.Add(item, current);
+					exploredSet.Add(item, current);
 					boundary.Enqueue(item, terrain.EstimateDistance(item, end) + terrain.TransitionCost(current, item));
 				}
 			}
@@ -70,9 +90,9 @@ namespace Runtime.Plugin.Terrain
 				TerrainPiece[] nn = terrain.GetNeighbors(current);
 				foreach (TerrainPiece item in nn)
 				{
-					if (!ss.ContainsKey(item))
+					if (!exploredSet.ContainsKey(item))
 					{
-						ss.Add(item, current);
+						exploredSet.Add(item, current);
 
 						boundary.Enqueue(item, terrain.EstimateDistance(item, end));
 					}

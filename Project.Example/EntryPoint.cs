@@ -22,7 +22,11 @@ namespace FeatureTestProject
         public static void Main()
         {
             Runtime.Scenes.Scene.main.Instantiate(
-                new GameObjectFactory().AddComponent<Camera>().Build());
+                new GameObjectFactory()
+                .AddComponent<Camera>()
+                .AddComponent<Transform>()
+                .AddComponent<FlightCamera>()
+                .Build());
 
 
          QuadTerrain terrain = new QuadTerrain();
@@ -35,21 +39,10 @@ namespace FeatureTestProject
          end.x = 10;
          end.y = 20;
 
-			window = new FireWindow(finder, terrain, start, end);
-			GuiWindow.Enable(window);
+		 window = new FireWindow(finder, terrain, start, end);
+		 GuiWindow.Enable(window);
          Runtime.Scenes.Scene.main.Instantiate(
             new GameObjectFactory().AddComponent(finder).Build());
-/*
-			finder.Init(terrain, start, end);
-
-         while (finder.Step(terrain, end)) ;
-
-         for (TerrainPiece? x = end; x != start; x = finder.Backtrace(x))
-         {
-            QuadTerrain.QuadTerrainPiece? y = x as QuadTerrain.QuadTerrainPiece;
-            Console.WriteLine($"{y.x} {y.y}");
-         }
-  */       
 		}
 	}
 }
