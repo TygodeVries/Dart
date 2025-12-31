@@ -37,6 +37,8 @@ namespace Runtime.Graphics.Pipeline
             };
             GL.DebugMessageCallback(GLDebugProc, 0);
 
+            AddRenderPass( GizmoRenderPass.GetInstance());
+
             GL.ClearColor(0, 0, 0, 0);
 
             EnableCap[] caps = new EnableCap[]
