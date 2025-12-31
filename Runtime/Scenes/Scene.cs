@@ -13,9 +13,10 @@ namespace Runtime.Scenes
     [AssetReference(new string[] { ".scene" }, nameof(LoadFromAsset))]
     public class Scene : AssetReference
     {
+        bool hasBeenLoaded = false;
         public static void Load(Scene scene)
         {
-            if (Scene.main != null)
+            if (Scene.main != null && Scene.main != scene)
                 Scene.main?.Unload();
 
             Scene.main = scene;
@@ -30,9 +31,13 @@ namespace Runtime.Scenes
                 Debug.Error("Could not load scene from file asset! file is null!");
                 return null;
             }
-
-            Scene scene = file.CreateScene(asset.GetDatabase());
+            Debug.Log($"Loading scene from database: {asset.GetDatabase().GetFolder()}");
+            Scene scene = new Scene();
             scene.SetAsset(asset);
+            Scene.Load(scene);
+
+            file.LoadSceneAssets(asset.GetDatabase(), scene);
+
             return scene;
         }
 
@@ -74,12 +79,11 @@ namespace Runtime.Scenes
 
         public void Unload()
         {
-            // #Todo make this better
             if (RenderCanvas.main != null)
             {
                 if (RenderCanvas.main!.GetGraphicsPipeline() is DefaultGraphicsPipeline defaultGraphics)
                 {
-                    defaultGraphics.ClearRenderers();
+                    defaultGraphics.ClearRenderersOfScene(this);
                 }
             }
 
@@ -88,19 +92,25 @@ namespace Runtime.Scenes
                 gameObject.Unload();
             }
 
-            gameObjects.Clear();
+            hasBeenLoaded = false;
         }
 
         private void Load()
         {
-            hasBeenLoaded = true;
+            if (hasBeenLoaded)
+            {
+                Debug.Warning("Object was already loaded!");
+                return;
+            }
+
             foreach (GameObject gameObject in gameObjects)
             {
                 gameObject.OnLoad();
             }
+
+            hasBeenLoaded = true;
         }
 
-        bool hasBeenLoaded = false;
         public void Instantiate(GameObject game)
         {
             gameObjects.Add(game);
@@ -108,6 +118,8 @@ namespace Runtime.Scenes
             if (hasBeenLoaded)
                 game.OnLoad();
         }
+
+
 
         LightManager defaultLightManager = new LightManager();
         public LightManager GetLightManager()
@@ -122,7 +134,10 @@ namespace Runtime.Scenes
 
         List<IManager> managers = new List<IManager>();
         List<GameObject> gameObjects = new List<GameObject>();
-
+        public List<GameObject> GetGameObjects()
+        {
+            return gameObjects;
+        }
 
         public void AddManager<T>(T manager) where T : IManager
         {
@@ -145,15 +160,22 @@ namespace Runtime.Scenes
 
         public void Update()
         {
-            foreach (IManager manager in managers)
+            if (hasBeenLoaded)
             {
-                if (manager is IUpdatableManager updatable)
-                    updatable.Update();
-            }
+                foreach (IManager manager in managers)
+                {
+                    if (manager is IUpdatableManager updatable)
+                        updatable.Update();
+                }
 
-            foreach (GameObject obj in gameObjects)
+                foreach (GameObject obj in gameObjects)
+                {
+                    obj.Update();
+                }
+            }
+            else
             {
-                obj.Update();
+                Debug.Error("Main scene has not been loaded yet! I have no idea how this would be possible, nice.");
             }
         }
     }

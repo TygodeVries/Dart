@@ -4,14 +4,11 @@ using Project.Editor.UI.FileSystem;
 using Project.Editor.UI.Inspectors;
 using Runtime;
 using Runtime.Component.Core;
-using Runtime.Component.Physics;
-using Runtime.Component.Test;
 using Runtime.Data;
 using Runtime.DearImGUI.Gui;
-using Runtime.Graphics.Materials;
-using Runtime.Graphics.Renderers;
 using Runtime.Logging;
 using Runtime.Objects;
+using Runtime.Objects.Prefabs;
 using Runtime.Scenes;
 
 namespace Editor
@@ -53,40 +50,18 @@ namespace Editor
             Game.SetAssetDatabase(new AssetDatabase(EditorUtils.projectPath));
             Game.GetAssetDatabase().Start();
 
+            Scene.main.Instantiate(new GameObjectFactory().AddComponent(new Camera()).Build());
 
-            AssetDatabase assets = EditorUtils.GetAssetDatabase();
-            Mesh? mesh = Mesh.FromFileObj(assets.GetAsset("assets/models/modelpreview_sphere.obj"));
-            Mesh? mesh2 = Mesh.FromFileObj(assets.GetAsset("assets/models/modelpreview_box.obj"));
+            Scene scene = new Scene();
+            PrefabGameObject game = PrefabGameObject.FromFile(Game.GetAssetDatabase().GetAsset("assets/untitled.prefab"));
 
-            Material? material = new Material(
-               Runtime.Graphics.Shaders.ShaderProgram.FromFile(assets.GetAsset("assets\\shaders\\previews\\model_untextured.vert"), assets.GetAsset("assets\\shaders\\previews\\model_untextured.frag")));
+            Scene.Load(scene);
+            scene.Instantiate(game.GetGameObject());
 
-            GameObject cam;
-
-            Scene.main.Instantiate(cam = new Runtime.Objects.GameObjectFactory()
-               .AddComponent<Camera>()
-               .AddComponent<Transform>()
-               .AddComponent<FlightCamera>().Build());
-
-            cam.GetComponent<Camera>().SetAsMain();
-
-            GameObject t = new GameObjectFactory()
-               .AddComponent(new MeshRenderer(material) { mesh = mesh2 })
-               .AddComponent<Transform>().Build();
-
-            Scene.main.Instantiate(t);
-
-            Scene.main.Instantiate(new Runtime.Objects.GameObjectFactory()
-               .AddComponent(
-               new SphereCollider() { radius = 1 }
-               ).AddComponent(new MeshRenderer(material)
-               {
-                   mesh = mesh
-               }).AddComponent(new RaycastTester(t)).Build());
-
-            Game.GetAssetDatabase().Refresh();
-
-            TextureMaterialField.fallback = DefaultsTextures.GetFallbackTexture();
+            /*
+            Scene.Load(new Scene());
+            Scene.Load(scene);
+            */
         }
     }
 }

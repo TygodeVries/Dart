@@ -3,6 +3,7 @@ using OpenTK.Graphics.OpenGL;
 using Runtime.Calc;
 using Runtime.Data;
 using Runtime.Graphics.Shaders;
+using Runtime.Logging;
 using Runtime.Scenes;
 
 namespace Runtime.Graphics.Materials
@@ -228,6 +229,7 @@ namespace Runtime.Graphics.Materials
         }
         public void SetTexture(string field, Texture texture, int id)
         {
+            Debug.Log($"Set texture field {field} to " + texture?.GetAsset().GetSystemPath());
             if (materialFields.ContainsKey(field))
             {
                 if (materialFields[field] is TextureMaterialField)
@@ -332,13 +334,12 @@ namespace Runtime.Graphics.Materials
             this.texture = texture;
         }
 
-        public static Texture fallback;
-
         public override void Upload(ShaderProgram shader)
         {
             if (texture == null)
             {
-                texture = fallback;
+                Debug.Error("Texture is null!");
+                return;
             }
             texture.Use((TextureUnit)(((Int64)TextureUnit.Texture0) + id));
             shader.SetTextureId(field, id);

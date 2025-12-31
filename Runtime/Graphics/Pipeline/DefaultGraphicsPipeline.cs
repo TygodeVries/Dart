@@ -4,6 +4,7 @@ using Runtime.Component.Core;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
 using Runtime.Logging;
+using Runtime.Objects;
 using Runtime.Scenes;
 
 namespace Runtime.Graphics.Pipeline
@@ -84,10 +85,23 @@ namespace Runtime.Graphics.Pipeline
             customRenderPasses.Add(renderPass);
         }
 
-        public void ClearRenderers()
+        public void ClearRenderersOfScene(Scene scene)
         {
-            renderers.Clear();
+            for (int i = renderers.Count - 1; i >= 0; i--)
+            {
+                Renderer renderer = renderers[i];
+
+                foreach (GameObject gameObject in scene.GetGameObjects())
+                {
+                    if (gameObject.HasComponent(renderer))
+                    {
+                        renderers.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
         }
+
         public void Render()
         {
             Scene.main.GetLightManager().UploadAll();
@@ -105,7 +119,7 @@ namespace Runtime.Graphics.Pipeline
             }
             else
             {
-                GL.ClearColor(0.5f, 0, 0, 1);
+                GL.ClearColor(1f, 0, 0, 1);
             }
 
             foreach (Renderer renderer in renderers)

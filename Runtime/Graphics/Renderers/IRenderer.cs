@@ -1,4 +1,6 @@
-﻿using Runtime.Graphics.Materials;
+﻿using Runtime.Data;
+using Runtime.Graphics.Materials;
+using Runtime.Logging;
 using Runtime.Objects;
 
 namespace Runtime.Graphics.Renderers
@@ -39,12 +41,30 @@ namespace Runtime.Graphics.Renderers
 
         public override void OnLoad()
         {
+            Asset asset = GetMaterial().GetAsset();
             RenderCanvas.main!.GetGraphicsPipeline()?.AddRenderer(this);
+            if (asset != null)
+            {
+                Debug.Log($"Loading renderer with material: {asset.GetSystemPath()}");
+            }
+            else
+            {
+                Debug.Log("Loading renderer with instance material.");
+            }
             base.OnLoad();
         }
 
         public override void Unload()
         {
+            Asset asset = GetMaterial().GetAsset();
+            if (asset != null)
+            {
+                Debug.Log($"Unloading renderer with material: {asset.GetSystemPath()}");
+            }
+            else
+            {
+                Debug.Log("Unloading renderer with instance material.");
+            }
             RenderCanvas.main!.GetGraphicsPipeline()?.RemoveRenderer(this);
             base.Unload();
         }

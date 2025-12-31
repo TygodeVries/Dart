@@ -57,7 +57,7 @@ namespace Runtime.Graphics
 
             Texture texture = new Texture(image.Width, image.Height, pixels);
             if (upload) texture.Upload();
-
+            texture.SetAsset(asset);
             return texture;
         }
 
@@ -65,14 +65,14 @@ namespace Runtime.Graphics
         {
             if (isUploaded)
                 return;
-
+            isUploaded = true;
             MainThread.Run(() =>
             {
-                isUploaded = true;
-
                 if (Handle == 0)
+                {
                     Handle = GL.GenTexture();
-
+                    Debug.Log("New handle created: " + Handle);
+                }
                 if (GL.GetError() != ErrorCode.NoError)
                     Debug.Log($"AAAH OpenGL has an error: {GL.GetError()}");
 
@@ -101,6 +101,8 @@ namespace Runtime.Graphics
 
         public void Use(TextureUnit textureUnit)
         {
+            if (!isUploaded)
+                Upload();
             GL.ActiveTexture(textureUnit);
             GL.BindTexture(TextureTarget.Texture2d, Handle);
         }

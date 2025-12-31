@@ -49,7 +49,12 @@ namespace Runtime.Graphics.Materials
                         break;
                     }
 
-                    material.SetTexture(field.Name, Texture.LoadFromPng(database.GetAsset(field.Value)), textureIds);
+                    Texture texture = Texture.LoadFromPng(database.GetAsset(field.Value));
+                    if (texture == null)
+                    {
+                        Debug.Error("Texture is null!");
+                    }
+                    material.SetTexture(field.Name, texture, textureIds);
                     textureIds++;
                 }
             }

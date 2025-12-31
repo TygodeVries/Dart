@@ -24,6 +24,7 @@ namespace Runtime.Graphics.Shaders
         {
             try
             {
+                Debug.Log($"Creating ShaderProgram from {vertex.GetSystemPath()}, {fragment.GetSystemPath()}");
                 string vertexContent = File.ReadAllText(vertex.GetSystemPath());
                 string fragmentContent = File.ReadAllText(fragment.GetSystemPath());
 
@@ -120,25 +121,31 @@ namespace Runtime.Graphics.Shaders
 
             shaderProgramId = program;
             compiled = true;
-
+            uniformLocations.Clear();
         }
 
 
         public void SetFloat(string field, float f)
         {
             int mvpLocation = GetUniformLocation(field);
+            if (mvpLocation == -1)
+                return;
             GL.Uniform1f(mvpLocation, f);
         }
 
         public void SetVector3(string field, Vector3 vector3)
         {
             int mvpLocation = GetUniformLocation(field);
+            if (mvpLocation == -1)
+                return;
             GL.Uniform3f(mvpLocation, vector3.x, vector3.y, vector3.z);
         }
 
         public void SetVector4(string field, Vector4 vector)
         {
             int mvpLocation = GetUniformLocation(field);
+            if (mvpLocation == -1)
+                return;
             GL.Uniform4f(mvpLocation, vector.x, vector.y, vector.z, vector.w);
         }
 
@@ -146,7 +153,8 @@ namespace Runtime.Graphics.Shaders
         public void SetMatrix4(string field, Matrix4 matrix4)
         {
             int mvpLocation = GetUniformLocation(field);
-
+            if (mvpLocation == -1)
+                return;
             OpenTK.Mathematics.Matrix4 m = matrix4.ToOpenTK();
             GL.UniformMatrix4f(mvpLocation, 1, false, ref m);
         }
@@ -154,12 +162,16 @@ namespace Runtime.Graphics.Shaders
         public void SetInt(string field, int i)
         {
             int mvpLocation = GetUniformLocation(field);
+            if (mvpLocation == -1)
+                return;
             GL.Uniform1i(mvpLocation, i);
         }
 
         public void SetTextureId(string field, int id)
         {
             int mvpLocation = GetUniformLocation(field);
+            if (mvpLocation == -1)
+                return;
             GL.Uniform1i(mvpLocation, id);
         }
 
@@ -167,13 +179,14 @@ namespace Runtime.Graphics.Shaders
 
         private int GetUniformLocation(string name)
         {
+            Use();
             if (uniformLocations.TryGetValue(name, out int location))
                 return location;
 
             location = GL.GetUniformLocation(shaderProgramId, name);
             if (location == -1)
             {
-                Debug.Error($"Error: Value '{name}' not found in shader!");
+                Debug.Warning($"Value '{name}' not found in shader, but you are trying to access it anyways!");
             }
 
             uniformLocations[name] = location;
@@ -247,6 +260,7 @@ namespace Runtime.Graphics.Shaders
 
         public void Compile()
         {
+
             int compute = GL.CreateShader(ShaderType.ComputeShader);
             GL.ShaderSource(compute, sourceContent);
             GL.CompileShader(compute);

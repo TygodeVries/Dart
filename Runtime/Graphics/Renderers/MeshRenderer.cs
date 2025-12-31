@@ -32,6 +32,7 @@ namespace Runtime.Graphics.Renderers
         private int uvbo;
         private int tbo;
 
+        private bool uploaded = false;
         private Mesh? _mesh;  // backing field
         [Inspectable]
         public Mesh? mesh
@@ -40,9 +41,21 @@ namespace Runtime.Graphics.Renderers
             set => SetMesh(value);
         }
 
+        bool isLoaded = false;
+        public override void OnLoad()
+        {
+            isLoaded = true;
+            if (!uploaded)
+            {
+                Upload(_mesh);
+                uploaded = true;
+            }
+            base.OnLoad();
+        }
+
         public void SetMesh(Mesh? mesh)
         {
-            if (mesh != null)
+            if (mesh != null && isLoaded)
                 Upload(mesh);
             _mesh = mesh;
         }
@@ -51,6 +64,7 @@ namespace Runtime.Graphics.Renderers
 
         private void Upload(Mesh mesh)
         {
+            uploaded = true;
             _mesh = mesh;
             // Delete old stuff
             if (vao != 0) GL.DeleteVertexArray(vao);

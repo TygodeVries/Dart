@@ -11,12 +11,12 @@ namespace Runtime.Scenes
     {
         public List<SceneObject> sceneObjects { get; set; } = new List<SceneObject>();
 
-        public Scene CreateScene(AssetDatabase assetDatabase)
+        public void LoadSceneAssets(AssetDatabase assetDatabase, Scene scene)
         {
-            Scene scene = new Scene();
             foreach (SceneObject obj in sceneObjects)
             {
-                GameObject gameObject = PrefabGameObject.FromFile(assetDatabase.GetAsset(obj.path)).GetGameObject();
+                Asset asset = assetDatabase.GetAsset(obj.path);
+                GameObject gameObject = PrefabGameObject.FromFile(asset).GetGameObject();
 
                 Transform? transform = gameObject.GetComponent<Transform>();
                 if (transform != null)
@@ -27,9 +27,8 @@ namespace Runtime.Scenes
                 }
 
                 scene.Instantiate(gameObject);
-                Debug.Log($"Loaded an object for scene from {obj.path}");
+                Debug.Log($"Loaded an object for scene from {asset.GetSystemPath()}");
             }
-            return scene;
         }
     }
 

@@ -8,6 +8,16 @@ namespace Runtime.Objects
     public class GameObject : AssetReference
     {
 
+        public bool HasComponent(IComponent component)
+        {
+            foreach (IComponent c in components)
+            {
+                if (c == component)
+                    return true;
+            }
+
+            return false;
+        }
         public static GameObject LoadFromFile(Asset asset)
         {
             GameObject gameObject = PrefabGameObject.FromFile(asset).GetGameObject();
@@ -23,6 +33,8 @@ namespace Runtime.Objects
             {
                 component.Unload();
             }
+
+            hasBeenLoaded = false;
         }
 
         public void RemoveComponent<T>()
