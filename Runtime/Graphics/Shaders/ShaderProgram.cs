@@ -24,7 +24,6 @@ namespace Runtime.Graphics.Shaders
         {
             try
             {
-                Debug.Log($"Creating ShaderProgram from {vertex.GetSystemPath()}, {fragment.GetSystemPath()}");
                 string vertexContent = File.ReadAllText(vertex.GetSystemPath());
                 string fragmentContent = File.ReadAllText(fragment.GetSystemPath());
 

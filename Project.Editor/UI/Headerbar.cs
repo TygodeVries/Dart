@@ -1,8 +1,7 @@
 ﻿using ImGuiNET;
+using Project.Editor.UI.Assets;
 using Project.Editor.UI.FileSystem;
-using Project.Editor.UI.Generic;
 using Project.Editor.UI.Inspectors;
-using Runtime;
 using Runtime.DearImGUI.Gui;
 
 namespace Project.Editor.UI
@@ -27,35 +26,26 @@ namespace Project.Editor.UI
 
             DrawPlayButton();
             Window();
-            Test();
             ImGui.EndMainMenuBar();
-        }
-
-        private void Test()
-        {
-            if (ImGui.BeginMenu("Test"))
-            {
-                if (ImGui.MenuItem("Asset Selector"))
-                {
-                    GuiWindow.Enable(new AssetSelectorWindow(".png", Game.GetAssetDatabase()));
-                }
-
-                ImGui.EndMenu();
-            }
         }
 
         private void Window()
         {
             if (ImGui.BeginMenu("Window"))
             {
-                if (ImGui.MenuItem("Inspector"))
+                if (ImGui.MenuItem("Object Inspector"))
                 {
                     GuiWindow.Enable(new InspectorWindow());
                 }
 
-                if (ImGui.MenuItem("Project"))
+                if (ImGui.MenuItem("Project Explorer"))
                 {
                     GuiWindow.Enable(new ProjectWindow());
+                }
+
+                if (ImGui.MenuItem("Asset Browser"))
+                {
+                    GuiWindow.Enable(new AssetBrowser());
                 }
 
                 ImGui.EndMenu();
@@ -69,14 +59,14 @@ namespace Project.Editor.UI
         {
             if (EditorUtils.IsGameRunning())
             {
-                if (ImGui.Button("Play"))
+                if (ImGui.Button("Play Game"))
                 {
                     EditorUtils.StartGame();
                 }
             }
             else
             {
-                if (ImGui.Button("Stop"))
+                if (ImGui.Button("Stop Game"))
                 {
                     EditorUtils.StopGame();
                 }

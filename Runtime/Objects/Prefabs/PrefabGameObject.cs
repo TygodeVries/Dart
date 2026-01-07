@@ -1,4 +1,5 @@
 ﻿using Runtime.Data;
+using Runtime.Logging;
 using System.Text.Json;
 
 namespace Runtime.Objects.Prefabs
@@ -22,20 +23,32 @@ namespace Runtime.Objects.Prefabs
             return GetGameObjectAsFactory().Build();
         }
 
-        public static PrefabGameObject FromFile(Asset asset)
+        public static PrefabGameObject? FromFile(Asset asset)
         {
             if (asset == null)
                 throw new NullReferenceException();
             PrefabGameObject prefab = FromJson(File.ReadAllText(asset.GetSystemPath()));
+            if (prefab == null)
+                return null;
+
             prefab.asset = asset;
             return prefab;
         }
 
         public Asset? asset = null;
 
-        private static PrefabGameObject FromJson(string json)
+        private static PrefabGameObject? FromJson(string json)
         {
-            return JsonSerializer.Deserialize<PrefabGameObject>(json);
+            try
+            {
+                return JsonSerializer.Deserialize<PrefabGameObject>(json);
+            }
+            catch (Exception ex)
+            {
+                Debug.Error($"Failed to load prefab from json: {ex}");
+            }
+
+            return null;
         }
 
         public string ToJson(bool pretty = false)

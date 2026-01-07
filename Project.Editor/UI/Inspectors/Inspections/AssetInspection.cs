@@ -16,8 +16,13 @@ namespace Project.Editor.UI.Inspectors.Inspections
         /// <param name="assetPath"></param>
         public void SetAsset(Asset asset)
         {
+            if (asset == null)
+            {
+                Debug.Error("Trying to set an asset inspection to inspect null!");
+                return;
+            }
             this.asset = asset;
-            this.metaData = MetaData.FromMetaFile(asset);
+            this.metaData = MetaData.GetAssetMeta(asset);
             Loaded();
         }
 

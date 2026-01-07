@@ -6,7 +6,6 @@ using Runtime.Data;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Shaders;
-using Runtime.Logging;
 using System.Globalization;
 
 namespace Project.Editor.UI.Inspectors.Inspections
@@ -138,42 +137,16 @@ namespace Project.Editor.UI.Inspectors.Inspections
                 }
                 else if (uniform.type == "sampler2D")
                 {
-                    List<Asset> textures = Game.GetAssetDatabase().GetAllAssetsOfType(".png");
-
-                    if (textures.Count == 0)
+                    if (ImGui.Button("Select"))
                     {
-                        ImGui.TextDisabled("No textures found");
-                    }
-                    else
-                    {
-                        int current = textures.FindIndex(a => a.GetPath() == field.Value);
-
-                        if (current < 0)
+                        AssetSelectorWindow window = new AssetSelectorWindow(".png", Game.GetAssetDatabase());
+                        window.OnSelect += (AssetSelectionResult result) =>
                         {
-                            Debug.Error("Could not find the current shader inside of the list of active shaders!");
-                            current = 0;
-                        }
-                        string preview = textures[current].GetPath();
-
-                        if (ImGui.BeginCombo("##sampler2D", preview))
-                        {
-                            for (int i = 0; i < textures.Count; i++)
-                            {
-                                bool selected = i == current;
-                                string label = textures[i].GetPath();
-
-                                if (ImGui.Selectable(label, selected))
-                                {
-                                    field.Value = textures[i].GetPath();
-                                    shouldSave = true;
-                                }
-
-                                if (selected)
-                                    ImGui.SetItemDefaultFocus();
-                            }
-
-                            ImGui.EndCombo();
-                        }
+                            field.Value = result.asset.GetPath();
+                            materialData.Save();
+                            Game.GetAssetDatabase().RefreshNow();
+                        };
+                        GuiWindow.Enable(window);
                     }
                 }
 

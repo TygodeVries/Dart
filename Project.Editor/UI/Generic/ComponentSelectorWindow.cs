@@ -2,7 +2,7 @@
 using Runtime.DearImGUI.Gui;
 using Runtime.Objects;
 
-namespace Project.Editor.UI
+namespace Project.Editor.UI.Generic
 {
     internal class ComponentSelectorWindow : GuiWindow
     {

@@ -1,8 +1,6 @@
-﻿
+﻿using Runtime.Calc;
 
-using Runtime.Calc;
-
-namespace Project.Editor.UI
+namespace Project.Editor.UI.Styles
 {
     public static class Colors
     {

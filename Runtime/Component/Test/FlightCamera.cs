@@ -49,13 +49,19 @@ namespace Runtime.Component.Test
                 tr.position += tr.GetUp() * moveDelta.y * (float)Time.deltaTime * flightSpeed;
                 if (Mouse.current.rightPressed)
                 {
-                    Mouse.current.SetCursorState(OpenTK.Windowing.Common.CursorState.Grabbed);
+
                     // Rotating
                     tr.Rotate(0, -Mouse.current.mouseDelta.x / 10, 0);
                     tr.Rotate(-Mouse.current.mouseDelta.y / 10, 0, 0);
 
                 }
-                else
+
+                if (Mouse.current.RightPressedThisFrame())
+                {
+                    Mouse.current.SetCursorState(OpenTK.Windowing.Common.CursorState.Hidden);
+                }
+
+                if (Mouse.current.RightReleasedThisFrame())
                 {
                     Mouse.current.SetCursorState(OpenTK.Windowing.Common.CursorState.Normal);
                 }

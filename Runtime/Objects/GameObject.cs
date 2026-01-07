@@ -18,9 +18,9 @@ namespace Runtime.Objects
 
             return false;
         }
-        public static GameObject LoadFromFile(Asset asset)
+        public static GameObject? LoadFromFile(Asset asset)
         {
-            GameObject gameObject = PrefabGameObject.FromFile(asset).GetGameObject();
+            GameObject? gameObject = PrefabGameObject.FromFile(asset)?.GetGameObject();
             return gameObject;
         }
 

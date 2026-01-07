@@ -3,6 +3,7 @@ using Project.Editor.Preview;
 using Project.Editor.UI.FileSystem.FileInspectors;
 using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Inspectors.Inspections;
+using Project.Editor.UI.Styles;
 using Runtime.Calc;
 using Runtime.Component.Core;
 using Runtime.Component.Lighting;

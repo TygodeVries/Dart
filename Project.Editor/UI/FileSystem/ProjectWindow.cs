@@ -79,7 +79,7 @@ namespace Project.Editor.UI.FileSystem
                 Vector2 uv = default(Vector2);
                 Vector2 uv2 = new Vector2(1f, 1f);
 
-                MetaData metaData = MetaData.FromMetaFile(Game.GetAssetDatabase().GetAsset(directory));
+                MetaData metaData = MetaData.GetAssetMeta(Game.GetAssetDatabase().GetAsset(directory));
 
                 Vector4 color = metaData.GetVector4("color", new Vector4(1, 1, 1, 1));
                 ImGui.Image(folderTexture.Handle, new Vector2(100, 100).ToNumerics(), uv.ToNumerics(), uv2.ToNumerics(), color.ToNumerics());
@@ -148,7 +148,7 @@ namespace Project.Editor.UI.FileSystem
             {
                 if (ImGui.BeginMenu("Create"))
                 {
-                    AssetCreator.GUI(currentPath);
+                    AssetCreator.GUI(Asset.FromSystemPath(Game.GetAssetDatabase(), currentPath));
                     // Action
                     ImGui.EndMenu();
                 }

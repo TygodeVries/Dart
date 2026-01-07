@@ -68,7 +68,8 @@ namespace Runtime.Graphics.Materials
             if (!File.Exists(file))
             {
                 Debug.Error($"Tried to load a file, but the asset file did not exist {file}");
-                // #TODO go to a backup material
+
+                return FromJson(asset.GetDatabase().GetAsset("fallback/fallback.material"));
             }
 
             string json = File.ReadAllText(file);

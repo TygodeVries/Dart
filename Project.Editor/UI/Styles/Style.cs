@@ -1,7 +1,7 @@
 ﻿using ImGuiNET;
 using Runtime.Calc;
 
-namespace Project.Editor.UI
+namespace Project.Editor.UI.Styles
 {
     public class Style
     {

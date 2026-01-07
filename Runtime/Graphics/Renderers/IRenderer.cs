@@ -41,16 +41,7 @@ namespace Runtime.Graphics.Renderers
 
         public override void OnLoad()
         {
-            Asset asset = GetMaterial().GetAsset();
             RenderCanvas.main!.GetGraphicsPipeline()?.AddRenderer(this);
-            if (asset != null)
-            {
-                Debug.Log($"Loading renderer with material: {asset.GetSystemPath()}");
-            }
-            else
-            {
-                Debug.Log("Loading renderer with instance material.");
-            }
             base.OnLoad();
         }
 

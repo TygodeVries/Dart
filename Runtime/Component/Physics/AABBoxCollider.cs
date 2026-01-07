@@ -1,5 +1,6 @@
 ﻿using Runtime.Calc;
 using Runtime.Component.Core;
+using Runtime.Graphics.Pipeline;
 using Runtime.Physics.Raycasts;
 
 namespace Runtime.Component.Physics
@@ -8,8 +9,48 @@ namespace Runtime.Component.Physics
     /// <summary>
     /// An axis allinged bounding box
     /// </summary>
-    public class AABBBoxCollider : ICollider
+    public class AABBoxCollider : ICollider
     {
+
+
+        public override void Update()
+        {
+            Vector3 center = GetCenter();
+            Vector3 half = size * 0.5f;
+
+            Vector3 min = center - half;
+            Vector3 max = center + half;
+
+            Vector4 c000 = new(min.x, min.y, min.z, 1);
+            Vector4 c001 = new(min.x, min.y, max.z, 1);
+            Vector4 c010 = new(min.x, max.y, min.z, 1);
+            Vector4 c011 = new(min.x, max.y, max.z, 1);
+
+            Vector4 c100 = new(max.x, min.y, min.z, 1);
+            Vector4 c101 = new(max.x, min.y, max.z, 1);
+            Vector4 c110 = new(max.x, max.y, min.z, 1);
+            Vector4 c111 = new(max.x, max.y, max.z, 1);
+
+            var gizmo = GizmoRenderPass.GetInstance();
+
+            // Bottom face
+            gizmo.AddLine(c000, c100);
+            gizmo.AddLine(c100, c101);
+            gizmo.AddLine(c101, c001);
+            gizmo.AddLine(c001, c000);
+
+            // Top face
+            gizmo.AddLine(c010, c110);
+            gizmo.AddLine(c110, c111);
+            gizmo.AddLine(c111, c011);
+            gizmo.AddLine(c011, c010);
+
+            // Vertical edges
+            gizmo.AddLine(c000, c010);
+            gizmo.AddLine(c100, c110);
+            gizmo.AddLine(c101, c111);
+            gizmo.AddLine(c001, c011);
+        }
 
         /// <summary>
         /// The center of the bounding box
@@ -19,9 +60,11 @@ namespace Runtime.Component.Physics
         {
             Transform? transform = GetComponent<Transform>();
             if (transform != null)
-                return transform.position;
-            return Vector3.Zero;
+                return transform.position + offset;
+            return Vector3.Zero + offset;
         }
+
+        public Vector3 offset = new Vector3(0, 0, 0);
 
         /// <summary>
         /// The size of the bouding box
@@ -49,10 +92,10 @@ namespace Runtime.Component.Physics
         public override bool HasOverlap(ICollider other)
         {
             Vector3 centerA = GetCenter();
-            Vector3 centerB = ((AABBBoxCollider)other).GetCenter();
+            Vector3 centerB = ((AABBoxCollider)other).GetCenter();
 
             Vector3 sizeA = size * 0.5f;
-            Vector3 sizeB = ((AABBBoxCollider)other).size * 0.5f;
+            Vector3 sizeB = ((AABBoxCollider)other).size * 0.5f;
 
             bool overlapX = centerA.x - sizeA.x < centerB.x + sizeB.x &&
                             centerA.x + sizeA.x > centerB.x - sizeB.x;
@@ -74,7 +117,7 @@ namespace Runtime.Component.Physics
         public override float Raycast(Raycast ray)
         {
             Transform? transform = GetComponent<Transform>();
-            Vector3 center = transform?.position ?? Vector3.Zero;
+            Vector3 center = GetCenter();
             Vector3 min = center - (size / 2);
             Vector3 max = center + (size / 2);
 

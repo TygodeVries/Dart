@@ -66,6 +66,8 @@ namespace Runtime.Graphics.Renderers
         {
             uploaded = true;
             _mesh = mesh;
+            if (mesh == null)
+                return;
             // Delete old stuff
             if (vao != 0) GL.DeleteVertexArray(vao);
             if (vbo != 0) GL.DeleteBuffer(vbo);

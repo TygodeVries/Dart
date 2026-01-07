@@ -1,5 +1,6 @@
 ﻿using Project.Editor.UI.FileSystem.FileInspectors;
 using Project.Editor.UI.Inspectors;
+using Project.Editor.UI.Scenes;
 using Runtime.Calc;
 using Runtime.Component.Core;
 using Runtime.Component.Lighting;
@@ -25,6 +26,11 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             {
                 Debug.Error("Could not load scene!!!");
                 return;
+            }
+
+            foreach (GameObject gm in scene.GetGameObjects())
+            {
+                gm.EnableUpdates = false;
             }
 
             Scene.Load(scene);
