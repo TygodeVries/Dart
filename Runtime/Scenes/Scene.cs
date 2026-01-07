@@ -41,11 +41,25 @@ namespace Runtime.Scenes
             return scene;
         }
 
+        public void Save()
+        {
+            Asset? asset = GetAsset();
+            if (asset == null)
+            {
+                Debug.Error("Can not use Save() on a scene that was not loaded from a file in the first place. Use SaveToFile() instead.");
+                return;
+            }
+            SaveToFile(asset);
+        }
+
         public void SaveToFile(Asset asset)
         {
             SceneFile sceneFile = new SceneFile();
             foreach (GameObject gameObject in gameObjects)
             {
+                if (!gameObject.IsActive())
+                    continue;
+
                 Asset? gameObjectAsset = gameObject.GetAsset();
                 if (gameObjectAsset == null) // instance
                     continue;
@@ -93,6 +107,17 @@ namespace Runtime.Scenes
             }
 
             hasBeenLoaded = false;
+        }
+
+        public void DestroyObject(GameObject gameObject)
+        {
+            MainThread.Run(() =>
+            {
+                gameObjects.Remove(gameObject);
+            });
+
+            gameObject.Unload();
+            Scene.main.Save();
         }
 
         private void Load()

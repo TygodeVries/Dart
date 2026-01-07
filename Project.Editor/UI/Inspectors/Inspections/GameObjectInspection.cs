@@ -103,12 +103,24 @@ namespace Project.Editor.UI.Inspectors.Inspections
 
             if (record == ValueRecord.ValueRecordType.Vector3)
             {
-                Debug.Log($"Vector3 member: {member.Name}, ({member.MemberType})");
                 System.Numerics.Vector3 value = ((Vector3)getter()).ToNumerics();
 
                 if (ImGui.InputFloat3($"##{member.Name}", ref value))
                 {
                     setter(new Vector3(value));
+                    Save();
+                }
+
+                return;
+            }
+
+            if (record == ValueRecord.ValueRecordType.Float)
+            {
+                float value = (float)getter();
+
+                if (ImGui.InputFloat($"##{member.Name}", ref value))
+                {
+                    setter(value);
                     Save();
                 }
 

@@ -4,6 +4,7 @@ using Runtime.Component.Core;
 using Runtime.Component.Physics;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
+using Runtime.Graphics.Shaders;
 using Runtime.Objects;
 using Runtime.Scenes;
 namespace Project.Editor.UI.Scenes
@@ -14,6 +15,7 @@ namespace Project.Editor.UI.Scenes
         {
             Scene scene = Scene.main;
             SceneEditor.scene = scene;
+            SceneEditor.AddVisiblityInit();
         }
 
         static Scene? scene = null;
@@ -83,6 +85,7 @@ namespace Project.Editor.UI.Scenes
 
             objectCursor = gm;
             objectCursor.AddComponent(new CasualPlace());
+            AddVisibility(objectCursor);
             Scene.main.Instantiate(gm);
         }
 
@@ -93,8 +96,35 @@ namespace Project.Editor.UI.Scenes
 
         public static void CancelPlace()
         {
-            objectCursor?.Unload();
+            Scene.main.DestroyObject(objectCursor);
             objectCursor = null;
+        }
+
+        public static void AddVisiblityInit()
+        {
+            foreach (GameObject game in Scene.main.GetGameObjects())
+            {
+                AddVisibility(game);
+            }
+        }
+
+        public static void AddVisibility(GameObject g)
+        {
+            if (g.GetComponent<MeshRenderer>() != null)
+            {
+                return;
+            }
+
+            ShaderProgram shaderProgram = ShaderProgram.FromFile(
+                EditorUtils.GetAssetDatabase().GetAsset("assets/shaders/gizmos/lit.vert"),
+                EditorUtils.GetAssetDatabase().GetAsset("assets/shaders/gizmos/lit.frag"));
+
+            Material material = new Material(shaderProgram);
+            material.SetTexture("u_Texture", DefaultsTextures.GetFallbackTexture(), 0);
+
+            Mesh mesh = Mesh.FromFileObj(EditorUtils.GetAssetDatabase().GetAsset("assets/models/gizmos.obj"));
+            g.AddComponent(new MeshRenderer(material, mesh));
+            g.AddComponent(new Billboard());
         }
     }
 }

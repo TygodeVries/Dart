@@ -106,7 +106,10 @@ namespace Runtime.Objects
                 component.OnLoad();
         }
 
-
+        public bool IsActive()
+        {
+            return hasBeenLoaded;
+        }
         bool hasBeenLoaded = false;
         public void OnLoad()
         {

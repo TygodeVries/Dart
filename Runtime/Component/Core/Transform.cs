@@ -41,6 +41,16 @@ namespace Runtime.Component.Core
             return new Vector3(x, y, z).Normalized();
         }
 
+        public void SetForwards(Vector3 forwards)
+        {
+            forwards = forwards.Normalized();
+
+            float pitch = MathF.Asin(forwards.y);
+            float yaw = MathF.Atan2(forwards.x, forwards.z);
+
+            rotation.x = OpenTK.Mathematics.MathHelper.RadiansToDegrees(pitch);
+            rotation.y = OpenTK.Mathematics.MathHelper.RadiansToDegrees(yaw);
+        }
 
         /// <summary>
         /// The direction of the right side

@@ -21,7 +21,18 @@ namespace Runtime.Component.Lighting
                 defaultLightManager.GetPointLights().Add(this);
             }
             else
-                Debug.Log("PointLight used without DefaultLightManager");
+                Debug.Warning("PointLight used without DefaultLightManager");
+        }
+
+        public override void Unload()
+        {
+            LightManager defaultLightManager = Scene.main.GetLightManager();
+            if (null != defaultLightManager)
+            {
+                defaultLightManager.GetPointLights().Remove(this);
+            }
+            else
+                Debug.Warning("PointLight used without DefaultLightManager");
         }
 
         /// <summary>
@@ -42,12 +53,12 @@ namespace Runtime.Component.Lighting
         /// The color of the light
         /// In the range 0 - 1
         /// </summary>
-        public Vector3 color = new Vector3(1, 1, 1);
+        [Inspectable] public Vector3 color = new Vector3(1, 1, 1);
 
         /// <summary>
         /// The intensity of the light
         /// </summary>
-        public float intensity;
+        [Inspectable] public float intensity = 4;
 
         /// <summary>
         /// Get camera data as a simple vector

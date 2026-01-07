@@ -6,6 +6,7 @@ using Runtime.DearImGUI.Gui;
 using Runtime.Graphics.Materials;
 using Runtime.Objects;
 using Runtime.Objects.Prefabs;
+using Runtime.Scenes;
 
 namespace Project.Editor.Data
 {
@@ -24,6 +25,11 @@ namespace Project.Editor.Data
                 asset = CreatePrefab(folder);
             }
 
+            if (ImGui.MenuItem("Scene"))
+            {
+                asset = CreateScene(folder);
+            }
+
             if (asset == null)
                 return;
 
@@ -39,6 +45,18 @@ namespace Project.Editor.Data
             string path = Path.Join(folder.GetSystemPath(), "Untitled.prefab");
             File.WriteAllText(path, prefab.ToJson(true));
             return Asset.FromSystemPath(folder.GetDatabase(), path);
+        }
+
+        private static Asset CreateScene(Asset folder)
+        {
+            Scene scene = new Scene();
+
+            string path = Path.Join(folder.GetSystemPath(), "Untitled.scene");
+            Asset asset = Asset.FromSystemPath(folder.GetDatabase(), path);
+
+            scene.SaveToFile(asset);
+
+            return asset;
         }
 
         private static Asset CreateMaterial(Asset folder)

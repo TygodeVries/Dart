@@ -1,9 +1,7 @@
 ﻿using Project.Editor.UI.FileSystem.FileInspectors;
 using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Scenes;
-using Runtime.Calc;
 using Runtime.Component.Core;
-using Runtime.Component.Lighting;
 using Runtime.Component.Test;
 using Runtime.Logging;
 using Runtime.Objects;
@@ -34,8 +32,8 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             }
 
             Scene.Load(scene);
-            CreateSceneCamera();
             SceneEditor.EnableInCurrentScene();
+            CreateSceneCamera();
         }
 
         private void CreateSceneCamera()
@@ -50,11 +48,6 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
                 })
                 .AddComponent(sceneCamera)
                 .AddComponent(new FlightCamera())
-                .AddComponent(new PointLight()
-                {
-                    color = new Vector3(1, 1, 1),
-                    intensity = 10
-                })
                 .Build()
                 );
         }

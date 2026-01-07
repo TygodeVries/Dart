@@ -1,7 +1,9 @@
-﻿using Project.Editor.UI.Scenes;
+﻿using OpenTK.Windowing.GraphicsLibraryFramework;
+using Project.Editor.UI.Scenes;
 using Runtime.Calc;
 using Runtime.Component.Core;
 using Runtime.Component.Physics;
+using Runtime.Graphics.Pipeline;
 using Runtime.Input;
 using Runtime.Objects;
 using Runtime.Physics.Raycasts;
@@ -15,11 +17,21 @@ namespace Project.Editor.Components
         {
             this.alwaysUpdate = true;
         }
+
+        public override void OnLoad()
+        {
+            transform = GetComponent<Transform>()!;
+        }
+
         public override void Update()
         {
-            if (Keyboard.current.IsPressed(OpenTK.Windowing.GraphicsLibraryFramework.Keys.Z))
+            if (Keyboard.current.IsPressed(Keys.Z))
             {
                 Rotate();
+            }
+            else if (Keyboard.current.IsPressed(Keys.LeftShift))
+            {
+                Vertical();
             }
             else
             {
@@ -32,13 +44,27 @@ namespace Project.Editor.Components
                 Scene.main.SaveToFile(Scene.main.GetAsset());
                 SceneEditor.FinishedPlace();
             }
+
+            if (Keyboard.current.IsPressedThisFrame(Keys.Escape))
+            {
+                SceneEditor.CancelPlace();
+            }
+        }
+
+        Transform transform;
+        private void Vertical()
+        {
+            GizmoRenderPass.GetInstance().AddLine(new Vector4(lastDefaultPosisiton, 1), new Vector4(transform.position, 1));
+            transform.position.y += -Mouse.current.mouseDelta.y * 0.01f;
         }
 
         private void Rotate()
         {
-            GetComponent<Transform>().Rotate(new Vector3(0, Mouse.current.mouseDelta.x, 0));
+            transform.Rotate(new Vector3(0, Mouse.current.mouseDelta.x, 0));
         }
 
+
+        Vector3 lastDefaultPosisiton;
         private void Default()
         {
             Raycast raycast = Camera.main.GetRaycastFromMouse();
@@ -47,7 +73,8 @@ namespace Project.Editor.Components
             RaycastResult? result = raycast.CastInMainScene();
             if (result != null)
             {
-                GetComponent<Transform>().position = result.hit;
+                lastDefaultPosisiton = result.hit;
+                transform.position = result.hit;
             }
         }
     }
