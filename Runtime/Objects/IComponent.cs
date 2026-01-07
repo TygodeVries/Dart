@@ -2,6 +2,7 @@
 {
     public abstract class IComponent
     {
+        public bool alwaysUpdate = false;
         public GameObject? gameObject;
         public T? GetComponent<T>() where T : IComponent
         {

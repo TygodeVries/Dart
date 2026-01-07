@@ -37,7 +37,9 @@ namespace Project.Editor.UI.Assets
                         Debug.Error("Gameobject could not be loaded!");
                         return;
                     }
-                    Scene.main.Instantiate(gm);
+
+                    SceneEditor.PlaceObject(gm);
+
                     Scene.main.SaveToFile(Scene.main.GetAsset());
                 }
             }

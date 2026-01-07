@@ -1,4 +1,5 @@
-﻿using Runtime.Data;
+﻿using Runtime.Calc;
+using Runtime.Data;
 using Runtime.Logging;
 using Runtime.Objects.Prefabs;
 
@@ -44,18 +45,21 @@ namespace Runtime.Objects
 
         public void RemoveComponent(Type type)
         {
-            components.RemoveAll(c =>
+            MainThread.Run(() =>
             {
-                if (type.IsAssignableFrom(c.GetType()))
+                components.RemoveAll(c =>
                 {
-                    c.Unload();
-                    return true;
-                }
-                return false;
-            });
+                    if (type.IsAssignableFrom(c.GetType()))
+                    {
+                        c.Unload();
+                        return true;
+                    }
+                    return false;
+                });
 
-            componentMap.Remove(type);
-            Debug.Log($"Removed Component {type.Name}");
+                componentMap.Remove(type);
+                Debug.Log($"Removed Component {type.Name}");
+            });
         }
 
 
@@ -113,14 +117,18 @@ namespace Runtime.Objects
             }
         }
 
-        public bool EnableUpdates = true;
+        public bool enableUpdates = true;
         public void Update()
         {
-            if (!EnableUpdates)
-                return;
+
 
             foreach (IComponent component in components)
             {
+                if (!enableUpdates && !component.alwaysUpdate)
+                {
+                    continue;
+                }
+
                 try
                 {
                     component.Update();

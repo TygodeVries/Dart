@@ -1,6 +1,7 @@
 ﻿using ImGuiNET;
 using Project.Editor.UI.Generic;
 using Runtime;
+using Runtime.Calc;
 using Runtime.Data;
 using Runtime.DearImGUI.Gui;
 using Runtime.Logging;
@@ -34,14 +35,15 @@ namespace Project.Editor.UI.Inspectors.Inspections
                         Save();
                         return;
                     }
+                    var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-                    FieldInfo[] fieldInfos = component.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+                    FieldInfo[] fieldInfos = component.GetType().GetFields(flags);
                     foreach (FieldInfo info in fieldInfos)
                     {
                         DrawInspectableMember(info, info.FieldType, () => info.GetValue(component), v => info.SetValue(component, v));
                     }
 
-                    PropertyInfo[] propertyInfos = component.GetType().GetProperties();
+                    PropertyInfo[] propertyInfos = component.GetType().GetProperties(flags);
                     foreach (PropertyInfo info in propertyInfos)
                     {
                         DrawInspectableMember(info, info.PropertyType, () => info.GetValue(component), v => info.SetValue(component, v));
@@ -99,6 +101,19 @@ namespace Project.Editor.UI.Inspectors.Inspections
                 return;
             }
 
+            if (record == ValueRecord.ValueRecordType.Vector3)
+            {
+                Debug.Log($"Vector3 member: {member.Name}, ({member.MemberType})");
+                System.Numerics.Vector3 value = ((Vector3)getter()).ToNumerics();
+
+                if (ImGui.InputFloat3($"##{member.Name}", ref value))
+                {
+                    setter(new Vector3(value));
+                    Save();
+                }
+
+                return;
+            }
 
             if (record == ValueRecord.ValueRecordType.Asset)
             {

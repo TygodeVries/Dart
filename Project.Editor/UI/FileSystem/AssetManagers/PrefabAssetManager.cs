@@ -37,7 +37,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             CreateSceneCamera();
 
             gameObject = PrefabGameObject.FromFile(GetAsset()).GetGameObject();
-            gameObject.EnableUpdates = false; // Avoid it from moving
+            gameObject.enableUpdates = false; // Avoid it from moving
 
             scene.Instantiate(gameObject);
 

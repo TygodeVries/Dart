@@ -72,5 +72,29 @@ namespace Project.Editor.UI.Scenes
                 .AddComponent(new Draggable(new Runtime.Calc.Vector3(0, 0, 1)))
                 .Build());
         }
+
+        static GameObject? objectCursor = null;
+        public static void PlaceObject(GameObject gm)
+        {
+            if (objectCursor != null)
+            {
+                CancelPlace();
+            }
+
+            objectCursor = gm;
+            objectCursor.AddComponent(new CasualPlace());
+            Scene.main.Instantiate(gm);
+        }
+
+        public static void FinishedPlace()
+        {
+            objectCursor = null;
+        }
+
+        public static void CancelPlace()
+        {
+            objectCursor?.Unload();
+            objectCursor = null;
+        }
     }
 }

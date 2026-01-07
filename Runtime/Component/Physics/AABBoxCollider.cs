@@ -1,6 +1,7 @@
 ﻿using Runtime.Calc;
 using Runtime.Component.Core;
 using Runtime.Graphics.Pipeline;
+using Runtime.Objects;
 using Runtime.Physics.Raycasts;
 
 namespace Runtime.Component.Physics
@@ -11,7 +12,6 @@ namespace Runtime.Component.Physics
     /// </summary>
     public class AABBoxCollider : ICollider
     {
-
 
         public override void Update()
         {
@@ -64,12 +64,12 @@ namespace Runtime.Component.Physics
             return Vector3.Zero + offset;
         }
 
-        public Vector3 offset = new Vector3(0, 0, 0);
+        [Inspectable] public Vector3 offset = new Vector3(0, 0, 0);
 
         /// <summary>
         /// The size of the bouding box
         /// </summary>
-        public Vector3 size;
+        [Inspectable] public Vector3 size;
 
         /// <summary>
         /// If a spesific point overlaps the collider

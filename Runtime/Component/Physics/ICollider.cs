@@ -14,6 +14,7 @@ namespace Runtime.Component.Physics
     {
         public override void OnLoad()
         {
+            alwaysUpdate = true;
             Scene.main?.physicsSolver.colliders.Add(this);
             base.OnLoad();
         }

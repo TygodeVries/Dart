@@ -48,7 +48,6 @@ namespace Editor
 
             Game.SetAssetDatabase(new AssetDatabase(EditorUtils.projectPath));
             Game.GetAssetDatabase().Start();
-
         }
     }
 }

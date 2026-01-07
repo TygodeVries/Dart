@@ -240,6 +240,8 @@ namespace Runtime.DearImGUI.Backend
             io.MouseDown[1] = Mouse.current.rightPressed;
             io.MouseDown[2] = Mouse.current.middlePressed;
 
+            io.DeltaTime = (float)Time.deltaTime;
+
             foreach (var v in keyMap)
             {
                 bool isPressedThisFrame = Keyboard.current.IsPressedThisFrame(v.Key);

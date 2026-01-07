@@ -30,7 +30,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
 
             foreach (GameObject gm in scene.GetGameObjects())
             {
-                gm.EnableUpdates = false;
+                gm.enableUpdates = false;
             }
 
             Scene.Load(scene);
