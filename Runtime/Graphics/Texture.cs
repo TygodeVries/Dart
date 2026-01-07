@@ -23,8 +23,14 @@ namespace Runtime.Graphics
             this.pixels = pixels;
         }
 
+        static Dictionary<string, Texture> cache = new Dictionary<string, Texture>();
         public static Texture LoadFromPng(Asset asset, int maxWidth = 8192, int maxHeight = 8192, bool upload = true)
         {
+            if (cache.ContainsKey(asset.GetSystemPath()))
+            {
+                return cache[asset.GetSystemPath()];
+            }
+
             Debug.Log($"Creating texture of {maxWidth}, {maxHeight}, {upload}");
             string path = asset.GetSystemPath();
             if (!File.Exists(path))
@@ -58,6 +64,7 @@ namespace Runtime.Graphics
             Texture texture = new Texture(image.Width, image.Height, pixels);
             if (upload) texture.Upload();
             texture.SetAsset(asset);
+            cache.Add(asset.GetSystemPath(), texture);
             return texture;
         }
 
