@@ -12,12 +12,12 @@ namespace Runtime.Objects
             gameObject.SetAsset(asset);
             this.asset = asset;
         }
-        public GameObjectFactory AddComponent(IComponent component)
+        public GameObjectFactory AddComponent(Component component)
         {
             gameObject.AddComponent(component);
             return this;
         }
-        public GameObjectFactory AddComponent<T>() where T : IComponent, new()
+        public GameObjectFactory AddComponent<T>() where T : Component, new()
         {
             gameObject.AddComponent(new T());
             return this;

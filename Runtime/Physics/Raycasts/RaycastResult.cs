@@ -1,5 +1,5 @@
 ﻿using Runtime.Calc;
-using Runtime.Component.Physics;
+using Runtime.Components.Physics;
 
 namespace Runtime.Physics.Raycasts
 {

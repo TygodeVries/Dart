@@ -1,11 +1,11 @@
 ﻿using Runtime.Calc;
-using Runtime.Component.Core;
+using Runtime.Components.Core;
 using Runtime.Logging;
 using Runtime.Objects;
 
-namespace Runtime.Component
+namespace Runtime.Components
 {
-    public class FollowConstraint : IComponent
+    public class FollowConstraint : Component
     {
         public Transform target;
         Transform? me;
@@ -20,7 +20,7 @@ namespace Runtime.Component
             target = transform;
         }
 
-        public override void OnLoad()
+        public override void Load()
         {
             me = GetComponent<Transform>();
         }

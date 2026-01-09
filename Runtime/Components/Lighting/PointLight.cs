@@ -1,18 +1,18 @@
 ﻿using Runtime.Calc;
-using Runtime.Component.Core;
+using Runtime.Components.Core;
 using Runtime.Graphics;
 using Runtime.Logging;
 using Runtime.Objects;
 using Runtime.Scenes;
 
-namespace Runtime.Component.Lighting
+namespace Runtime.Components.Lighting
 {
     /// <summary>
     /// A light with a source from 1 point.
     /// </summary>
-    public class PointLight : IComponent
+    public class PointLight : Objects.Component
     {
-        public override void OnLoad()
+        public override void Load()
         {
             // Try to add ourselfs to the scene's light manager, we need to keep track of this to send this data to our renderers.
             LightManager defaultLightManager = Scene.main.GetLightManager();

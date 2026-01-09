@@ -8,7 +8,7 @@ using Runtime.Logging;
 using Runtime.Objects;
 namespace Project.Editor.Components
 {
-    internal class MaterialPreview : IComponent
+    internal class MaterialPreview : Component
     {
         Asset materialAsset;
         string workingDir;

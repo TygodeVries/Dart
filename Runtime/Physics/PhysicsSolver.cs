@@ -1,4 +1,4 @@
-﻿using Runtime.Component.Physics;
+﻿using Runtime.Components.Physics;
 using Runtime.Physics.Raycasts;
 
 namespace Runtime.Physics

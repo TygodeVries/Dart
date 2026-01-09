@@ -1,16 +1,15 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using Runtime.Calc;
 using Runtime.Graphics;
-using Runtime.Objects;
 using Runtime.Physics.Raycasts;
 
-namespace Runtime.Component.Core
+namespace Runtime.Components.Core
 {
 
     /// <summary>
     /// A camera is used to render the game image from.
     /// </summary>
-    public class Camera : IComponent
+    public class Camera : Objects.Component
     {
         /// <summary>
         /// The camera that is rendering the final image

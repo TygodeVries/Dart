@@ -1,13 +1,13 @@
 ﻿using Runtime.Calc;
 using Runtime.Objects;
 
-namespace Runtime.Component.Core
+namespace Runtime.Components.Core
 {
 
     /// <summary>
     /// A transform changes where an object is rendered at
     /// </summary>
-    public class Transform : IComponent
+    public class Transform : Component
     {
         /// <summary>
         /// The position of the object

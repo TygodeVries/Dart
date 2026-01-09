@@ -1,12 +1,11 @@
 ﻿using Runtime.Calc;
-using Runtime.Component.Core;
+using Runtime.Components.Core;
 using Runtime.Logging;
-using Runtime.Objects;
 using Runtime.Scenes;
 
-namespace Runtime.Component.Physics
+namespace Runtime.Components.Physics
 {
-    public class Rigidbody : IComponent
+    public class Rigidbody : Objects.Component
     {
         public override void Update()
         {

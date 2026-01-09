@@ -1,6 +1,6 @@
 ﻿using ImGuiNET;
 using Project.Editor.UI.Generic;
-using Runtime.Component.Core;
+using Runtime.Components.Core;
 using Runtime.Data;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics.Materials;

@@ -9,9 +9,9 @@ namespace Runtime.Objects
     public class GameObject : AssetReference
     {
 
-        public bool HasComponent(IComponent component)
+        public bool HasComponent(Component component)
         {
-            foreach (IComponent c in components)
+            foreach (Component c in components)
             {
                 if (c == component)
                     return true;
@@ -25,9 +25,14 @@ namespace Runtime.Objects
             return gameObject;
         }
 
-        private Dictionary<Type, IComponent> componentMap = new();
-        private List<IComponent> components = new();
+        private Dictionary<Type, Component> componentMap = new();
+        private List<Component> components = new();
 
+
+        /// <summary>
+        /// Calls unload for all the components, does not remove object from scene.
+        /// Use Scene.Destroy() instead.
+        /// </summary>
         public void Unload()
         {
             foreach (var component in components)
@@ -63,12 +68,12 @@ namespace Runtime.Objects
         }
 
 
-        public List<IComponent> GetComponents()
+        public List<Component> GetComponents()
         {
-            return new List<IComponent>(components);
+            return new List<Component>(components);
         }
 
-        public T? GetComponent<T>() where T : IComponent
+        public T? GetComponent<T>() where T : Component
         {
             if (null == this)
                 return null;
@@ -90,7 +95,7 @@ namespace Runtime.Objects
             return null;
         }
 
-        public void AddComponent(IComponent component)
+        public void AddComponent(Component component)
         {
             var type = component.GetType();
             if (componentMap.ContainsKey(type))
@@ -103,7 +108,7 @@ namespace Runtime.Objects
             component.gameObject = this;
 
             if (hasBeenLoaded)
-                component.OnLoad();
+                component.Load();
         }
 
         public bool IsActive()
@@ -114,9 +119,9 @@ namespace Runtime.Objects
         public void OnLoad()
         {
             hasBeenLoaded = true;
-            foreach (IComponent component in components)
+            foreach (Component component in components)
             {
-                component.OnLoad();
+                component.Load();
             }
         }
 
@@ -125,9 +130,9 @@ namespace Runtime.Objects
         {
 
 
-            foreach (IComponent component in components)
+            foreach (Component component in components)
             {
-                if (!enableUpdates && !component.alwaysUpdate)
+                if (!enableUpdates && !component.AlwaysUpdate)
                 {
                     continue;
                 }

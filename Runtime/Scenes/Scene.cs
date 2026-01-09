@@ -1,5 +1,5 @@
 ﻿using Runtime.Calc;
-using Runtime.Component.Core;
+using Runtime.Components.Core;
 using Runtime.Data;
 using Runtime.Graphics;
 using Runtime.Graphics.Pipeline;
@@ -116,7 +116,7 @@ namespace Runtime.Scenes
                 gameObjects.Remove(gameObject);
             });
 
-            gameObject.Unload();
+            gameObject?.Unload();
             Scene.main.Save();
         }
 
@@ -167,7 +167,7 @@ namespace Runtime.Scenes
         public void AddManager<T>(T manager) where T : IManager
         {
             managers.Add(manager);
-            manager.OnLoad();
+            manager.Load();
         }
         public T? GetManager<T>() where T : IManager
         {

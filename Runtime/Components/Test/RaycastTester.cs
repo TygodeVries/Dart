@@ -1,10 +1,10 @@
-﻿using Runtime.Component.Core;
+﻿using Runtime.Components.Core;
 using Runtime.Logging;
 using Runtime.Objects;
 using Runtime.Physics.Raycasts;
-namespace Runtime.Component.Test
+namespace Runtime.Components.Test
 {
-    public class RaycastTester : IComponent
+    public class RaycastTester : Objects.Component
     {
         GameObject m;
         public RaycastTester(GameObject target)
@@ -19,7 +19,7 @@ namespace Runtime.Component.Test
 
             if (result != null)
             {
-                m.GetComponent<Transform>().position = result.hit;
+                m.GetComponent<Transform>()!.position = result.hit;
                 Debug.Log(result.hit.ToString());
             }
         }

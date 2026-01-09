@@ -23,7 +23,7 @@ namespace Project.Editor.UI.Generic
             // Maybe cache this?
             return AppDomain.CurrentDomain.GetAssemblies()
                .SelectMany(s => s.GetTypes())
-               .Where(p => typeof(IComponent).IsAssignableFrom(p))
+               .Where(p => typeof(Component).IsAssignableFrom(p))
                .ToList();
         }
     }

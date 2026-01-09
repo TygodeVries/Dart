@@ -1,6 +1,6 @@
 ﻿using Runtime.Calc;
-using Runtime.Component;
-using Runtime.Component.Core;
+using Runtime.Components;
+using Runtime.Components.Core;
 using Runtime.Input;
 using Runtime.Logging;
 using Runtime.Objects;
@@ -8,7 +8,7 @@ using Runtime.Physics.Raycasts;
 
 namespace Project.Editor.Components
 {
-    public class Draggable : IComponent
+    public class Draggable : Component
     {
         Vector3 direction;
         public Draggable(Vector3 direction)

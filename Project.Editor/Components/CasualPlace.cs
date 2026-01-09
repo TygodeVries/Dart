@@ -1,8 +1,8 @@
 ﻿using OpenTK.Windowing.GraphicsLibraryFramework;
 using Project.Editor.UI.Scenes;
 using Runtime.Calc;
-using Runtime.Component.Core;
-using Runtime.Component.Physics;
+using Runtime.Components.Core;
+using Runtime.Components.Physics;
 using Runtime.Graphics.Pipeline;
 using Runtime.Input;
 using Runtime.Objects;
@@ -11,14 +11,15 @@ using Runtime.Scenes;
 
 namespace Project.Editor.Components
 {
-    public class CasualPlace : IComponent
+    public class CasualPlace : Component
     {
+        internal Vector3? startPos;
         public CasualPlace()
         {
-            this.alwaysUpdate = true;
+            this.AlwaysUpdate = true;
         }
 
-        public override void OnLoad()
+        public override void Load()
         {
             transform = GetComponent<Transform>()!;
         }
@@ -47,7 +48,18 @@ namespace Project.Editor.Components
 
             if (Keyboard.current.IsPressedThisFrame(Keys.Escape))
             {
-                SceneEditor.CancelPlace();
+                if (startPos != null)
+                {
+                    transform.position = startPos.Value;
+
+                    gameObject.RemoveComponent(this.GetType());
+                    Scene.main.SaveToFile(Scene.main.GetAsset());
+                    SceneEditor.FinishedPlace();
+                }
+                else
+                {
+                    SceneEditor.CancelPlace();
+                }
             }
         }
 
@@ -67,10 +79,10 @@ namespace Project.Editor.Components
         Vector3 lastDefaultPosisiton;
         private void Default()
         {
-            Raycast raycast = Camera.main.GetRaycastFromMouse();
-            raycast.ignore.Add(GetComponent<ICollider>());
+            Raycast? raycast = Camera.main?.GetRaycastFromMouse();
+            raycast?.ignore.Add(GetComponent<ICollider>());
 
-            RaycastResult? result = raycast.CastInMainScene();
+            RaycastResult? result = raycast?.CastInMainScene();
             if (result != null)
             {
                 lastDefaultPosisiton = result.hit;

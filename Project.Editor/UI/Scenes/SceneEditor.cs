@@ -1,7 +1,7 @@
 ﻿using Project.Editor.Components;
-using Runtime.Component;
-using Runtime.Component.Core;
-using Runtime.Component.Physics;
+using Runtime.Components;
+using Runtime.Components.Core;
+using Runtime.Components.Physics;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
 using Runtime.Graphics.Shaders;
@@ -78,20 +78,25 @@ namespace Project.Editor.UI.Scenes
         static GameObject? objectCursor = null;
         public static void PlaceObject(GameObject gm)
         {
-            if (objectCursor != null)
+            if (IsPlacing())
             {
                 CancelPlace();
             }
 
             objectCursor = gm;
             objectCursor.AddComponent(new CasualPlace());
-            AddVisibility(objectCursor);
+            MakeEditorReady(objectCursor);
             Scene.main.Instantiate(gm);
         }
 
         public static void FinishedPlace()
         {
             objectCursor = null;
+        }
+
+        public static bool IsPlacing()
+        {
+            return objectCursor != null;
         }
 
         public static void CancelPlace()
@@ -104,8 +109,15 @@ namespace Project.Editor.UI.Scenes
         {
             foreach (GameObject game in Scene.main.GetGameObjects())
             {
-                AddVisibility(game);
+                MakeEditorReady(game);
             }
+        }
+
+        public static void MakeEditorReady(GameObject g)
+        {
+            AddVisibility(g);
+            AddCollision(g);
+            AddInteraction(g);
         }
 
         public static void AddVisibility(GameObject g)
@@ -125,6 +137,24 @@ namespace Project.Editor.UI.Scenes
             Mesh mesh = Mesh.FromFileObj(EditorUtils.GetAssetDatabase().GetAsset("assets/models/gizmos.obj"));
             g.AddComponent(new MeshRenderer(material, mesh));
             g.AddComponent(new Billboard());
+        }
+
+        public static void AddCollision(GameObject g)
+        {
+            if (g.GetComponent<ICollider>() != null)
+            {
+                return;
+            }
+
+            g.AddComponent(new AABBoxCollider()
+            {
+                size = new Runtime.Calc.Vector3(1, 1, 1)
+            });
+        }
+
+        public static void AddInteraction(GameObject g)
+        {
+            g.AddComponent(new SceneObjectInspectable());
         }
     }
 }

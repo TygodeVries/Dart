@@ -1,17 +1,16 @@
 ﻿using Runtime.Calc;
-using Runtime.Component.Core;
+using Runtime.Components.Core;
 using Runtime.Graphics;
-using Runtime.Objects;
 using Runtime.Scenes;
 
-namespace Runtime.Component.Lighting
+namespace Runtime.Components.Lighting
 {
     /// <summary>
     /// A light, not from a point, but from a direction
     /// </summary>
-    public class SunLight : IComponent
+    public class SunLight : Objects.Component
     {
-        public override void OnLoad()
+        public override void Load()
         {
             // Just like the point light, we need to keep track of ourselfs
             LightManager? lightManager = Scene.main.GetLightManager();

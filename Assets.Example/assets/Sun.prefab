@@ -1,1 +1,0 @@
-{"components":[{"type":"Runtime.Component.Core.Transform, Runtime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null","overrides":[{"Name":"position","Type":5,"Value":"0 0 0"},{"Name":"rotation","Type":5,"Value":"0 0 0"}]},{"type":"Runtime.Component.Lighting.SunLight, Runtime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null","overrides":[]}]}

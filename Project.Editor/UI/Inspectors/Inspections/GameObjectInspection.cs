@@ -23,7 +23,7 @@ namespace Project.Editor.UI.Inspectors.Inspections
 
         public override void Render()
         {
-            foreach (IComponent component in gameObject.GetComponents())
+            foreach (Component component in gameObject.GetComponents())
             {
                 if (ImGui.CollapsingHeader(component.GetType().Name))
                 {
@@ -58,7 +58,7 @@ namespace Project.Editor.UI.Inspectors.Inspections
 
                 guiWindow.OnComponentPicked += (Type type) =>
                 {
-                    gameObject.AddComponent((IComponent)Activator.CreateInstance(type));
+                    gameObject.AddComponent((Component)Activator.CreateInstance(type));
                     GuiWindow.Disable(guiWindow);
                     Save();
                 };

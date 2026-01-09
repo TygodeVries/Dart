@@ -5,7 +5,7 @@ using Runtime.Objects;
 
 namespace Runtime.Graphics.Renderers
 {
-    public abstract class Renderer : IComponent
+    public abstract class Renderer : Objects.Component
     {
         private Material? _material;
 
@@ -39,10 +39,10 @@ namespace Runtime.Graphics.Renderers
 
         public abstract void Render();
 
-        public override void OnLoad()
+        public override void Load()
         {
             RenderCanvas.main!.GetGraphicsPipeline()?.AddRenderer(this);
-            base.OnLoad();
+            base.Load();
         }
 
         public override void Unload()

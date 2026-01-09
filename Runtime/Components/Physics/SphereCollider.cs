@@ -1,8 +1,8 @@
 ﻿using Runtime.Calc;
-using Runtime.Component.Core;
+using Runtime.Components.Core;
 using Runtime.Physics.Raycasts;
 
-namespace Runtime.Component.Physics
+namespace Runtime.Components.Physics
 {
     public class SphereCollider : ICollider
     {

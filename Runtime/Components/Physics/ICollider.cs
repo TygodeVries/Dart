@@ -1,23 +1,27 @@
 ﻿
 using Runtime.Calc;
-using Runtime.Objects;
 using Runtime.Physics.Raycasts;
 using Runtime.Scenes;
 
-namespace Runtime.Component.Physics
+namespace Runtime.Components.Physics
 {
 
     /// <summary>
     /// A collider, come on, you got this!
     /// </summary>
-    public abstract class ICollider : IComponent
+    public abstract class ICollider : Objects.Component
     {
-        public override void OnLoad()
+        public override void Load()
         {
-            alwaysUpdate = true;
+            AlwaysUpdate = true;
             Scene.main?.physicsSolver.colliders.Add(this);
-            base.OnLoad();
+            base.Load();
         }
+        public override void Unload()
+        {
+            Scene.main?.physicsSolver.colliders.Remove(this);
+        }
+
         public abstract bool HasOverlap(Vector3 point);
         public abstract bool HasOverlap(ICollider collider);
         public abstract float Raycast(Raycast raycast);

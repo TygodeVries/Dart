@@ -1,11 +1,11 @@
 ﻿using Runtime.Calc;
-using Runtime.Component.Core;
+using Runtime.Components.Core;
 using Runtime.Input;
 using Runtime.Objects;
 
 namespace Project.Editor.Preview
 {
-    internal class CameraPreview : IComponent
+    internal class CameraPreview : Component
     {
         float scroll = -3;
         public override void Update()

@@ -9,7 +9,7 @@ namespace Runtime.Objects.Prefabs
         public string type { get; set; }
         public List<ValueRecord> overrides { get; set; }
 
-        public static PrefabComponent FromComponent(IComponent component)
+        public static PrefabComponent FromComponent(Component component)
         {
             PrefabComponent prefab = new PrefabComponent();
             prefab.type = component.GetType().AssemblyQualifiedName;
@@ -40,15 +40,16 @@ namespace Runtime.Objects.Prefabs
             return prefab;
         }
 
-        public IComponent GetComponent()
+        public Component? GetComponent()
         {
             Type? typeInstance = Type.GetType(type);
             if (typeInstance == null)
             {
                 Debug.Error($"Failed to create component of type {type}, the type was null");
+                return null;
             }
 
-            IComponent comp = (IComponent)Activator.CreateInstance(typeInstance);
+            Component comp = (Component)Activator.CreateInstance(typeInstance);
 
             PropertyInfo[] propertyInfos = comp.GetType().GetProperties();
             FieldInfo[] infos = comp.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);

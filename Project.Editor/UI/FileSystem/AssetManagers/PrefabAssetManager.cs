@@ -1,8 +1,8 @@
 ﻿using Project.Editor.UI.FileSystem.FileInspectors;
 using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Inspectors.Inspections;
-using Runtime.Component.Core;
-using Runtime.Component.Test;
+using Runtime.Components.Core;
+using Runtime.Components.Test;
 using Runtime.Graphics;
 using Runtime.Objects;
 using Runtime.Objects.Prefabs;

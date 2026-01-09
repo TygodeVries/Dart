@@ -1,8 +1,10 @@
 ﻿using Project.Editor.UI.FileSystem.FileInspectors;
 using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Scenes;
-using Runtime.Component.Core;
-using Runtime.Component.Test;
+using Runtime.Components.Core;
+using Runtime.Components.Test;
+using Runtime.Data;
+using Runtime.Graphics;
 using Runtime.Logging;
 using Runtime.Objects;
 using Runtime.Scenes;
@@ -12,10 +14,23 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
     [AssetManager(".scene")]
     internal class SceneAssetManager : AssetManager
     {
+        Texture texture;
+        public SceneAssetManager()
+        {
+            Asset asset = EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/scene.png");
+            texture = Texture.LoadFromPng(asset);
+        }
+
+        public override Texture GetIcon()
+        {
+            return texture;
+        }
+
         public override Inspection GetInspection()
         {
             return null;
         }
+
         public override void OnOpen()
         {
             Scene? scene = Scene.LoadFromAsset(asset);

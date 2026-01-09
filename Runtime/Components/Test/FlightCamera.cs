@@ -1,15 +1,14 @@
 ﻿using OpenTK.Windowing.GraphicsLibraryFramework;
 using Runtime.Calc;
-using Runtime.Component.Core;
+using Runtime.Components.Core;
 using Runtime.Input;
-using Runtime.Objects;
 
-namespace Runtime.Component.Test
+namespace Runtime.Components.Test
 {
     /// <summary>
     /// Simple camera controls, usefull for testing.
     /// </summary>
-    public class FlightCamera : IComponent
+    public class FlightCamera : Objects.Component
     {
         Vector3 moveDelta = Vector3.Zero;
         float flightSpeed = 4.0f;

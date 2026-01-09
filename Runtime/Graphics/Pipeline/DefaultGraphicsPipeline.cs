@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using Runtime.Calc;
-using Runtime.Component.Core;
+using Runtime.Components.Core;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
 using Runtime.Logging;
@@ -34,7 +34,7 @@ namespace Runtime.Graphics.Pipeline
             };
             GL.DebugMessageCallback(GLDebugProc, 0);
 
-            AddRenderPass( GizmoRenderPass.GetInstance());
+            AddRenderPass(GizmoRenderPass.GetInstance());
 
             GL.ClearColor(0, 0, 0, 0);
 

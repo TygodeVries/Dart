@@ -11,9 +11,16 @@ namespace Runtime.Objects.Prefabs
         public GameObjectFactory GetGameObjectAsFactory()
         {
             GameObjectFactory factory = new GameObjectFactory(asset);
-            foreach (PrefabComponent component in components)
+            foreach (PrefabComponent componentPrefab in components)
             {
-                factory.AddComponent(component.GetComponent());
+                Component? component = componentPrefab.GetComponent();
+                if (component == null)
+                {
+                    Debug.Error("Failed to create game object prefab");
+                    continue;
+                }
+
+                factory.AddComponent(component!);
             }
             return factory;
         }
@@ -61,10 +68,10 @@ namespace Runtime.Objects.Prefabs
 
         public static PrefabGameObject FromGameObject(GameObject gameObject)
         {
-            List<IComponent> components = gameObject.GetComponents();
+            List<Component> components = gameObject.GetComponents();
             PrefabGameObject prefab = new PrefabGameObject();
             prefab.components = new List<PrefabComponent>();
-            foreach (IComponent component in components)
+            foreach (Component component in components)
             {
                 prefab.components.Add(PrefabComponent.FromComponent(component));
             }

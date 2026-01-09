@@ -42,7 +42,7 @@ namespace Runtime.Graphics.Renderers
         }
 
         bool isLoaded = false;
-        public override void OnLoad()
+        public override void Load()
         {
             isLoaded = true;
             if (!uploaded)
@@ -50,7 +50,7 @@ namespace Runtime.Graphics.Renderers
                 Upload(_mesh);
                 uploaded = true;
             }
-            base.OnLoad();
+            base.Load();
         }
 
         public void SetMesh(Mesh? mesh)

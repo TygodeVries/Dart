@@ -1,13 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using Runtime.Calc;
-using Runtime.Component.Core;
+using Runtime.Components.Core;
 using Runtime.Graphics.Shaders;
-using Runtime.Scenes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Runtime.Graphics.Pipeline
 {
@@ -42,7 +36,7 @@ void main()
 {
     gl_Position = u_Projection * u_View * aPosition;
     Color = aColor;
-}",@"
+}", @"
 #version 330 core
 
 in vec4 Color;
@@ -98,24 +92,24 @@ void main()
                 Vector4[] camLinesArray = camLines.ToArray();
                 Vector4[] camColorsArray = camLinesColors.ToArray();
                 if (0 < camLinesArray.Length)
-                unsafe
-                {
-                    fixed (void* position = &camLinesArray[0])
-                            fixed(void *colors = &camColorsArray[0])
+                    unsafe
                     {
-                        GL.BindBuffer(BufferTarget.ArrayBuffer, positionBufferObject);
-                        GL.BufferData(BufferTarget.ArrayBuffer, 4 * 4 * camLinesArray.Length, position, BufferUsage.StaticDraw);
-                        GL.VertexAttribPointer(0, 4, VertexAttribPointerType.Float, false, 0, 0);
-                        GL.BindBuffer(BufferTarget.ArrayBuffer, colorBufferObject);
-                        GL.BufferData(BufferTarget.ArrayBuffer, 4 * 4 * camColorsArray.Length, colors, BufferUsage.StaticDraw);
-                        GL.VertexAttribPointer(1, 4, VertexAttribPointerType.Float, false, 0, 0);
+                        fixed (void* position = &camLinesArray[0])
+                        fixed (void* colors = &camColorsArray[0])
+                        {
+                            GL.BindBuffer(BufferTarget.ArrayBuffer, positionBufferObject);
+                            GL.BufferData(BufferTarget.ArrayBuffer, 4 * 4 * camLinesArray.Length, position, BufferUsage.StaticDraw);
+                            GL.VertexAttribPointer(0, 4, VertexAttribPointerType.Float, false, 0, 0);
+                            GL.BindBuffer(BufferTarget.ArrayBuffer, colorBufferObject);
+                            GL.BufferData(BufferTarget.ArrayBuffer, 4 * 4 * camColorsArray.Length, colors, BufferUsage.StaticDraw);
+                            GL.VertexAttribPointer(1, 4, VertexAttribPointerType.Float, false, 0, 0);
 
-                        GL.EnableVertexAttribArray(0);
-                        GL.EnableVertexAttribArray(1);
+                            GL.EnableVertexAttribArray(0);
+                            GL.EnableVertexAttribArray(1);
 
-                        GL.DrawArrays(PrimitiveType.Lines, 0, camLinesArray.Length);
+                            GL.DrawArrays(PrimitiveType.Lines, 0, camLinesArray.Length);
+                        }
                     }
-                }
             }
 
             rawLines.Clear();

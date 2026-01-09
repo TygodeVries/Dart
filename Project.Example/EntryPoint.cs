@@ -1,7 +1,6 @@
-﻿using Project.Example.Windows;
-using Runtime.Calc;
-using Runtime.Component.Core;
-using Runtime.Component.Test;
+﻿using Runtime.Calc;
+using Runtime.Components.Core;
+using Runtime.Components.Test;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
 using Runtime.Objects;
@@ -32,7 +31,7 @@ namespace FeatureTestProject
 
         }
     }
-    class ParticleTest : IComponent
+    class ParticleTest : Component
     {
         class MyParticleType : ParticleType
         {
@@ -58,7 +57,7 @@ namespace FeatureTestProject
             }
         };
         MyParticleType? pt;
-        public override void OnLoad()
+        public override void Load()
         {
             pt = new MyParticleType();
             Scene.main.GetManager<ParticleSystemManager>()?.UpdateParticleType(pt);
