@@ -16,7 +16,7 @@ namespace Runtime.Input
 
         public void SetCursorState(CursorState state)
         {
-            RenderCanvas.main.CursorState = state;
+            RenderCanvas.main!.CursorState = state;
         }
 
         /// <summary>
@@ -26,6 +26,9 @@ namespace Runtime.Input
         {
             mouseDelta = Vector2.Zero;
             scroll = Vector2.Zero;
+
+            leftWasPressed = leftPressed;
+            rightWasPressed = rightPressed;
         }
         Vector2 lastFrameScroll = Vector2.Zero;
         public Vector2 mouseDelta;
@@ -34,5 +37,27 @@ namespace Runtime.Input
         public bool leftPressed;
         public bool rightPressed;
         public bool middlePressed;
+
+        private bool leftWasPressed;
+        private bool rightWasPressed;
+        public bool LeftPressedThisFrame()
+        {
+            return leftPressed && !leftWasPressed;
+        }
+
+        public bool RightPressedThisFrame()
+        {
+            return rightPressed && !rightWasPressed;
+        }
+
+        public bool RightReleasedThisFrame()
+        {
+            return !rightPressed && rightWasPressed;
+        }
+
+        public bool LeftReleasedThisFrame()
+        {
+            return !leftPressed && leftWasPressed;
+        }
     }
 }

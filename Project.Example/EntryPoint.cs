@@ -1,8 +1,6 @@
-﻿using Project.Example.Windows;
-using Runtime.Calc;
-using Runtime.Component.Core;
-using Runtime.Component.Test;
-using Runtime.DearImGUI.Gui;
+﻿using Runtime.Calc;
+using Runtime.Components.Core;
+using Runtime.Components.Test;
 using Runtime.Graphics;
 using Runtime.Objects;
 using Runtime.Scenes;
@@ -25,14 +23,14 @@ namespace FeatureTestProject
                     .Build()
             );
             Camera cam = new Camera();
-            GuiWindow.Enable(new GUIPerformanceWindow());
+            //  GuiWindow.Enable(new GUIPerformanceWindow());
             Runtime.Scenes.Scene.main.Instantiate(
                 new GameObjectFactory().AddComponent<Transform>().AddComponent(cam).AddComponent<FlightCamera>().Build());
             cam.SetAsMain();
 
         }
     }
-    class ParticleTest : IComponent
+    class ParticleTest : Component
     {
         class MyParticleType : ParticleType
         {
@@ -58,7 +56,7 @@ namespace FeatureTestProject
             }
         };
         MyParticleType? pt;
-        public override void OnLoad()
+        public override void Load()
         {
             pt = new MyParticleType();
             Scene.main.GetManager<ParticleSystemManager>()?.UpdateParticleType(pt);

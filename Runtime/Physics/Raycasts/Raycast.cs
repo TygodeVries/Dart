@@ -1,4 +1,5 @@
 ﻿using Runtime.Calc;
+using Runtime.Components.Physics;
 using Runtime.Scenes;
 
 namespace Runtime.Physics.Raycasts
@@ -7,6 +8,7 @@ namespace Runtime.Physics.Raycasts
     {
         public Vector3 position;
         public Vector3 direction;
+        public List<ICollider> ignore = new();
         public Raycast(Vector3 position, Vector3 direction)
         {
             this.position = position;

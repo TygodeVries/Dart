@@ -1,0 +1,7 @@
+{
+	"VertexShader":"fallback/fallback.vert",
+	"FragmentShader":"fallback/fallback.frag",
+	"Lit":false,
+	"DataFields": [
+	]
+}

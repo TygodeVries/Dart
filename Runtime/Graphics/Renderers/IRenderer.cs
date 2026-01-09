@@ -1,9 +1,11 @@
-﻿using Runtime.Graphics.Materials;
+﻿using Runtime.Data;
+using Runtime.Graphics.Materials;
+using Runtime.Logging;
 using Runtime.Objects;
 
 namespace Runtime.Graphics.Renderers
 {
-    public abstract class Renderer : IComponent
+    public abstract class Renderer : Objects.Component
     {
         private Material? _material;
 
@@ -37,14 +39,23 @@ namespace Runtime.Graphics.Renderers
 
         public abstract void Render();
 
-        public override void OnLoad()
+        public override void Load()
         {
             RenderCanvas.main!.GetGraphicsPipeline()?.AddRenderer(this);
-            base.OnLoad();
+            base.Load();
         }
 
         public override void Unload()
         {
+            Asset asset = GetMaterial().GetAsset();
+            if (asset != null)
+            {
+                Debug.Log($"Unloading renderer with material: {asset.GetSystemPath()}");
+            }
+            else
+            {
+                Debug.Log("Unloading renderer with instance material.");
+            }
             RenderCanvas.main!.GetGraphicsPipeline()?.RemoveRenderer(this);
             base.Unload();
         }

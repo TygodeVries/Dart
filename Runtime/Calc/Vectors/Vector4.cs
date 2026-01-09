@@ -20,6 +20,14 @@ namespace Runtime.Calc
             this.w = w;
         }
 
+        public Vector4(Vector3 a, float w)
+        {
+            this.x = a.x;
+            this.y = a.y;
+            this.z = a.z;
+            this.w = w;
+        }
+
         public static Vector4 Parse(string text)
         {
             string[] args = text.Split(new char[] { ',', ' ', ';', ':', '|' }, StringSplitOptions.None);

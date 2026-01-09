@@ -1,8 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using Runtime.Calc;
-using Runtime.Component.Core;
+using Runtime.Components.Core;
 using Runtime.Graphics.Shaders;
-using Runtime.Objects;
 using Runtime.Scenes;
 using System.Runtime.InteropServices;
 
@@ -212,7 +211,7 @@ namespace Runtime.Graphics
             queue.Enqueue(item);
         }
 
-        public override void OnLoad()
+        public override void Load()
         {
             atomics_mirror = new uint[2];
 
@@ -397,7 +396,7 @@ namespace Runtime.Graphics
     /// <summary>
     /// Interface for the particle system
     /// </summary>
-    public class ParticleEmitter : IComponent
+    public class ParticleEmitter : Objects.Component
     {
         public void AddParticle(Vector3 position, Vector3 velocity, ParticleType type)
         {

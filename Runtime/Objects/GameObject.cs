@@ -1,18 +1,46 @@
-﻿using Runtime.Logging;
+﻿using Runtime.Calc;
+using Runtime.Data;
+using Runtime.Logging;
+using Runtime.Objects.Prefabs;
 
 namespace Runtime.Objects
 {
-    public class GameObject
+    [AssetReference(new string[] { ".prefab" }, nameof(LoadFromFile))]
+    public class GameObject : AssetReference
     {
-        private Dictionary<Type, IComponent> componentMap = new();
-        private List<IComponent> components = new();
 
+        public bool HasComponent(Component component)
+        {
+            foreach (Component c in components)
+            {
+                if (c == component)
+                    return true;
+            }
+
+            return false;
+        }
+        public static GameObject? LoadFromFile(Asset asset)
+        {
+            GameObject? gameObject = PrefabGameObject.FromFile(asset)?.GetGameObject();
+            return gameObject;
+        }
+
+        private Dictionary<Type, Component> componentMap = new();
+        private List<Component> components = new();
+
+
+        /// <summary>
+        /// Calls unload for all the components, does not remove object from scene.
+        /// Use Scene.Destroy() instead.
+        /// </summary>
         public void Unload()
         {
             foreach (var component in components)
             {
                 component.Unload();
             }
+
+            hasBeenLoaded = false;
         }
 
         public void RemoveComponent<T>()
@@ -22,27 +50,30 @@ namespace Runtime.Objects
 
         public void RemoveComponent(Type type)
         {
-            components.RemoveAll(c =>
+            MainThread.Run(() =>
             {
-                if (type.IsAssignableFrom(c.GetType()))
+                components.RemoveAll(c =>
                 {
-                    c.Unload();
-                    return true;
-                }
-                return false;
+                    if (type.IsAssignableFrom(c.GetType()))
+                    {
+                        c.Unload();
+                        return true;
+                    }
+                    return false;
+                });
+
+                componentMap.Remove(type);
+                Debug.Log($"Removed Component {type.Name}");
             });
-
-            componentMap.Remove(type);
-            Debug.Log($"Removed Component {type.Name}");
         }
 
 
-        public List<IComponent> GetComponents()
+        public List<Component> GetComponents()
         {
-            return new List<IComponent>(components);
+            return new List<Component>(components);
         }
 
-        public T? GetComponent<T>() where T : IComponent
+        public T? GetComponent<T>() where T : Component
         {
             if (null == this)
                 return null;
@@ -64,7 +95,7 @@ namespace Runtime.Objects
             return null;
         }
 
-        public void AddComponent(IComponent component)
+        public void AddComponent(Component component)
         {
             var type = component.GetType();
             if (componentMap.ContainsKey(type))
@@ -77,28 +108,35 @@ namespace Runtime.Objects
             component.gameObject = this;
 
             if (hasBeenLoaded)
-                component.OnLoad();
+                component.Load();
         }
 
-
+        public bool IsActive()
+        {
+            return hasBeenLoaded;
+        }
         bool hasBeenLoaded = false;
         public void OnLoad()
         {
             hasBeenLoaded = true;
-            foreach (IComponent component in components)
+            foreach (Component component in components)
             {
-                component.OnLoad();
+                component.Load();
             }
         }
 
-        public bool EnableUpdates = true;
+        public bool enableUpdates = true;
         public void Update()
         {
-            if (!EnableUpdates)
-                return;
 
-            foreach (IComponent component in components)
+
+            foreach (Component component in components)
             {
+                if (!enableUpdates && !component.AlwaysUpdate)
+                {
+                    continue;
+                }
+
                 try
                 {
                     component.Update();

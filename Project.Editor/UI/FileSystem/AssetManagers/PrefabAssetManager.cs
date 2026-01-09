@@ -1,8 +1,8 @@
 ﻿using Project.Editor.UI.FileSystem.FileInspectors;
 using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Inspectors.Inspections;
-using Runtime.Component.Core;
-using Runtime.Component.Test;
+using Runtime.Components.Core;
+using Runtime.Components.Test;
 using Runtime.Graphics;
 using Runtime.Objects;
 using Runtime.Objects.Prefabs;
@@ -36,9 +36,8 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             Scene.Load(scene);
             CreateSceneCamera();
 
-            string json = File.ReadAllText(GetAsset().GetSystemPath());
-            gameObject = PrefabGameObject.FromJson(json).GetGameObject();
-            gameObject.EnableUpdates = false; // Avoid it from moving
+            gameObject = PrefabGameObject.FromFile(GetAsset()).GetGameObject();
+            gameObject.enableUpdates = false; // Avoid it from moving
 
             scene.Instantiate(gameObject);
 
@@ -62,16 +61,6 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
                 .AddComponent(new FlightCamera())
                 .Build()
                 );
-
-            /*
-            Mesh mesh = Mesh.FromFileObj("assets\\Models\\ModelPreview_Box.obj");
-            Material material = new Material(ShaderProgram.FromFile("assets/shaders/lit.vert", "assets/shaders/lit.frag"));
-            Scene.main.Instantiate(new GameObjectFactory()
-                .AddComponent(new MeshRenderer(material, mesh))
-                .AddComponent(new Transform())
-                .Build()
-                );
-            */
         }
     }
 }

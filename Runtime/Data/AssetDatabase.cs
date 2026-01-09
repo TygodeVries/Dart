@@ -1,6 +1,5 @@
 ﻿using Runtime.Calc;
 using Runtime.Logging;
-using System.Timers;
 using Timer = System.Timers.Timer;
 
 namespace Runtime.Data
@@ -41,14 +40,16 @@ namespace Runtime.Data
             // Start the new timer
             timer = new Timer();
             timer.AutoReset = false;
-            timer.Elapsed += RefreshLater;
+            timer.Elapsed += (e, a) => { MainThread.Run(() => { RefreshNow(); }); };
             timer.Interval = 1000; // Wait one second
             timer.Start();
         }
 
 
-        private void RefreshLater(object? sender, ElapsedEventArgs args)
+        public void RefreshNow()
         {
+            if (timer != null)
+                timer.Stop();
             double currentTime = DateTime.Now.Subtract(DateTime.UnixEpoch).TotalSeconds;
             Debug.Log($"Ticks since last refresh: {currentTime - lastRefreshTime}");
             if (currentTime - lastRefreshTime < 1) // Avoid spam
@@ -137,6 +138,8 @@ namespace Runtime.Data
             watcher.EnableRaisingEvents = true;
 
             Debug.Log("Started Watching...");
+            Refresh();
+
         }
     }
 }
