@@ -13,7 +13,7 @@ namespace Runtime.Components.Physics
     public class AABBoxCollider : ICollider
     {
 
-        public override void Update()
+        public override void DrawGizmos()
         {
             Vector3 center = GetCenter();
             Vector3 half = size * 0.5f;

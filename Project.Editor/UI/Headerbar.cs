@@ -54,9 +54,9 @@ namespace Project.Editor.UI
 
             if (ImGui.BeginMenu("Edit"))
             {
-                if (ImGui.MenuItem("Project Settings"))
+                if (ImGui.MenuItem("Game Settings"))
                 {
-                    GuiWindow.Enable(new ProjectSettingsWindow());
+                    GuiWindow.Enable(new GameSettingsWindow());
                 }
 
                 ImGui.EndMenu();

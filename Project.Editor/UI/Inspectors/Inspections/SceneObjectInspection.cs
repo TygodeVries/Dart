@@ -32,6 +32,11 @@ namespace Project.Editor.UI.Inspectors.Inspections
                     startPos = target.GetComponent<Transform>().position
                 });
             }
+
+            foreach (Component component in target.GetComponents())
+            {
+                component.DrawGizmos();
+            }
         }
     }
 }
