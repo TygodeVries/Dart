@@ -12,6 +12,11 @@
         public virtual void Load() { }
         public virtual void Update() { }
         public virtual void Unload() { }
+        public virtual void DrawGizmos() { }
+        public virtual string? GetGizmosPath()
+        {
+            return null;
+        }
 
     }
 }

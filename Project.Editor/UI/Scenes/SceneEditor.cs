@@ -1,7 +1,10 @@
 ﻿using Project.Editor.Components;
+using Runtime.Calc;
 using Runtime.Components;
 using Runtime.Components.Core;
 using Runtime.Components.Physics;
+using Runtime.Data;
+using Runtime.Graphics;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
 using Runtime.Graphics.Shaders;
@@ -15,7 +18,7 @@ namespace Project.Editor.UI.Scenes
         {
             Scene scene = Scene.main;
             SceneEditor.scene = scene;
-            SceneEditor.AddVisiblityInit();
+            SceneEditor.MakeAllObjectsEditorReady();
         }
 
         static Scene? scene = null;
@@ -105,7 +108,7 @@ namespace Project.Editor.UI.Scenes
             objectCursor = null;
         }
 
-        public static void AddVisiblityInit()
+        public static void MakeAllObjectsEditorReady()
         {
             foreach (GameObject game in Scene.main.GetGameObjects())
             {
@@ -116,7 +119,7 @@ namespace Project.Editor.UI.Scenes
         public static void MakeEditorReady(GameObject g)
         {
             AddVisibility(g);
-            AddCollision(g);
+            AddCollision(g, new Vector3(1, 1, 1));
             AddInteraction(g);
         }
 
@@ -132,14 +135,37 @@ namespace Project.Editor.UI.Scenes
                 EditorUtils.GetAssetDatabase().GetAsset("assets/shaders/gizmos/lit.frag"));
 
             Material material = new Material(shaderProgram);
-            material.SetTexture("u_Texture", DefaultsTextures.GetFallbackTexture(), 0);
+
+            string? icon = null;
+
+            foreach (Component component in g.GetComponents())
+            {
+                string? newIcon = component.GetGizmosPath();
+                if (newIcon != null)
+                {
+                    icon = newIcon;
+                }
+            }
+
+            Texture texture = DefaultsTextures.GetFallbackTexture();
+            if (icon != null)
+            {
+                Asset asset = new Asset(EditorUtils.GetAssetDatabase(), icon);
+                texture = Texture.LoadFromPng(asset);
+            }
+
+            material.SetTexture("u_Texture", texture, 0);
 
             Mesh mesh = Mesh.FromFileObj(EditorUtils.GetAssetDatabase().GetAsset("assets/models/gizmos.obj"));
+
+
             g.AddComponent(new MeshRenderer(material, mesh));
-            g.AddComponent(new Billboard());
+            //g.AddComponent(new Billboard());
+
+            AddCollision(g, new Vector3(0.2f, 0.2f, 0.2f)); // Gizmos have a smaller size
         }
 
-        public static void AddCollision(GameObject g)
+        public static void AddCollision(GameObject g, Vector3 size)
         {
             if (g.GetComponent<ICollider>() != null)
             {
@@ -148,7 +174,7 @@ namespace Project.Editor.UI.Scenes
 
             g.AddComponent(new AABBoxCollider()
             {
-                size = new Runtime.Calc.Vector3(1, 1, 1)
+                size = size
             });
         }
 

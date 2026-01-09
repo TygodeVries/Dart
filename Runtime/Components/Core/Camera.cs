@@ -1,6 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using Runtime.Calc;
 using Runtime.Graphics;
+using Runtime.Graphics.Pipeline;
 using Runtime.Physics.Raycasts;
 
 namespace Runtime.Components.Core
@@ -11,6 +12,18 @@ namespace Runtime.Components.Core
     /// </summary>
     public class Camera : Objects.Component
     {
+        public override string? GetGizmosPath()
+        {
+            return "assets/textures/gizmos/camera.png";
+        }
+
+        public override void DrawGizmos()
+        {
+            GizmoRenderPass grp = GizmoRenderPass.GetInstance();
+            grp.AddLine(new Vector4(0, 0, 0, 1), new Vector4(0, 0, 0, 1));
+        }
+
+
         /// <summary>
         /// The camera that is rendering the final image
         /// </summary>

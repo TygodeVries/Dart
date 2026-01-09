@@ -23,6 +23,11 @@ namespace Runtime.Scenes
             scene.Load();
         }
 
+        public static void LoadDefault()
+        {
+            LoadFromAsset(Game.GetAssetDatabase().GetAsset(GameSettings.GetGameSettings()?.StartScene!));
+        }
+
         public static Scene? LoadFromAsset(Asset asset)
         {
             SceneFile? file = JsonSerializer.Deserialize<SceneFile>(File.ReadAllText(asset.GetSystemPath()));

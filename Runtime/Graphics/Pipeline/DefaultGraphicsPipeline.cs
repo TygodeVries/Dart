@@ -40,7 +40,7 @@ namespace Runtime.Graphics.Pipeline
 
             EnableCap[] caps = new EnableCap[]
             {
-                     EnableCap.Multisample
+                 EnableCap.Multisample
             };
             Debug.Log("Turning on OpenGL features...");
             string features = "";

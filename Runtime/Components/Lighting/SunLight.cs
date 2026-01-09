@@ -10,6 +10,10 @@ namespace Runtime.Components.Lighting
     /// </summary>
     public class SunLight : Objects.Component
     {
+        public override string? GetGizmosPath()
+        {
+            return "assets/textures/gizmos/sunlight.png";
+        }
         public override void Load()
         {
             // Just like the point light, we need to keep track of ourselfs

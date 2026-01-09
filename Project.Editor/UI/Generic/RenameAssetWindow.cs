@@ -32,6 +32,8 @@ namespace Project.Editor.UI.Generic
                 // Move the meta
                 if (File.Exists(asset.GetSystemPath() + ".meta")) // Check if there is a meta file
                     File.Move(asset.GetSystemPath() + ".meta", asset.GetFolder().GetSystemPath() + $"/{GetString(name)}.meta");
+
+                GuiWindow.Disable(this);
             }
         }
 

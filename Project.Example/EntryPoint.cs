@@ -1,7 +1,6 @@
 ﻿using Runtime.Calc;
 using Runtime.Components.Core;
 using Runtime.Components.Test;
-using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
 using Runtime.Objects;
 using Runtime.Scenes;
@@ -24,7 +23,7 @@ namespace FeatureTestProject
                     .Build()
             );
             Camera cam = new Camera();
-            GuiWindow.Enable(new GUIPerformanceWindow());
+            //  GuiWindow.Enable(new GUIPerformanceWindow());
             Runtime.Scenes.Scene.main.Instantiate(
                 new GameObjectFactory().AddComponent<Transform>().AddComponent(cam).AddComponent<FlightCamera>().Build());
             cam.SetAsMain();

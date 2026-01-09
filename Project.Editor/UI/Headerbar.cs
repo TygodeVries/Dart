@@ -2,6 +2,7 @@
 using Project.Editor.UI.Assets;
 using Project.Editor.UI.FileSystem;
 using Project.Editor.UI.Inspectors;
+using Project.Editor.UI.ProjectSetting;
 using Runtime.DearImGUI.Gui;
 
 namespace Project.Editor.UI
@@ -46,6 +47,16 @@ namespace Project.Editor.UI
                 if (ImGui.MenuItem("Asset Browser"))
                 {
                     GuiWindow.Enable(new AssetBrowser());
+                }
+
+                ImGui.EndMenu();
+            }
+
+            if (ImGui.BeginMenu("Edit"))
+            {
+                if (ImGui.MenuItem("Project Settings"))
+                {
+                    GuiWindow.Enable(new ProjectSettingsWindow());
                 }
 
                 ImGui.EndMenu();

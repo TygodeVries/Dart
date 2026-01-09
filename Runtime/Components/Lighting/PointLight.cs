@@ -24,6 +24,11 @@ namespace Runtime.Components.Lighting
                 Debug.Warning("PointLight used without DefaultLightManager");
         }
 
+        public override string? GetGizmosPath()
+        {
+            return "assets/textures/gizmos/PointLight.png";
+        }
+
         public override void Unload()
         {
             LightManager defaultLightManager = Scene.main.GetLightManager();
