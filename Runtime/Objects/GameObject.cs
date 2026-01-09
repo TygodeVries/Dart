@@ -48,6 +48,10 @@ namespace Runtime.Objects
             RemoveComponent(typeof(T));
         }
 
+        /// <summary>
+        /// Removes the component at the start of the next frame.
+        /// </summary>
+        /// <param name="type"></param>
         public void RemoveComponent(Type type)
         {
             MainThread.Run(() =>

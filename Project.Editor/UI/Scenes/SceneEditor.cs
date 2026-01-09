@@ -119,7 +119,7 @@ namespace Project.Editor.UI.Scenes
         public static void MakeEditorReady(GameObject g)
         {
             AddVisibility(g);
-            AddCollision(g, new Vector3(1, 1, 1));
+            AddCollision(g);
             AddInteraction(g);
         }
 
@@ -162,11 +162,6 @@ namespace Project.Editor.UI.Scenes
             g.AddComponent(new MeshRenderer(material, mesh));
             //g.AddComponent(new Billboard());
 
-            AddCollision(g, new Vector3(0.2f, 0.2f, 0.2f)); // Gizmos have a smaller size
-        }
-
-        public static void AddCollision(GameObject g, Vector3 size)
-        {
             if (g.GetComponent<ICollider>() != null)
             {
                 return;
@@ -174,7 +169,22 @@ namespace Project.Editor.UI.Scenes
 
             g.AddComponent(new AABBoxCollider()
             {
-                size = size
+                size = new Vector3(0.2f, 0.2f, 0.2f)
+            });
+        }
+
+        public static void AddCollision(GameObject g)
+        {
+            if (g.GetComponent<ICollider>() != null)
+            {
+                return;
+            }
+
+            MeshRenderer meshRenderer = g.GetComponent<MeshRenderer>();
+
+            g.AddComponent(new AABBoxCollider()
+            {
+                size = meshRenderer.mesh.CalculateBounds()
             });
         }
 
