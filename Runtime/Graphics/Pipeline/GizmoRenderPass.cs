@@ -82,6 +82,7 @@ void main()
         ShaderProgram gizmoRawShader;
         public override void Pass()
         {
+         GL.Disable(EnableCap.DepthTest);
             GL.BindVertexArray(vertexArrayObject);
             if (Camera.main != null)
             {

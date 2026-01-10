@@ -230,6 +230,72 @@ namespace Runtime.Graphics.Renderers
                 return null;
             }
         }
+		public static Mesh? FromFileObjTriangles(Asset asset)
+		{
+			string file = asset.GetSystemPath();
+			List<Vector3> positions = new List<Vector3>();
 
-    }
+			List<float> finalVertices = new List<float>();
+			List<uint> finalIndices = new List<uint>();
+
+			try
+			{
+				string[] lines = File.ReadAllLines(file);
+
+				foreach (string line in lines)
+				{
+					if (line.StartsWith("v "))
+					{
+						string[] parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+						float x = float.Parse(parts[1], CultureInfo.InvariantCulture);
+						float y = float.Parse(parts[2], CultureInfo.InvariantCulture);
+						float z = float.Parse(parts[3], CultureInfo.InvariantCulture);
+						positions.Add(new Vector3(x, y, z));
+					}
+					else if (line.StartsWith("f "))
+					{
+						string[] parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+						List<uint> faceIndices = new();
+
+						for (int i = 1; i < parts.Length; i++)
+						{
+							string[] tokens = parts[i].Split('/');
+
+							uint posIndex = uint.Parse(tokens[0]) - 1;
+
+							faceIndices.Add(posIndex);
+						}
+
+						for (int i = 1; i < faceIndices.Count - 1; i++)
+						{
+							finalIndices.Add(faceIndices[0]);
+							finalIndices.Add(faceIndices[i]);
+							finalIndices.Add(faceIndices[i + 1]);
+						}
+					}
+				}
+            foreach (Vector3 x in positions)
+            {
+               finalVertices.Add(x.x);
+               finalVertices.Add(x.y);
+               finalVertices.Add(x.z);
+            }
+
+				Mesh mesh = new Mesh(finalVertices.ToArray(), finalIndices.ToArray())
+				{
+					normals = null,
+					uvs = null
+				};
+
+				mesh.SetAsset(asset);
+				return mesh;
+			}
+			catch (Exception e)
+			{
+				Debug.Error(e.Message);
+				return null;
+			}
+		}
+
+	}
 }

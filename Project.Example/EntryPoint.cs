@@ -9,6 +9,8 @@ using Runtime.Scenes;
 using static System.MathF;
 
 using Runtime.Plugin.Terrain;
+using Runtime.Logging;
+using Runtime.Graphics.Renderers;
 
 namespace FeatureTestProject
 {
@@ -27,17 +29,29 @@ namespace FeatureTestProject
                 .AddComponent<Transform>()
                 .AddComponent<FlightCamera>()
                 .Build());
+         MeshRenderer renderer = new MeshRenderer();
+         Mesh mesh = Mesh.FromFileObj(new Runtime.Data.Asset(Runtime.Game.GetAssetDatabase(), "Assets\\Models\\insane.obj"));
+         renderer.SetMesh(mesh);
 
+         Scene.main.Instantiate(
+            new GameObjectFactory()
+            .AddComponent(renderer)
+            .Build());
 
-         QuadTerrain terrain = new QuadTerrain();
+         MeshNavigation? terrain = MeshNavigation.FromFile(
+            new Runtime.Data.Asset(
+               Runtime.Game.GetAssetDatabase(), "Assets\\Models\\insane.obj")); ;
+         if (null == terrain)
+         {
+            Debug.Error("Could not load terrain");
+            return;
+         }
          PathFinder finder = new PathFinder();
-         QuadTerrain.QuadTerrainPiece start = new QuadTerrain.QuadTerrainPiece();
-         QuadTerrain.QuadTerrainPiece end = new QuadTerrain.QuadTerrainPiece();
-         start.x = 0;
-         start.y = 0;
+         MeshNavigation.MeshNavigationPiece start = new MeshNavigation.MeshNavigationPiece();
+         MeshNavigation.MeshNavigationPiece end = new MeshNavigation.MeshNavigationPiece();
+         start.vertex_index = 1000;
 
-         end.x = 10;
-         end.y = 20;
+         end.vertex_index = 2000;
 
 		 window = new FireWindow(finder, terrain, start, end);
 		 GuiWindow.Enable(window);
