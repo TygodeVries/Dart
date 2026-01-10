@@ -75,6 +75,7 @@ namespace Runtime
             {
                 ClientSize = new Vector2i(width, height),
                 Title = gameSettings?.WindowTitle,
+
             };
 
             RenderCanvas window = new RenderCanvas(nativeWindowSettings);

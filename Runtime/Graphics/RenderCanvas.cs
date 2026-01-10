@@ -119,6 +119,19 @@ namespace Runtime.Graphics
             OnUpdate?.Invoke();
             Scene.main.Update();
         }
+
+        public void SetTargetFPS(double fps)
+        {
+            if (fps <= 0)
+            {
+                UpdateFrequency = 0;
+                return;
+            }
+
+            UpdateFrequency = fps;
+        }
+
+
         public Action OnUpdate;
 
         int i = 0;

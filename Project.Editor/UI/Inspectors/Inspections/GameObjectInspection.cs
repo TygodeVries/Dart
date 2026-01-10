@@ -32,7 +32,10 @@ namespace Project.Editor.UI.Inspectors.Inspections
                     {
                         Type componentType = component.GetType();
                         gameObject.RemoveComponent(componentType);
-                        Save();
+                        MainThread.Run(() =>
+                        {
+                            Save();
+                        });
                         return;
                     }
                     var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;

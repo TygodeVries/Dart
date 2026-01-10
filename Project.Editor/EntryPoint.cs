@@ -7,6 +7,7 @@ using Project.Editor.UI.Styles;
 using Runtime;
 using Runtime.Data;
 using Runtime.DearImGUI.Gui;
+using Runtime.Graphics;
 using Runtime.Logging;
 
 namespace Editor
@@ -46,7 +47,9 @@ namespace Editor
 
             Debug.Log("Overriding asset database to use open project instead.");
 
+            RenderCanvas.main.SetTargetFPS(60);
             Game.SetAssetDatabase(new AssetDatabase(EditorUtils.projectPath));
+            GameSettings? gameSettings = Files.Load<GameSettings>(Game.GetAssetDatabase().GetAsset("gamesettings.json").GetSystemPath()); ;
             Game.GetAssetDatabase().Start();
         }
     }
