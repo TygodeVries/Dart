@@ -198,8 +198,10 @@ namespace Runtime.Scenes
                         updatable.Update();
                 }
 
-                foreach (GameObject obj in gameObjects)
+
+                for (int i = 0; i < gameObjects.Count; i++)
                 {
+                    GameObject obj = gameObjects[i];
                     obj.Update();
                 }
             }

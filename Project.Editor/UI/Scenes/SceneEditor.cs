@@ -94,7 +94,16 @@ namespace Project.Editor.UI.Scenes
 
         public static void FinishedPlace()
         {
-            objectCursor = null;
+            if (objectCursor != null)
+            {
+                GameObject g = GameObject.LoadFromFile(objectCursor.GetAsset());
+                objectCursor = null;
+
+                MainThread.Run(() =>
+                {
+                    PlaceObject(g);
+                });
+            }
         }
 
         public static bool IsPlacing()

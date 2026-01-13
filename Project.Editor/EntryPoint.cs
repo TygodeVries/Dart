@@ -1,4 +1,5 @@
 ﻿using Project.Editor;
+using Project.Editor.Code;
 using Project.Editor.UI;
 using Project.Editor.UI.Assets;
 using Project.Editor.UI.FileSystem;
@@ -51,6 +52,8 @@ namespace Editor
             Game.SetAssetDatabase(new AssetDatabase(EditorUtils.projectPath));
             GameSettings? gameSettings = Files.Load<GameSettings>(Game.GetAssetDatabase().GetAsset("gamesettings.json").GetSystemPath()); ;
             Game.GetAssetDatabase().Start();
+
+            Compiler.Generate();
         }
     }
 }

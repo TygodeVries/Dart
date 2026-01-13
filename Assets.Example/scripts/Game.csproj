@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<Reference Include="Plugin.Windows.Audio">
+      <HintPath>../plugins/Plugin.Windows.Audio/WindowsNative.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+	<Reference Include="Plugin.DearImGui">
+      <HintPath>../plugins/Plugin.DearImGui/Plugin.DearImGui.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+	<Reference Include="Plugin.ParticleSystem">
+      <HintPath>../plugins/Plugin.ParticleSystem/Plugin.ParticleSystem.dll</HintPath>
+      <Private>false</Private>
+    </Reference>  </ItemGroup>
+</Project>
