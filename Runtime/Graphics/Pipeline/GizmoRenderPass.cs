@@ -133,5 +133,14 @@ void main()
             camLinesColors.Add(c.Value);
             camLinesColors.Add(d.Value);
         }
-    }
+      public void AddRawLine(Vector4 a, Vector4 b, Vector4? c = null, Vector4? d = null)
+      {
+			if (null == c) c = Vector4.One;
+			if (null == d) d = Vector4.One;
+			rawLines.Add(a);
+			rawLines.Add(b);
+			rawLinesColors.Add(c.Value);
+			rawLinesColors.Add(d.Value);
+		}
+	}
 }

@@ -53,25 +53,27 @@ namespace Project.Example.Windows
 			if (ImGui.Button("Init"))
 			{
 				steps_taken = 0;
-				pathfinder.Init(terrain, start, end);
+				pathfinder.Init(start, end);
 			}
 			if (ImGui.Button("Step") || step)
 			{
 				if (reset||steps_taken > 3000)
 				{
-					MeshNavigation.MeshNavigationPiece s = start as MeshNavigation.MeshNavigationPiece;
-					MeshNavigation.MeshNavigationPiece e = end as MeshNavigation.MeshNavigationPiece;
-					s!.vertex_index = (int)(r.NextInt64() % 504482);
-					e!.vertex_index = (int)(r.NextInt64() % 504482);
-					pathfinder.Init(terrain, s!, e!);
-					reset = false;
-					steps_taken = 0;
+					if (start is GraphNavigation.GraphNavigationPiece s)
+						if (end is GraphNavigation.GraphNavigationPiece e)
+						{
+							s.vertex_index = (int)(r.NextInt64() % 504482);
+							e.vertex_index = (int)(r.NextInt64() % 504482);
+							pathfinder.Init(s, e);
+							reset = false;
+							steps_taken = 0;
+						}
 				}
 
 				for (int steps = 0; steps < 10; steps++)
 				{
 					steps_taken++;
-					if (!pathfinder.Step(terrain, end))
+					if (pathfinder.Step(end) == PathFinder.NavigationStatus.Done)
 					{
 						Runtime.Logging.Debug.Log("Arrived!");
 						// 504482
