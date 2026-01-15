@@ -73,8 +73,9 @@ namespace Runtime
             Log($"Setting window title to {gameSettings!.WindowTitle}");
             var nativeWindowSettings = new NativeWindowSettings()
             {
-                ClientSize = new Vector2i(width, height),
-                Title = gameSettings?.WindowTitle,
+               ClientSize = new Vector2i(width, height),
+               Title = gameSettings?.WindowTitle,
+               StartVisible = false
             };
 
             Log($"Creating empty scene...");
@@ -101,6 +102,7 @@ namespace Runtime
             }
 
             onReady?.Invoke();
+            window.IsVisible = true;
             Log($"Opening window...");
             window.Run(); // Keeps the thread blocked until closed.
             Log($"Cleaning up...");
