@@ -1,54 +1,46 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using Runtime.Calc;
-using Runtime.Component.Core;
+using Runtime.Components.Core;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
 using Runtime.Logging;
-using Runtime.Scenes;
 using Runtime.Objects;
-using Runtime.Component.Test;
-using OpenTK.Graphics.Vulkan.VulkanVideoCodecH264stdEncode;
-using Runtime.Component.Lighting;
-using System.Reflection;
-using Runtime.Plugins;
-using System.Text;
+using Runtime.Scenes;
 
 namespace Runtime.Graphics.Pipeline
 {
-	public class DefaultGraphicsPipeline : IGraphicsPipeline
-	{
-		GLDebugProc? GLDebugProc;
-		public void Initialize()
-		{
-			Debug.Log("Initializing...");
+    public class DefaultGraphicsPipeline : IGraphicsPipeline
+    {
+        GLDebugProc? GLDebugProc;
+        public void Initialize()
+        {
+            Debug.Log("Initializing...");
 
-			GLDebugProc += (DebugSource source, DebugType type, uint id, 
-				DebugSeverity severity, int length, nint message, nint ud) =>
-			{
-				unsafe
-				{
-					string str = new string((sbyte*)message);
-					switch (severity)
-					{
-						case DebugSeverity.DebugSeverityNotification:
-							break;
-						case DebugSeverity.DebugSeverityLow:
-							break;
-						case DebugSeverity.DebugSeverityMedium:
-							break;
-						case DebugSeverity.DebugSeverityHigh:
-							Debug.Log($"OpenGL:" + str);
-							break;
-					}
-				}
-			};
-			GL.DebugMessageCallback(GLDebugProc, 0);
+            GLDebugProc += (DebugSource source, DebugType type, uint id,
+                DebugSeverity severity, int length, nint message, nint ud) =>
+            {
+                unsafe
+                {
+                    string str = new string((sbyte*)message);
+                    switch (severity)
+                    {
+                        case DebugSeverity.DebugSeverityNotification:
+                            break;
+                        default:
+                            Debug.Log($"OpenGL:" + str);
+                            break;
+                    }
+                }
+            };
+            GL.DebugMessageCallback(GLDebugProc, 0);
 
-			GL.ClearColor(0, 0, 0, 0);
+            AddRenderPass(GizmoRenderPass.GetInstance());
+
+            GL.ClearColor(0, 0, 0, 0);
 
             EnableCap[] caps = new EnableCap[]
             {
-                     EnableCap.Multisample
+                 EnableCap.Multisample
             };
             Debug.Log("Turning on OpenGL features...");
             string features = "";
@@ -73,6 +65,12 @@ namespace Runtime.Graphics.Pipeline
             Debug.Log("Added renderer: " + renderers.Count);
         }
 
+        public void RemoveRenderer(Renderer renderer)
+        {
+            renderers.Remove(renderer);
+
+        }
+
         public int GetRendererCount()
         {
             return renderers.Count;
@@ -89,10 +87,23 @@ namespace Runtime.Graphics.Pipeline
             customRenderPasses.Add(renderPass);
         }
 
-        public void ClearRenderers()
+        public void ClearRenderersOfScene(Scene scene)
         {
-            renderers.Clear();
+            for (int i = renderers.Count - 1; i >= 0; i--)
+            {
+                Renderer renderer = renderers[i];
+
+                foreach (GameObject gameObject in scene.GetGameObjects())
+                {
+                    if (gameObject.HasComponent(renderer))
+                    {
+                        renderers.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
         }
+
         public void Render()
         {
             Scene.main.GetLightManager().UploadAll();
@@ -110,7 +121,7 @@ namespace Runtime.Graphics.Pipeline
             }
             else
             {
-                GL.ClearColor(0.5f, 0, 0, 1);
+                GL.ClearColor(1f, 0, 0, 1);
             }
 
             foreach (Renderer renderer in renderers)

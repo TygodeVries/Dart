@@ -9,7 +9,7 @@ namespace Project.Editor.UI.Inspectors.Inspections
         Mesh? mesh;
         public override void Loaded()
         {
-            mesh = Mesh.FromFileObj(GetActiveFilePath())!;
+            mesh = Mesh.FromFileObj(GetAsset())!;
         }
 
         public override void Render()

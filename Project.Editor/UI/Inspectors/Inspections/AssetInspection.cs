@@ -1,11 +1,12 @@
 ﻿using Project.Editor.Data;
+using Runtime.Data;
 using Runtime.Logging;
 
 namespace Project.Editor.UI.Inspectors.Inspections
 {
     public abstract class AssetInspection : Inspection
     {
-        string? filepath;
+        Asset asset;
         MetaData? metaData;
 
 
@@ -13,10 +14,15 @@ namespace Project.Editor.UI.Inspectors.Inspections
         /// Set the file that is being inspected, called automatically in most cases.
         /// </summary>
         /// <param name="assetPath"></param>
-        public void SetFilePath(string assetPath)
+        public void SetAsset(Asset asset)
         {
-            filepath = assetPath;
-            this.metaData = MetaData.Get(assetPath);
+            if (asset == null)
+            {
+                Debug.Error("Trying to set an asset inspection to inspect null!");
+                return;
+            }
+            this.asset = asset;
+            this.metaData = MetaData.GetAssetMeta(asset);
             Loaded();
         }
 
@@ -29,13 +35,13 @@ namespace Project.Editor.UI.Inspectors.Inspections
         /// Returns the active file path
         /// </summary>
         /// <returns></returns>
-        public string GetActiveFilePath()
+        public Asset GetAsset()
         {
-            if (filepath == null)
+            if (asset == null)
             {
                 Debug.Error("Attempting to retrieve active file path from a file inspection, that is not linked to a file!");
             }
-            return filepath!;
+            return asset!;
         }
 
         public MetaData GetActiveMetaData()

@@ -3,12 +3,21 @@ using OpenTK.Graphics.OpenGL;
 using Runtime.Calc;
 using Runtime.Data;
 using Runtime.Graphics.Shaders;
+using Runtime.Logging;
 using Runtime.Scenes;
 
 namespace Runtime.Graphics.Materials
 {
-    public class Material : IDisposable
+    [AssetReference(new string[] { ".material" }, nameof(LoadFromJson))]
+    public class Material : AssetReference
     {
+
+        public static Material CreateFallback()
+        {
+            ShaderProgram shaderProgram = new ShaderProgram("#version 330 core\r\n\r\nlayout(location = 0) in vec3 aPosition;\r\nlayout(location = 1) in vec3 normal;\r\nlayout(location = 2) in vec2 uv;\r\nlayout(location = 3) in vec4 tangent;\r\n\r\nuniform vec3 light_direction;\r\n\r\nuniform mat4 u_Model;\r\nuniform mat4 u_View;\r\nuniform mat4 u_Projection;\r\n\r\nout vec3 Pos;\r\nout vec3 Normal;\r\nout vec2 Uv;\r\nout vec4 Tangent;\r\nout vec3 light_direction_local;\r\n\r\nvoid main()\r\n{\r\n    vec3 temp = aPosition;\r\n    gl_Position = u_Projection * u_View * u_Model * vec4(temp, 1.0);\r\n\r\n    Pos = vec3(u_Model * vec4(aPosition, 1.0));\r\n    Normal = normal;\r\n    Uv = uv;\r\n    Tangent = tangent;\r\n    light_direction_local = normalize(mat3(inverse(u_Model)) * light_direction);\r\n}", "#version 330 core\r\n\r\nin vec3 Pos;\r\nin vec3 Normal;\r\nin vec2 Uv;\r\nin vec4 Tangent;\r\n\r\nout vec4 FragColor;\r\n\r\nvoid main()\r\n{\r\n   FragColor = vec4(1.0, 0, 1.0, 1.0);\r\n}");
+            Material material = new Material(shaderProgram);
+            return material;
+        }
 
         ShaderProgram shader;
         public Material(ShaderProgram shader)
@@ -18,10 +27,13 @@ namespace Runtime.Graphics.Materials
 
         public bool matrixEnabled = true;
 
-        public static Material LoadFromFile(string filePath)
+        public static Material LoadFromJson(Asset asset)
         {
-            MaterialSettings settings = MaterialSettings.LoadFromFile(filePath);
-            return settings.GetMaterial();
+            MaterialData settings = MaterialData.FromJson(asset);
+            Material material = settings.CreateMaterial(asset.GetDatabase());
+            material.SetAsset(asset);
+
+            return material;
         }
 
         /// <summary>
@@ -217,6 +229,7 @@ namespace Runtime.Graphics.Materials
         }
         public void SetTexture(string field, Texture texture, int id)
         {
+            Debug.Log($"Set texture field {field} to " + texture?.GetAsset().GetSystemPath());
             if (materialFields.ContainsKey(field))
             {
                 if (materialFields[field] is TextureMaterialField)
@@ -321,13 +334,12 @@ namespace Runtime.Graphics.Materials
             this.texture = texture;
         }
 
-        public static Texture fallback;
-
         public override void Upload(ShaderProgram shader)
         {
             if (texture == null)
             {
-                texture = fallback;
+                Debug.Error("Texture is null!");
+                return;
             }
             texture.Use((TextureUnit)(((Int64)TextureUnit.Texture0) + id));
             shader.SetTextureId(field, id);

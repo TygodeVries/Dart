@@ -13,6 +13,20 @@ namespace Runtime.Calc
         public static Vector3 UnitY => new Vector3(0, 1, 0);
         public static Vector3 Up => new Vector3(0, 1, 0);
 
+        public static Vector3 Project(Vector3 vector, Vector3 normal)
+        {
+            // Source https://discussions.unity.com/t/project-a-vector-onto-a-plane/202143
+            float sqrMag = Dot(normal, normal);
+            if (sqrMag < 0.000001f)
+                return Zero;
+            else
+            {
+                var dot = Dot(vector, normal);
+                return new Vector3(normal.x * dot / sqrMag,
+                    normal.y * dot / sqrMag,
+                    normal.z * dot / sqrMag);
+            }
+        }
         public static float Distance(Vector3 a, Vector3 b)
         {
             float dx = a.x - b.x;
@@ -22,6 +36,14 @@ namespace Runtime.Calc
             return MathF.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
         }
 
+        public static Vector3 Lerp(Vector3 a, Vector3 b, float t)
+        {
+            return new Vector3(
+                a.x + ((b.x - a.x) * t),
+                a.y + ((b.y - a.y) * t),
+                a.z + ((b.z - a.z) * t)
+            );
+        }
 
         public Vector3(float x, float y, float z)
         {

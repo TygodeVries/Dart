@@ -1,0 +1,1 @@
+﻿global using Component = Runtime.Objects.Component;

@@ -62,7 +62,7 @@ namespace Runtime
 
             if (null == gameSettings)
             {
-                Log("GameSettings.json not loaded");
+                Error("GameSettings.json not loaded");
                 return;
             }
 
@@ -78,28 +78,47 @@ namespace Runtime
                StartVisible = false
             };
 
-            Log($"Creating empty scene...");
-            Scene.Load(new Scene());
+            };
 
             RenderCanvas window = new RenderCanvas(nativeWindowSettings);
 
+            Log("Loading Plugins...");
             foreach (string plugin in gameSettings!.Plugins)
             {
+                Log($"Loading {plugin}...");
                 AssemblyLoader.LoadPlugin(plugin);
+                Log($"Plugin loaded!");
             }
+
             IGraphicsPipeline graphicsPipeline = new DefaultGraphicsPipeline();
             Log($"Using graphicsPipeline: {graphicsPipeline}.");
             window.SetGraphicsPipeline(graphicsPipeline);
 
-            if (File.Exists(gameSettings!.CodePath))
+            if (gameSettings!.CodePath == null)
             {
-                Log($"Loading user code from {gameSettings.CodePath}");
-                AssemblyLoader.LoadAndRun(gameSettings.CodePath);
+                Error("No user code was defined in game settings, we will not load any of your code!");
             }
             else
             {
-                Error($"Could not load user code from path {gameSettings!.CodePath}. File not found!");
+                if (File.Exists(gameSettings!.CodePath))
+                {
+                    Log($"Loading user code from {gameSettings.CodePath}");
+                    AssemblyLoader.LoadAndRun(gameSettings.CodePath);
+                }
+                else
+                {
+                    Error($"Could not load user code from path {gameSettings!.CodePath}. File not found!");
+                }
             }
+
+            Log("Loading start scene...");
+            if (gameSettings!.StartScene == null)
+            {
+                Warning("No start scene was set, we will be loading an empty scene for you!");
+                Scene.Load(new Scene());
+            }
+            else
+                Scene.LoadDefault();
 
             onReady?.Invoke();
             window.IsVisible = true;

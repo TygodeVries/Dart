@@ -1,8 +1,6 @@
-﻿using Project.Example.Windows;
-using Runtime.Calc;
-using Runtime.Component.Core;
-using Runtime.Component.Test;
-using Runtime.DearImGUI.Gui;
+﻿using Runtime.Calc;
+using Runtime.Components.Core;
+using Runtime.Components.Test;
 using Runtime.Graphics;
 using Runtime.Objects;
 using Runtime.Scenes;
@@ -19,28 +17,20 @@ namespace FeatureTestProject
         }
         public static void Main()
         {
-
-            GameObject emitter;
-
-            Runtime.Scenes.Scene.main.AddManager(new ParticleSystemManager());
-
-            Runtime.Scenes.Scene.main.Instantiate(emitter =
+            Runtime.Scenes.Scene.main.Instantiate(
                 new GameObjectFactory()
-                    .AddComponent<ParticleEmitter>()
                     .AddComponent<ParticleTest>()
-                    .AddComponent<TestCameraControls>()
-                    .AddComponent<Transform>()
                     .Build()
             );
-
-            GuiWindow.Enable(new AudioTestWindow());
-            GuiWindow.Enable(new GUIPerformanceWindow());
-            GuiWindow.Enable(new FireWindow(emitter));
+            Camera cam = new Camera();
+            //  GuiWindow.Enable(new GUIPerformanceWindow());
             Runtime.Scenes.Scene.main.Instantiate(
-                new GameObjectFactory().AddComponent<Camera>().Build());
+                new GameObjectFactory().AddComponent<Transform>().AddComponent(cam).AddComponent<FlightCamera>().Build());
+            cam.SetAsMain();
+
         }
     }
-    class ParticleTest : IComponent
+    class ParticleTest : Component
     {
         class MyParticleType : ParticleType
         {
@@ -66,50 +56,14 @@ namespace FeatureTestProject
             }
         };
         MyParticleType? pt;
-        public override void OnLoad()
+        public override void Load()
         {
             pt = new MyParticleType();
             Scene.main.GetManager<ParticleSystemManager>()?.UpdateParticleType(pt);
-            Transform? tr = GetComponent<Transform>();
-            tr.position.z = -10;
         }
-        int num = 0;
-        double t = 1;
 
         public override void Update()
         {
-            t -= Runtime.Calc.Time.deltaTime;
-            if (t < 0)
-            {
-                num += 1;
-                t = 1;
-            }
-            if (num > 0)
-            {
-                float t = ((float)num / 100) - 0.5f;
-                Transform? tr = GetComponent<Transform>();
-                if (null != tr)
-                {
-                    Vector3 v = new Vector3(0, 0, 1.25f);
-
-
-                    Matrix4 m = tr.GetMatrix();
-                    Vector4 otk_v = new Vector4(v.x, v.y, v.z, 0);
-                    Vector4 otk_vv = m * otk_v;
-
-                    v = otk_vv.Xyz;
-                    GetComponent<ParticleEmitter>()?.AddParticle(
-                        tr.position,
-                        v,
-                        pt!
-                        );
-                }
-                num--;
-            }
-        }
-        public void Fire()
-        {
-            num = 100;
         }
     }
 }

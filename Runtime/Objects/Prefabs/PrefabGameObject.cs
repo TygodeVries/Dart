@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using Runtime.Data;
+using Runtime.Logging;
+using System.Text.Json;
 
 namespace Runtime.Objects.Prefabs
 {
@@ -8,10 +10,17 @@ namespace Runtime.Objects.Prefabs
 
         public GameObjectFactory GetGameObjectAsFactory()
         {
-            GameObjectFactory factory = new GameObjectFactory();
-            foreach (PrefabComponent component in components)
+            GameObjectFactory factory = new GameObjectFactory(asset);
+            foreach (PrefabComponent componentPrefab in components)
             {
-                factory.AddComponent(component.GetComponent());
+                Component? component = componentPrefab.GetComponent();
+                if (component == null)
+                {
+                    Debug.Error("Failed to create game object prefab");
+                    continue;
+                }
+
+                factory.AddComponent(component!);
             }
             return factory;
         }
@@ -21,9 +30,32 @@ namespace Runtime.Objects.Prefabs
             return GetGameObjectAsFactory().Build();
         }
 
-        public static PrefabGameObject FromJson(string json)
+        public static PrefabGameObject? FromFile(Asset asset)
         {
-            return JsonSerializer.Deserialize<PrefabGameObject>(json);
+            if (asset == null)
+                throw new NullReferenceException();
+            PrefabGameObject prefab = FromJson(File.ReadAllText(asset.GetSystemPath()));
+            if (prefab == null)
+                return null;
+
+            prefab.asset = asset;
+            return prefab;
+        }
+
+        public Asset? asset = null;
+
+        private static PrefabGameObject? FromJson(string json)
+        {
+            try
+            {
+                return JsonSerializer.Deserialize<PrefabGameObject>(json);
+            }
+            catch (Exception ex)
+            {
+                Debug.Error($"Failed to load prefab from json: {ex}");
+            }
+
+            return null;
         }
 
         public string ToJson(bool pretty = false)
@@ -36,10 +68,10 @@ namespace Runtime.Objects.Prefabs
 
         public static PrefabGameObject FromGameObject(GameObject gameObject)
         {
-            List<IComponent> components = gameObject.GetComponents();
+            List<Component> components = gameObject.GetComponents();
             PrefabGameObject prefab = new PrefabGameObject();
             prefab.components = new List<PrefabComponent>();
-            foreach (IComponent component in components)
+            foreach (Component component in components)
             {
                 prefab.components.Add(PrefabComponent.FromComponent(component));
             }

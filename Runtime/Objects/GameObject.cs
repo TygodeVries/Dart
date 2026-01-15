@@ -1,48 +1,83 @@
-﻿using Runtime.Logging;
+﻿using Runtime.Calc;
+using Runtime.Data;
+using Runtime.Logging;
+using Runtime.Objects.Prefabs;
 
 namespace Runtime.Objects
 {
-    public class GameObject
+    [AssetReference(new string[] { ".prefab" }, nameof(LoadFromFile))]
+    public class GameObject : AssetReference
     {
-        private Dictionary<Type, IComponent> componentMap = new();
-        private List<IComponent> components = new();
 
+        public bool HasComponent(Component component)
+        {
+            foreach (Component c in components)
+            {
+                if (c == component)
+                    return true;
+            }
+
+            return false;
+        }
+        public static GameObject? LoadFromFile(Asset asset)
+        {
+            GameObject? gameObject = PrefabGameObject.FromFile(asset)?.GetGameObject();
+            return gameObject;
+        }
+
+        private Dictionary<Type, Component> componentMap = new();
+        private List<Component> components = new();
+
+
+        /// <summary>
+        /// Calls unload for all the components, does not remove object from scene.
+        /// Use Scene.Destroy() instead.
+        /// </summary>
         public void Unload()
         {
             foreach (var component in components)
             {
                 component.Unload();
             }
+
+            hasBeenLoaded = false;
         }
 
         public void RemoveComponent<T>()
         {
-            componentMap.Remove(typeof(T));
-
-            components.RemoveAll((c) =>
-            {
-                return c.GetType() == typeof(T);
-            });
+            RemoveComponent(typeof(T));
         }
 
+        /// <summary>
+        /// Removes the component at the start of the next frame.
+        /// </summary>
+        /// <param name="type"></param>
         public void RemoveComponent(Type type)
         {
-            componentMap.Remove(type);
-
-            components.RemoveAll((c) =>
+            MainThread.Run(() =>
             {
-                return c.GetType() == type;
+                components.RemoveAll(c =>
+                {
+                    if (type.IsAssignableFrom(c.GetType()))
+                    {
+                        c.Unload();
+                        return true;
+                    }
+                    return false;
+                });
+
+                componentMap.Remove(type);
+                Debug.Log($"Removed Component {type.Name}");
             });
-
-            Debug.Log("Removed Component!");
         }
 
-        public List<IComponent> GetComponents()
+
+        public List<Component> GetComponents()
         {
-            return new List<IComponent>(components);
+            return new List<Component>(components);
         }
 
-        public T? GetComponent<T>() where T : IComponent
+        public T? GetComponent<T>() where T : Component
         {
             if (null == this)
                 return null;
@@ -64,7 +99,7 @@ namespace Runtime.Objects
             return null;
         }
 
-        public void AddComponent(IComponent component)
+        public void AddComponent(Component component)
         {
             var type = component.GetType();
             if (componentMap.ContainsKey(type))
@@ -75,24 +110,37 @@ namespace Runtime.Objects
             components.Add(component);
             componentMap[type] = component;
             component.gameObject = this;
+
+            if (hasBeenLoaded)
+                component.Load();
         }
 
+        public bool IsActive()
+        {
+            return hasBeenLoaded;
+        }
+        bool hasBeenLoaded = false;
         public void OnLoad()
         {
-            foreach (IComponent component in components)
+            hasBeenLoaded = true;
+            foreach (Component component in components)
             {
-                component.OnLoad();
+                component.Load();
             }
         }
 
-        public bool EnableUpdates = true;
+        public bool enableUpdates = true;
         public void Update()
         {
-            if (!EnableUpdates)
-                return;
 
-            foreach (IComponent component in components)
+
+            foreach (Component component in components)
             {
+                if (!enableUpdates && !component.AlwaysUpdate)
+                {
+                    continue;
+                }
+
                 try
                 {
                     component.Update();

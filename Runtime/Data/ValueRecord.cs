@@ -28,6 +28,7 @@ namespace Runtime.Data
             if (value == null)
             {
                 Debug.Error($"You can not create a record for value of null on record {name}!");
+                return;
             }
             var v = ValueRecordTypeFromType(value!.GetType());
 
@@ -42,8 +43,11 @@ namespace Runtime.Data
             SetValue(value);
         }
 
-        public object GetValue()
+        public object? GetValue()
         {
+            if (Type == ValueRecordType.Null)
+                return null;
+
             switch (Type)
             {
                 case ValueRecordType.String:
@@ -99,7 +103,7 @@ namespace Runtime.Data
                     }
 
                     // Get the created thing.
-                    return method.Invoke(null, new object[] { Value });
+                    return method.Invoke(null, new object[] { Game.GetAssetDatabase().GetAsset(Value) });
                 }
             }
 
@@ -110,6 +114,12 @@ namespace Runtime.Data
 
         public void SetValue(object value)
         {
+            if (value == null)
+            {
+                Type = ValueRecordType.Null;
+                return;
+            }
+
             switch (value)
             {
                 case string s:
@@ -153,13 +163,24 @@ namespace Runtime.Data
 
             if (typeof(AssetReference).IsAssignableFrom(value.GetType()))
             {
-                Type = ValueRecordType.Asset;
-                Value = ((AssetReference)value).GetFilePath();
+                Asset? asset = ((AssetReference)value).GetAsset();
+                if (asset != null)
+                {
+                    Type = ValueRecordType.Asset;
+                    Value = asset.GetPath();
+                }
+                else
+                {
+                    Type = ValueRecordType.Null;
+                }
             }
         }
 
         public static ValueRecordType? ValueRecordTypeFromType(Type type)
         {
+            if (type == null)
+                return ValueRecordType.Null;
+
             if (type == typeof(bool))
                 return ValueRecordType.Bool;
 
@@ -195,7 +216,8 @@ namespace Runtime.Data
             Vector2,
             Vector3,
             Vector4,
-            Asset
+            Asset,
+            Null
         }
     }
 }

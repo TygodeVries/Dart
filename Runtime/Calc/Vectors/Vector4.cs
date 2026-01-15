@@ -9,7 +9,7 @@ namespace Runtime.Calc
         public float z;
         public float w;
 
-        public static Vector4 One => new Vector4(1, 1, 1, 1);
+        public static Vector4 One = new Vector4(1, 1, 1, 1);
         public static Vector4 Zero => new Vector4(0, 0, 0, 0);
 
         public Vector4(float x, float y, float z, float w)
@@ -17,6 +17,14 @@ namespace Runtime.Calc
             this.x = x;
             this.y = y;
             this.z = z;
+            this.w = w;
+        }
+
+        public Vector4(Vector3 a, float w)
+        {
+            this.x = a.x;
+            this.y = a.y;
+            this.z = a.z;
             this.w = w;
         }
 

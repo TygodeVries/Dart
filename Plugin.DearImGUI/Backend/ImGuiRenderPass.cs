@@ -53,12 +53,19 @@ namespace Runtime.DearImGUI.Backend
 
         private void Main_FramebufferResize(OpenTK.Windowing.Common.FramebufferResizeEventArgs obj)
         {
-            io = ImGui.GetIO();
-            io.DisplaySize = new Vector2(RenderCanvas.main.FramebufferSize.X, RenderCanvas.main.FramebufferSize.Y).ToNumerics();
+            var io = ImGui.GetIO();
+
+            var windowSize = RenderCanvas.main.Size;
+            var framebufferSize = RenderCanvas.main.FramebufferSize;
+
+            io.DisplaySize = new Vector2(
+                windowSize.X,
+                windowSize.Y
+            ).ToNumerics();
 
             io.DisplayFramebufferScale = new Vector2(
-                (float)RenderCanvas.main.FramebufferSize.X / RenderCanvas.main.Size.X,
-                (float)RenderCanvas.main.FramebufferSize.Y / RenderCanvas.main.Size.Y
+                (float)framebufferSize.X / windowSize.X,
+                (float)framebufferSize.Y / windowSize.Y
             ).ToNumerics();
         }
 
@@ -216,13 +223,24 @@ namespace Runtime.DearImGUI.Backend
         void InputData()
         {
             // Mouse Position
-            Vector2 mousePos = Mouse.current.position;
-            io.MousePos = Mouse.current.position.ToNumerics();
+            Vector2 mouse = Mouse.current.position;
+            var windowSize = RenderCanvas.main.Size;
+            var framebufferSize = RenderCanvas.main.FramebufferSize;
+
+            float scaleX = (float)windowSize.X / framebufferSize.X;
+            float scaleY = (float)windowSize.Y / framebufferSize.Y;
+
+            io.MousePos = new Vector2(
+                mouse.x * scaleX,
+                mouse.y * scaleY
+            ).ToNumerics();
             io.AddMouseWheelEvent(Mouse.current.scroll.x, Mouse.current.scroll.y);
 
             io.MouseDown[0] = Mouse.current.leftPressed;
             io.MouseDown[1] = Mouse.current.rightPressed;
             io.MouseDown[2] = Mouse.current.middlePressed;
+
+            io.DeltaTime = (float)Time.deltaTime;
 
             foreach (var v in keyMap)
             {

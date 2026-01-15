@@ -1,9 +1,11 @@
 ﻿using ImGuiNET;
+using Project.Editor.UI.Generic;
 using Runtime;
 using Runtime.Calc;
+using Runtime.Data;
+using Runtime.DearImGUI.Gui;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Shaders;
-using Runtime.Logging;
 using System.Globalization;
 
 namespace Project.Editor.UI.Inspectors.Inspections
@@ -14,7 +16,7 @@ namespace Project.Editor.UI.Inspectors.Inspections
 
         public override void Open()
         {
-            materialData = MaterialData.FromJson(GetActiveFilePath());
+            materialData = MaterialData.FromJson(GetAsset());
         }
 
         public override void Render()
@@ -25,71 +27,46 @@ namespace Project.Editor.UI.Inspectors.Inspections
                 return;
             }
 
-            string[] vertexShaders = Game.GetAssetDatabase().GetAllAssetsOfType(".vert").ToArray();
-            string[] fragmentShaders = Game.GetAssetDatabase().GetAllAssetsOfType(".frag").ToArray();
+            Asset[] vertexShaders = Game.GetAssetDatabase().GetAllAssetsOfType(".vert").ToArray();
+            Asset[] fragmentShaders = Game.GetAssetDatabase().GetAllAssetsOfType(".frag").ToArray();
 
             // Vertex shader selector
+
+            /*
             RenderShaderSelector("Vertex Shader", vertexShaders, true);
 
             // Fragment shader selector
             RenderShaderSelector("Fragment Shader", fragmentShaders, false);
+            */
+
+            if (ImGui.Button($"{materialData.FragmentShader}"))
+            {
+                AssetSelectorWindow assetSelectorWindow = new AssetSelectorWindow(".frag", Game.GetAssetDatabase());
+                assetSelectorWindow.OnSelect += (AssetSelectionResult result) =>
+                {
+                    materialData.FragmentShader = result.asset.GetPath();
+                    materialData.Save();
+                };
+                GuiWindow.Enable(assetSelectorWindow);
+            }
+
+            if (ImGui.Button($"{materialData.VertexShader}"))
+            {
+                AssetSelectorWindow assetSelectorWindow = new AssetSelectorWindow(".vert", Game.GetAssetDatabase());
+                assetSelectorWindow.OnSelect += (AssetSelectionResult result) =>
+                {
+                    materialData.VertexShader = result.asset.GetPath();
+                    materialData.Save();
+                };
+
+                GuiWindow.Enable(assetSelectorWindow);
+            }
 
             if (string.IsNullOrEmpty(materialData.VertexShader) ||
                 string.IsNullOrEmpty(materialData.FragmentShader))
                 return;
 
             ImGUIDrawUniformOptions(materialData.VertexShader, materialData.FragmentShader, materialData);
-        }
-
-        private void RenderShaderSelector(string title, string[] shaders, bool writeToVertex)
-        {
-            if (shaders.Length == 0)
-            {
-                ImGui.Text("You have no shaders here.");
-                return;
-            }
-
-            string shaderPath = writeToVertex
-                ? materialData!.VertexShader
-                : materialData!.FragmentShader;
-
-            int currentShaderIndex = Array.IndexOf(shaders, shaderPath);
-            if (currentShaderIndex < 0)
-            {
-                Debug.Error("Could not find the shader in a list of shaders!");
-                currentShaderIndex = 0; // Go to default
-            }
-
-            string currentShader = shaders[currentShaderIndex];
-
-            if (ImGui.BeginCombo(title, currentShader))
-            {
-                for (int i = 0; i < shaders.Length; i++)
-                {
-                    bool isSelectedShader = i == currentShaderIndex;
-
-                    string selectedShader = shaders[i];
-
-                    if (ImGui.Selectable(selectedShader, isSelectedShader))
-                    {
-                        // When a shader is switched
-
-                        if (writeToVertex)
-                            materialData!.VertexShader = selectedShader;
-                        else
-                            materialData!.FragmentShader = selectedShader;
-
-                        materialData.DataFields.Clear();
-
-                        materialData!.Save();
-                    }
-
-                    if (isSelectedShader)
-                        ImGui.SetItemDefaultFocus();
-                }
-
-                ImGui.EndCombo();
-            }
         }
 
         /// <summary>
@@ -100,7 +77,7 @@ namespace Project.Editor.UI.Inspectors.Inspections
         /// <param name="materialData"></param>
         private void ImGUIDrawUniformOptions(string vertexShader, string fragmentShader, MaterialData materialData)
         {
-            ShaderProgram shaderProgram = ShaderProgram.FromFile(Editor.projectPath + "/" + vertexShader, Editor.projectPath + "/" + fragmentShader);
+            ShaderProgram shaderProgram = ShaderProgram.FromFile(Game.GetAssetDatabase().GetAsset(vertexShader), Game.GetAssetDatabase().GetAsset(fragmentShader));
 
             bool shouldSave = false;
 
@@ -160,41 +137,16 @@ namespace Project.Editor.UI.Inspectors.Inspections
                 }
                 else if (uniform.type == "sampler2D")
                 {
-                    List<string> textures = Game.GetAssetDatabase().GetAllAssetsOfType(".png");
-
-                    if (textures.Count == 0)
+                    if (ImGui.Button("Select"))
                     {
-                        ImGui.TextDisabled("No textures found");
-                    }
-                    else
-                    {
-                        int current = textures.IndexOf(field.Value);
-                        if (current < 0)
+                        AssetSelectorWindow window = new AssetSelectorWindow(".png", Game.GetAssetDatabase());
+                        window.OnSelect += (AssetSelectionResult result) =>
                         {
-                            Debug.Error("Could not find the current shader inside of the list of active shaders!");
-                            current = 0;
-                        }
-                        string preview = textures[current];
-
-                        if (ImGui.BeginCombo("##sampler2D", preview))
-                        {
-                            for (int i = 0; i < textures.Count; i++)
-                            {
-                                bool selected = i == current;
-                                string label = textures[i];
-
-                                if (ImGui.Selectable(label, selected))
-                                {
-                                    field.Value = textures[i];
-                                    shouldSave = true;
-                                }
-
-                                if (selected)
-                                    ImGui.SetItemDefaultFocus();
-                            }
-
-                            ImGui.EndCombo();
-                        }
+                            field.Value = result.asset.GetPath();
+                            materialData.Save();
+                            Game.GetAssetDatabase().RefreshNow();
+                        };
+                        GuiWindow.Enable(window);
                     }
                 }
 

@@ -13,19 +13,8 @@ namespace Runtime.Graphics.Renderers
 
         }
 
-        public MeshRenderer(Material material)
+        public MeshRenderer(Material? material = null)
         {
-            this.material = material;
-        }
-
-        public void SetMaterial(Material material)
-        {
-            // Delete the old material
-            if (this.material != null)
-            {
-                this.material.Dispose();
-            }
-
             this.material = material;
         }
 
@@ -43,26 +32,42 @@ namespace Runtime.Graphics.Renderers
         private int uvbo;
         private int tbo;
 
+        private bool uploaded = false;
         private Mesh? _mesh;  // backing field
         [Inspectable]
         public Mesh? mesh
         {
             get => _mesh;
-            set => SetMesh(value!);
+            set => SetMesh(value);
         }
 
-        public void SetMesh(Mesh mesh)
+        bool isLoaded = false;
+        public override void Load()
         {
-            if (mesh != null)
+            isLoaded = true;
+            if (!uploaded)
+            {
+                Upload(_mesh);
+                uploaded = true;
+            }
+            base.Load();
+        }
+
+        public void SetMesh(Mesh? mesh)
+        {
+            if (mesh != null && isLoaded)
                 Upload(mesh);
             _mesh = mesh;
         }
 
         private int indexCount;
 
-        public void Upload(Mesh mesh)
+        private void Upload(Mesh mesh)
         {
+            uploaded = true;
             _mesh = mesh;
+            if (mesh == null)
+                return;
             // Delete old stuff
             if (vao != 0) GL.DeleteVertexArray(vao);
             if (vbo != 0) GL.DeleteBuffer(vbo);
@@ -126,15 +131,16 @@ namespace Runtime.Graphics.Renderers
         {
             if (mesh == null)
             {
-                Debug.Error("Mesh on renderer is null!");
+                Debug.Log("Mesh is null!");
                 return;
             }
 
             if (material == null)
             {
-                Debug.Error("Material on renderer is null!");
+                material = Material.CreateFallback();
                 return;
             }
+
             material?.Use();
 
             GL.BindVertexArray(vao);

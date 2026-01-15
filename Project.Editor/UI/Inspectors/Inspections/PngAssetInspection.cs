@@ -8,7 +8,7 @@ namespace Project.Editor.UI.Inspectors.Inspections
         Texture? texture;
         public override void Loaded()
         {
-            texture = Texture.LoadFromPng(GetActiveFilePath());
+            texture = Texture.LoadFromPng(GetAsset());
         }
 
         public override void Render()

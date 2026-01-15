@@ -1,11 +1,11 @@
 ﻿using Runtime.Calc;
-using Runtime.Component.Core;
+using Runtime.Components.Core;
 using Runtime.Input;
 using Runtime.Objects;
 
 namespace Project.Editor.Preview
 {
-    internal class RotationPreview : IComponent
+    internal class RotationPreview : Component
     {
         bool isKeyboard;
         public RotationPreview(bool isKeyboard)

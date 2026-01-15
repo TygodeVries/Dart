@@ -11,7 +11,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
         Texture icon;
         public FragmentShaderAssetManager()
         {
-            icon = Texture.LoadFromPng("assets/textures/icons/fragmentshader.png");
+            icon = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/fragmentshader.png"));
         }
 
         public override Texture GetIcon()
