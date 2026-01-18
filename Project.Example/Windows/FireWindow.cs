@@ -28,9 +28,9 @@ namespace Project.Example.Windows
 			this.start = start;
 			this.end = end;
 		}
-		double next_step = 0.500;
 		int steps_taken = 0;
 		bool reset = true;
+		
 		public override void Render()
 		{
 			Runtime.Graphics.Pipeline.GizmoRenderPass gizmo = Runtime.Graphics.Pipeline.GizmoRenderPass.GetInstance();
@@ -38,15 +38,11 @@ namespace Project.Example.Windows
 			gizmo.AddLine
 			(
 				terrain.GetVector(start),
-				terrain.GetVector(end)
+				terrain.GetVector(end),
+				new Runtime.Calc.Vector4(1, 0, 0, 0),
+				new Runtime.Calc.Vector4(0,1,0,0)
 			);
 
-			next_step -= Runtime.Calc.Time.deltaTime;
-			bool step = next_step < 0;
-			if (step)
-			{
-				next_step = 0.020;
-			}
 
 			ImGui.Begin("Path");
 
@@ -55,32 +51,25 @@ namespace Project.Example.Windows
 				steps_taken = 0;
 				pathfinder.Init(start, end);
 			}
-			if (ImGui.Button("Step") || step)
+			if (ImGui.Button("Step"))
 			{
-				if (reset||steps_taken > 3000)
+
+				steps_taken++;
+				if (pathfinder.Step(end) == PathFinder.NavigationStatus.Done)
 				{
+					Runtime.Logging.Debug.Log("Arrived!");
+
 					if (start is GraphNavigation.GraphNavigationPiece s)
 						if (end is GraphNavigation.GraphNavigationPiece e)
 						{
-							s.vertex_index = (int)(r.NextInt64() % 504482);
-							e.vertex_index = (int)(r.NextInt64() % 504482);
+							s.vertex_index = e.vertex_index;
+							do
+							{
+								e.vertex_index = (int)(r.NextInt64() % 23);
+							} while (e.vertex_index == s.vertex_index);
 							pathfinder.Init(s, e);
-							reset = false;
-							steps_taken = 0;
 						}
-				}
 
-				for (int steps = 0; steps < 10; steps++)
-				{
-					steps_taken++;
-					if (pathfinder.Step(end) == PathFinder.NavigationStatus.Done)
-					{
-						Runtime.Logging.Debug.Log("Arrived!");
-						// 504482
-						next_step = 3;
-						reset = true;
-						break;
-					}
 				}
 			}
 			ImGui.End();

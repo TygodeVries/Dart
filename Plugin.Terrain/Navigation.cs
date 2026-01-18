@@ -41,7 +41,7 @@ namespace Runtime.Plugin.Terrain
 			NavigationPiece? q = ClosestBoundaryPiece();
 			if (null == q)
 				return;
-
+			st.Push(q);
 			while (null != (q = Backtrace(q)))
 				st.Push(q);
 
@@ -57,17 +57,16 @@ namespace Runtime.Plugin.Terrain
 		{
 			return exploredSet[x];
 		}
-		public void Init(NavigationPiece start, NavigationPiece end)
+		public bool Init(NavigationPiece start, NavigationPiece end)
 		{
+			if (0 == start.CompareTo(end))
+				return false;
 			exploredSet.Clear();
 			boundary.Clear();
 			NavigationPiece[] nn = terrain.GetNeighbors(start);
 			exploredSet.Add(start, null);
-			foreach (NavigationPiece item in nn)
-			{
-				exploredSet.Add(item, start);
-				boundary.Enqueue(item, terrain.EstimateDistance(item, end) + terrain.TransitionCost(start, item));
-			}
+			boundary.Enqueue(start, 0);
+			return true;
 		}
 		public enum NavigationStatus
 		{

@@ -29,18 +29,18 @@ namespace FeatureTestProject
 				 .AddComponent<Transform>()
 				 .AddComponent<FlightCamera>()
 				 .Build());
-			MeshRenderer renderer = new MeshRenderer();
-			Mesh mesh = Mesh.FromFileObj(new Runtime.Data.Asset(Runtime.Game.GetAssetDatabase(), "Assets\\Models\\insane.obj"));
-			renderer.SetMesh(mesh);
-
-			Scene.main.Instantiate(
-				new GameObjectFactory()
-				.AddComponent(renderer)
-				.Build());
+//			MeshRenderer renderer = new MeshRenderer();
+//			Mesh mesh = Mesh.FromFileObj(new Runtime.Data.Asset(Runtime.Game.GetAssetDatabase(), "Assets\\Models\\insane.obj"));
+//			renderer.SetMesh(mesh);
+//
+//			Scene.main.Instantiate(
+//				new GameObjectFactory()
+//				.AddComponent(renderer)
+//				.Build());
 
 			GraphNavigation? terrain = GraphNavigation.FromFile(
 				new Runtime.Data.Asset(
-					Runtime.Game.GetAssetDatabase(), "Assets\\Models\\insane.obj")); ;
+					Runtime.Game.GetAssetDatabase(), "Assets\\Models\\untitled.obj")); ;
 			if (null == terrain)
 			{
 				Debug.Error("Could not load terrain");
@@ -49,9 +49,9 @@ namespace FeatureTestProject
 			PathFinder finder = new PathFinder(terrain);
 			GraphNavigation.GraphNavigationPiece start = new GraphNavigation.GraphNavigationPiece();
 			GraphNavigation.GraphNavigationPiece end = new GraphNavigation.GraphNavigationPiece();
-			start.vertex_index = 1000;
+			start.vertex_index = 0;
 
-			end.vertex_index = 2000;
+			end.vertex_index = 2;
 
 			window = new FireWindow(finder, terrain, start, end);
 			GuiWindow.Enable(window);

@@ -67,6 +67,33 @@ namespace Runtime.Plugin.Terrain
 							temp_edges[i2].Add(i1);
 						}
 					}
+					else if (line.StartsWith("l "))
+					{
+						string[] parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+						List<uint> faceIndices = new();
+
+						for (int i = 1; i < parts.Length; i++)
+						{
+							string[] tokens = parts[i].Split('/');
+
+							uint posIndex = uint.Parse(tokens[0]) - 1;
+
+							faceIndices.Add(posIndex);
+						}
+
+						for (int i = 0; i < faceIndices.Count; i++)
+						{
+							int i1 = (int)faceIndices[i];
+							int i2 = (int)faceIndices[(i + 1) % faceIndices.Count];
+
+							if (!temp_edges.ContainsKey(i1))
+								temp_edges[i1] = new HashSet<int>();
+							if (!temp_edges.ContainsKey(i2))
+								temp_edges[i2] = new HashSet<int>();
+							temp_edges[i1].Add(i2);
+							temp_edges[i2].Add(i1);
+						}
+					}
 				}
 				foreach (KeyValuePair<int, HashSet<int>> q in temp_edges)
 				{
@@ -92,16 +119,16 @@ namespace Runtime.Plugin.Terrain
 		public void Draw()
 		{
 			GizmoRenderPass gizmo = GizmoRenderPass.GetInstance();
-//			foreach (KeyValuePair<int, int[]> kv in edges)
-//			{
-//				Vector4 a = nodes[kv.Key];
-//				foreach (int v in kv.Value)
-//				{
-//					Vector4 b = nodes[v];
-//	
-//					gizmo.AddLine(a, b, new Vector4(1,0,0,1), new Vector4(0,1,0,1));
-//				}
-//			}
+			foreach (KeyValuePair<int, int[]> kv in graph.edges)
+			{
+				Vector4 a = graph.nodes[kv.Key];
+				foreach (int v in kv.Value)
+				{
+					Vector4 b = graph.nodes[v];
+	
+					gizmo.AddLine(a, b, new Vector4(0,0,1,1), new Vector4(0,0,1,1));
+				}
+			}
 		}
 		public static GraphNavigation? FromFile(Asset asset)
 		{
