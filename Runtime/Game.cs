@@ -73,13 +73,12 @@ namespace Runtime
             Log($"Setting window title to {gameSettings!.WindowTitle}");
             var nativeWindowSettings = new NativeWindowSettings()
             {
-               ClientSize = new Vector2i(width, height),
-               Title = gameSettings?.WindowTitle,
-               StartVisible = false
+                ClientSize = new Vector2i(width, height),
+                Title = gameSettings?.WindowTitle,
+                StartVisible = false
             };
 
-            };
-
+            Log("Creating window...");
             RenderCanvas window = new RenderCanvas(nativeWindowSettings);
 
             Log("Loading Plugins...");

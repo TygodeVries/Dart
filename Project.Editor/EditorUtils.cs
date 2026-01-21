@@ -1,4 +1,5 @@
 ﻿using Runtime.Data;
+using Runtime.Graphics;
 using Runtime.Logging;
 
 namespace Project.Editor
@@ -28,22 +29,52 @@ namespace Project.Editor
         public static void StartGame()
         {
             Debug.Log("Starting Game...");
+
             var startInfo = new System.Diagnostics.ProcessStartInfo
             {
                 FileName = exeLocation,
                 Arguments = projectPath,
-                UseShellExecute = true
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
             };
 
-            gameProcess = System.Diagnostics.Process.Start(startInfo);
-            if (gameProcess == null)
+            gameProcess = new System.Diagnostics.Process
+            {
+                StartInfo = startInfo,
+                EnableRaisingEvents = true
+            };
+
+            // Subscribe to output events
+            gameProcess.OutputDataReceived += (sender, e) =>
+            {
+                if (!string.IsNullOrEmpty(e.Data))
+                    Debug.Log("[Game] " + e.Data);
+            };
+
+            gameProcess.ErrorDataReceived += (sender, e) =>
+            {
+                if (!string.IsNullOrEmpty(e.Data))
+                    Debug.Error("[Game Error] " + e.Data);
+            };
+
+            gameProcess.Exited += GameProcess_Exited;
+
+            if (!gameProcess.Start())
             {
                 Debug.Error("Could not start game!");
                 return;
             }
 
-            gameProcess.EnableRaisingEvents = true;
-            gameProcess.Exited += GameProcess_Exited;
+            // Begin async reading of stdout/stderr
+            gameProcess.BeginOutputReadLine();
+            gameProcess.BeginErrorReadLine();
+        }
+
+        public static void ShowProgressBar()
+        {
+            .SetValue(RenderCanvas.main.Context.WindowPtr, 50, 100);
         }
 
         /// <summary>

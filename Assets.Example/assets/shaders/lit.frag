@@ -9,7 +9,7 @@ in vec2 UV;
 uniform sampler2D u_Texture;
 uniform sampler2D u_NormalMap;
 uniform sampler2D u_Rough;
-
+uniform samplerCube u_Sky;
 uniform vec3 u_camera_pos;
 
 // Lights
@@ -17,6 +17,7 @@ uniform int u_pointLight_Count;
 uniform vec3 u_point_light_pos[16];
 uniform vec3 u_point_light_col[16];
 uniform vec3 u_point_light_data[16];
+uniform int u_hasSky;
 
 uniform vec3 u_sun_Direction;
 uniform vec3 u_sun_Color;
@@ -41,10 +42,16 @@ void main()
     vec3 viewDir = normalize(u_camera_pos - FragPos);
 
     // Start building light
-    vec3 lightVal = u_ambient_color;
+	
+	
+	vec3 lightVal = vec3(0, 0, 0) * rough.x;
+	if(u_hasSky == 1)
+	{
+	  lightVal = vec3(texture(u_Sky, normal)) * rough.x;
+	}
 
     // Sun
-    lightVal += u_sun_Color * max(dot(normal, -u_sun_Direction), 0.0);
+    lightVal += u_sun_Color * max(dot(normal, -u_sun_Direction), 0.0) * (1 - rough.x);
 
     // Point lights
     for(int i = 0; i < u_pointLight_Count; i++)

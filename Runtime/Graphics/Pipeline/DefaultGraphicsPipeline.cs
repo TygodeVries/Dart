@@ -124,6 +124,7 @@ namespace Runtime.Graphics.Pipeline
                 GL.ClearColor(1f, 0, 0, 1);
             }
 
+            renderers.Sort((a, b) => a.Order - b.Order);
             foreach (Renderer renderer in renderers)
             {
                 Material? material = renderer.GetMaterial();

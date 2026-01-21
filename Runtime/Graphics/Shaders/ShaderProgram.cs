@@ -20,14 +20,21 @@ namespace Runtime.Graphics.Shaders
             GL.UseProgram(shaderProgramId);
         }
 
+        Asset? vertexAsset;
+        Asset? fragmentAsset;
         public static ShaderProgram FromFile(Asset vertex, Asset fragment)
         {
+
             try
             {
                 string vertexContent = File.ReadAllText(vertex.GetSystemPath());
                 string fragmentContent = File.ReadAllText(fragment.GetSystemPath());
 
-                return new ShaderProgram(vertexContent, fragmentContent);
+                return new ShaderProgram(vertexContent, fragmentContent)
+                {
+                    vertexAsset = vertex,
+                    fragmentAsset = fragment
+                };
             }
             catch (Exception e)
             {
@@ -185,7 +192,7 @@ namespace Runtime.Graphics.Shaders
             location = GL.GetUniformLocation(shaderProgramId, name);
             if (location == -1)
             {
-                Debug.Warning($"Value '{name}' not found in shader, but you are trying to access it anyways!");
+                Debug.Warning($"Value '{name}' not found in shader {vertexAsset?.GetSystemPath()} or {fragmentAsset?.GetPath()}, but you are trying to access it anyways!");
             }
 
             uniformLocations[name] = location;

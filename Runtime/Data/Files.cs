@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 
 namespace Runtime.Data
 {
@@ -18,8 +13,8 @@ namespace Runtime.Data
         {
             if (!File.Exists(file))
             {
-               Logging.Debug.Error($"The file: {file} does not exist");
-               return default(T);
+                Logging.Debug.Error($"The file: {file} does not exist");
+                return default(T);
             }
 
             string json = File.ReadAllText(file);

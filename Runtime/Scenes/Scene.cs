@@ -3,6 +3,7 @@ using Runtime.Components.Core;
 using Runtime.Data;
 using Runtime.Graphics;
 using Runtime.Graphics.Pipeline;
+using Runtime.Graphics.Renderers;
 using Runtime.Logging;
 using Runtime.Objects;
 using Runtime.Physics;
@@ -59,6 +60,9 @@ namespace Runtime.Scenes
 
         public void SaveToFile(Asset asset)
         {
+            if (asset == null)
+                return;
+
             SceneFile sceneFile = new SceneFile();
             foreach (GameObject gameObject in gameObjects)
             {
@@ -159,6 +163,15 @@ namespace Runtime.Scenes
 
         // Implicitly make the main scene an empty scene
         public static Scene main { get; private set; } = new Scene();
+
+
+        public void SetSkybox(SkyboxRenderer? skyboxRenderer)
+        {
+            this.skyboxRenderer = skyboxRenderer;
+        }
+
+        SkyboxRenderer? skyboxRenderer = null;
+        public SkyboxRenderer? GetSkybox() { return skyboxRenderer; }
 
         public PhysicsSolver physicsSolver = new PhysicsSolver();
 

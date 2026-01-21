@@ -6,10 +6,16 @@ using Project.Editor.UI.FileSystem;
 using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Styles;
 using Runtime;
+using Runtime.Calc;
+using Runtime.Components.Core;
+using Runtime.Components.Test;
 using Runtime.Data;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
+using Runtime.Graphics.Renderers;
 using Runtime.Logging;
+using Runtime.Objects;
+using Runtime.Scenes;
 
 namespace Editor
 {
@@ -50,10 +56,32 @@ namespace Editor
 
             RenderCanvas.main.SetTargetFPS(60);
             Game.SetAssetDatabase(new AssetDatabase(EditorUtils.projectPath));
-            GameSettings? gameSettings = Files.Load<GameSettings>(Game.GetAssetDatabase().GetAsset("gamesettings.json").GetSystemPath()); ;
+            Asset settingAsset = Game.GetAssetDatabase().GetAsset("gamesettings.json");
+            GameSettings? gameSettings = Files.Load<GameSettings>(settingAsset.GetSystemPath()); ;
+            gameSettings.asset = settingAsset;
+
             Game.GetAssetDatabase().Start();
 
             Compiler.Generate();
+
+
+            MainThread.Run(() =>
+            {
+                Camera camera = new Camera();
+                camera.SetAsMain();
+                Scene.main.Instantiate(new GameObjectFactory()
+                    .AddComponent(camera)
+                    .AddComponent(new FlightCamera())
+                    .AddComponent(new Transform())
+                    .Build());
+
+                Scene.main.Instantiate(new GameObjectFactory()
+                    .AddComponent(new MeshRenderer()
+                    {
+                        mesh = PrimativeMesh.CreateCubeMesh()
+                    })
+                    .Build());
+            });
         }
     }
 }

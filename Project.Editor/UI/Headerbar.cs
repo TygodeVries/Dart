@@ -52,11 +52,16 @@ namespace Project.Editor.UI
                 ImGui.EndMenu();
             }
 
-            if (ImGui.BeginMenu("Edit"))
+            if (ImGui.BeginMenu("Game"))
             {
                 if (ImGui.MenuItem("Game Settings"))
                 {
                     GuiWindow.Enable(new GameSettingsWindow());
+                }
+
+                if (ImGui.MenuItem("Export"))
+                {
+
                 }
 
                 ImGui.EndMenu();
@@ -72,6 +77,7 @@ namespace Project.Editor.UI
             {
                 if (ImGui.Button("Play Game"))
                 {
+                    EditorUtils.ShowProgressBar();
                     EditorUtils.StartGame();
                 }
             }

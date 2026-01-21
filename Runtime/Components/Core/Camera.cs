@@ -23,7 +23,6 @@ namespace Runtime.Components.Core
             grp.AddLine(new Vector4(0, 0, 0, 1), new Vector4(0, 0, 0, 1));
         }
 
-
         /// <summary>
         /// The camera that is rendering the final image
         /// </summary>

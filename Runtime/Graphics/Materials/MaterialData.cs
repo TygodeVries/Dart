@@ -54,7 +54,7 @@ namespace Runtime.Graphics.Materials
                     {
                         Debug.Error("Texture is null!");
                     }
-                    material.SetTexture(field.Name, texture, textureIds);
+                    material.SetTexture(field.Name, texture);
                     textureIds++;
                 }
             }

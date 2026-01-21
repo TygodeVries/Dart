@@ -227,8 +227,16 @@ namespace Runtime.Graphics.Materials
                 materialFields.Add(field, materialField);
             }
         }
-        public void SetTexture(string field, Texture texture, int id)
+
+
+        Dictionary<string, int> textureId = new Dictionary<string, int>();
+        public void SetTexture(string field, Texture texture)
         {
+            if (!textureId.ContainsKey(field))
+            {
+                textureId.Add(field, textureId.Count);
+            }
+
             Debug.Log($"Set texture field {field} to " + texture?.GetAsset().GetSystemPath());
             if (materialFields.ContainsKey(field))
             {
@@ -245,7 +253,34 @@ namespace Runtime.Graphics.Materials
             }
             else
             {
-                TextureMaterialField materialField = new TextureMaterialField(field, texture, id);
+                TextureMaterialField materialField = new TextureMaterialField(field, texture, textureId[field]);
+                materialFields.Add(field, materialField);
+            }
+        }
+
+        public void SetCubemapTexture(string field, CubemapTexture texture)
+        {
+            if (!textureId.ContainsKey(field))
+            {
+                textureId.Add(field, textureId.Count);
+            }
+
+            if (materialFields.ContainsKey(field))
+            {
+                if (materialFields[field] is CubemapTextureMaterialField)
+                {
+                    ((CubemapTextureMaterialField)materialFields[field]).texture = texture;
+                    ((CubemapTextureMaterialField)materialFields[field]).id = textureId[field];
+                }
+                else
+                {
+                    Console.WriteLine($"{field} is already set as {materialFields[field].GetType()}. It can not also be a CubemapTexture.");
+                    return;
+                }
+            }
+            else
+            {
+                CubemapTextureMaterialField materialField = new CubemapTextureMaterialField(field, texture, textureId[field]);
                 materialFields.Add(field, materialField);
             }
         }
@@ -329,6 +364,28 @@ namespace Runtime.Graphics.Materials
         public int id;
         public Texture texture;
         public TextureMaterialField(string field, Texture texture, int id) : base(field)
+        {
+            this.id = id;
+            this.texture = texture;
+        }
+
+        public override void Upload(ShaderProgram shader)
+        {
+            if (texture == null)
+            {
+                Debug.Error("Texture is null!");
+                return;
+            }
+            texture.Use((TextureUnit)(((Int64)TextureUnit.Texture0) + id));
+            shader.SetTextureId(field, id);
+        }
+    }
+
+    public class CubemapTextureMaterialField : MaterialField
+    {
+        public int id;
+        public CubemapTexture texture;
+        public CubemapTextureMaterialField(string field, CubemapTexture texture, int id) : base(field)
         {
             this.id = id;
             this.texture = texture;

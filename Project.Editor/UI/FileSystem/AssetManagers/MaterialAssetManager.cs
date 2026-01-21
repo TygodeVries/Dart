@@ -88,6 +88,15 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
                 .AddComponent(new Transform())
                 .AddComponent(new RotationPreview(true))
                 .Build());
+
+
+            Scene.main.Instantiate(new GameObjectFactory()
+                .AddComponent(new SkyboxRenderer()
+                {
+                    cubemapTexture = CubemapTexture.CreateFromFile(EditorUtils.GetAssetDatabase().GetAsset("assets/skybox/texture/example.sky"))
+                })
+                .Build());
+
         }
     }
 }

@@ -9,6 +9,8 @@ namespace Runtime.Graphics.Renderers
     {
         private Material? _material;
 
+        public int Order = 0;
+
         public void SetMaterial(Material material)
         {
             this.material = material;
@@ -37,7 +39,7 @@ namespace Runtime.Graphics.Renderers
             return _material;
         }
 
-        public abstract void Render();
+        public abstract void Render(bool useMaterial = true);
 
         public override void Load()
         {
@@ -47,14 +49,19 @@ namespace Runtime.Graphics.Renderers
 
         public override void Unload()
         {
-            Asset asset = GetMaterial().GetAsset();
-            if (asset != null)
+            Material? material = GetMaterial();
+            if (material != null)
             {
-                Debug.Log($"Unloading renderer with material: {asset.GetSystemPath()}");
-            }
-            else
-            {
-                Debug.Log("Unloading renderer with instance material.");
+
+                Asset? asset = material.GetAsset();
+                if (asset != null)
+                {
+                    Debug.Log($"Unloading renderer with material: {asset.GetSystemPath()}");
+                }
+                else
+                {
+                    Debug.Log("Unloading renderer with instance material.");
+                }
             }
             RenderCanvas.main!.GetGraphicsPipeline()?.RemoveRenderer(this);
             base.Unload();

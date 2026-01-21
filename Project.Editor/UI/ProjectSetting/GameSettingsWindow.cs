@@ -27,6 +27,7 @@ namespace Project.Editor.UI.ProjectSetting
                 window.OnSelect += (AssetSelectionResult result) =>
                 {
                     GameSettings.GetGameSettings().StartScene = result.asset.GetPath();
+                    GameSettings.GetGameSettings().Save();
                 };
             }
         }

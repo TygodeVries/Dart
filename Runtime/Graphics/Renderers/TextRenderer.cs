@@ -17,7 +17,7 @@ namespace Runtime.Graphics.Renderers
             worldTextShader.Compile();
 
             worldTextMaterial = new Material(worldTextShader);
-            worldTextMaterial.SetTexture("u_Texture", Texture.LoadFromPng(font.texture), 0);
+            worldTextMaterial.SetTexture("u_Texture", Texture.LoadFromPng(font.texture));
 
             ShaderProgram uiTextShader = ShaderProgram.FromFile(Game.GetAssetDatabase().GetAsset("assets/shaders/uiText.vert"), Game.GetAssetDatabase().GetAsset("assets/shaders/uiText.frag"));
             uiTextShader.Compile();
@@ -26,7 +26,7 @@ namespace Runtime.Graphics.Renderers
             {
                 matrixEnabled = false
             };
-            uiTextMaterial.SetTexture("u_Texture", Texture.LoadFromPng(font.texture), 0);
+            uiTextMaterial.SetTexture("u_Texture", Texture.LoadFromPng(font.texture));
         }
 
 
