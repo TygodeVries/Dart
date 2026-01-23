@@ -168,7 +168,20 @@ namespace Runtime.Plugin.Terrain
 
 		public NavigationPiece? FromRayCast(Raycast ray)
 		{
-			throw new NotImplementedException();
+			float minimum_quadrance = float.PositiveInfinity;
+			NavigationPiece? ret = null;
+			for (int cx = 0; cx < graph.nodes.Count; cx ++)
+			{
+				GraphNavigationPiece piece = new GraphNavigationPiece() { vertex_index = cx };
+				Vector4 p = GetVector(piece);
+				float quadrance = ray.MinimumQuadranceToPoint(p.Xyz);
+				if (quadrance < minimum_quadrance)
+				{
+					minimum_quadrance = quadrance;
+					ret = piece;
+				}
+			}
+			return ret;
 		}
 
 		public NavigationPiece[] GetNeighbors(NavigationPiece x)

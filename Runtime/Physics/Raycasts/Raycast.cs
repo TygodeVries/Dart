@@ -13,6 +13,13 @@ namespace Runtime.Physics.Raycasts
             this.direction = direction;
         }
 
+         public float MinimumQuadranceToPoint(Vector3 point)
+         {
+            float i = -Vector3.Dot((position - point), direction) / Vector3.Dot(direction, direction);
+
+            return ((position + i * direction) - point).Quadrance();
+         }
+
         /// <summary>
         /// Shoot the ray in a specific scene
         /// </summary>

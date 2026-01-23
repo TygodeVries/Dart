@@ -105,7 +105,10 @@ namespace Runtime.Calc
         {
             return new Vector3(a.x * b, a.y * b, a.z * b);
         }
-
+      public static Vector3 operator *(float b, Vector3 a)
+      {
+         return a * b;
+      }
         public static Vector3 operator /(Vector3 a, Vector3 b)
         {
             return new Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
@@ -130,7 +133,10 @@ namespace Runtime.Calc
         {
             return MathF.Sqrt((x * x) + (y * y) + (z * z));
         }
-
+         public float Quadrance()
+         {
+            return Dot(this, this);
+         }
         public Vector3 Normalize()
         {
             return this / Magnitude();

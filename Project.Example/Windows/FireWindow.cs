@@ -1,15 +1,18 @@
 ﻿using FeatureTestProject;
 using ImGuiNET;
 using Runtime.Audio;
+using Runtime.Component.Core;
 using Runtime.DearImGUI.Gui;
 using Runtime.Objects;
 using Runtime.Plugin.Terrain;
 using Runtime.WindowsNative;
+using Runtime.Calc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Runtime.Input;
 
 namespace Project.Example.Windows
 {
@@ -43,6 +46,16 @@ namespace Project.Example.Windows
 				new Runtime.Calc.Vector4(0,1,0,0)
 			);
 
+			if (terrain.FromRayCast(Camera.main!.GetRaycastFromMouse()!) is GraphNavigation.GraphNavigationPiece p)
+			{
+				Vector4 pos = terrain.GetVector(p);
+				gizmo.AddLine(pos, pos + new Vector4(0, 1, 0, 0));
+				if (Mouse.current.middlePressed)
+				{
+					end = p;
+					pathfinder.Init(start, end);
+				}
+			}
 
 			ImGui.Begin("Path");
 
