@@ -3,7 +3,7 @@ using Runtime.Objects;
 
 namespace Game.Code
 {
-    public class PLEASESEETHISANDWORK : Component
+    public class ThisIsATest : Component
     {
         public override void Load()
         {
