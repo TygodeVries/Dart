@@ -12,7 +12,6 @@ namespace Runtime.Components.Physics
     /// </summary>
     public class AABBoxCollider : ICollider
     {
-
         public override void DrawGizmos()
         {
             Vector3 center = GetCenter();

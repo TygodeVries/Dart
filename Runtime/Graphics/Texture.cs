@@ -68,7 +68,9 @@ namespace Runtime.Graphics
             Texture texture = new Texture(image.Width, image.Height, pixels);
             if (upload) texture.Upload();
             texture.SetAsset(asset);
-            cache.Add(asset.GetSystemPath(), texture);
+
+            if (useCache)
+                cache.Add(asset.GetSystemPath(), texture);
             return texture;
         }
 

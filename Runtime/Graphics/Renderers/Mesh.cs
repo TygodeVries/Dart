@@ -7,6 +7,113 @@ namespace Runtime.Graphics.Renderers
     [AssetReference(new string[] { ".obj" }, nameof(FromFileObj))]
     public class Mesh : AssetReference
     {
+        public static Mesh? FromFileObj(Asset asset)
+        {
+            string file = asset.GetSystemPath();
+            List<Vector3> positions = new List<Vector3>();
+            List<Vector3> normals = new List<Vector3>();
+            List<Vector2> texcoords = new List<Vector2>();
+
+            List<float> finalVertices = new List<float>();
+            List<float> finalNormals = new List<float>();
+            List<float> finalUVs = new List<float>();
+            List<uint> finalIndices = new List<uint>();
+
+            Dictionary<string, uint> vertexMap = new Dictionary<string, uint>();
+            try
+            {
+                string[] lines = File.ReadAllLines(file);
+
+                foreach (string line in lines)
+                {
+                    if (line.StartsWith("v "))
+                    {
+                        string[] parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                        float x = float.Parse(parts[1], CultureInfo.InvariantCulture);
+                        float y = float.Parse(parts[2], CultureInfo.InvariantCulture);
+                        float z = float.Parse(parts[3], CultureInfo.InvariantCulture);
+                        positions.Add(new Vector3(x, y, z));
+                    }
+                    else if (line.StartsWith("vt "))
+                    {
+                        string[] parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                        float u = float.Parse(parts[1], CultureInfo.InvariantCulture);
+                        float v = float.Parse(parts[2], CultureInfo.InvariantCulture);
+                        texcoords.Add(new Vector2(u, v));
+                    }
+                    else if (line.StartsWith("vn "))
+                    {
+                        string[] parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                        float x = float.Parse(parts[1], CultureInfo.InvariantCulture);
+                        float y = float.Parse(parts[2], CultureInfo.InvariantCulture);
+                        float z = float.Parse(parts[3], CultureInfo.InvariantCulture);
+                        normals.Add(new Vector3(x, y, z));
+                    }
+                    else if (line.StartsWith("f "))
+                    {
+                        string[] parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                        List<uint> faceIndices = new();
+
+                        for (int i = 1; i < parts.Length; i++)
+                        {
+                            string[] tokens = parts[i].Split('/');
+
+                            int posIndex = int.Parse(tokens[0]) - 1;
+                            int uvIndex = (tokens.Length > 1 && !string.IsNullOrEmpty(tokens[1])) ? int.Parse(tokens[1]) - 1 : -1;
+                            int normIndex = (tokens.Length > 2 && !string.IsNullOrEmpty(tokens[2])) ? int.Parse(tokens[2]) - 1 : -1;
+
+                            string key = $"{posIndex}/{uvIndex}/{normIndex}";
+                            if (!vertexMap.TryGetValue(key, out uint index))
+                            {
+                                Vector3 pos = positions[posIndex];
+                                Vector2 uv = (uvIndex >= 0 && uvIndex < texcoords.Count) ? texcoords[uvIndex] : Vector2.Zero;
+                                Vector3 norm = (normIndex >= 0 && normIndex < normals.Count) ? normals[normIndex] : Vector3.Zero;
+
+                                finalVertices.Add(pos.x);
+                                finalVertices.Add(pos.y);
+                                finalVertices.Add(pos.z);
+
+                                finalUVs.Add(uv.y);
+                                finalUVs.Add(uv.x);
+
+                                finalNormals.Add(norm.x);
+                                finalNormals.Add(norm.y);
+                                finalNormals.Add(norm.z);
+
+                                index = (uint)((finalVertices.Count / 3) - 1);
+                                vertexMap[key] = index;
+                            }
+
+                            faceIndices.Add(index);
+                        }
+
+                        for (int i = 1; i < faceIndices.Count - 1; i++)
+                        {
+                            finalIndices.Add(faceIndices[0]);
+                            finalIndices.Add(faceIndices[i]);
+                            finalIndices.Add(faceIndices[i + 1]);
+                        }
+                    }
+                }
+
+                Mesh mesh = new Mesh(finalVertices.ToArray(), finalIndices.ToArray())
+                {
+                    normals = finalNormals.ToArray(),
+                    uvs = finalUVs.ToArray()
+                };
+
+                mesh.RecalculateTangents();
+
+                mesh.SetAsset(asset);
+                return mesh;
+            }
+            catch (Exception e)
+            {
+                Debug.Error(e.Message);
+                return null;
+            }
+        }
+
         public float[] vertices;
         public uint[] indices;
         public float[]? normals;
@@ -156,112 +263,6 @@ namespace Runtime.Graphics.Renderers
             }
         }
 
-        public static Mesh? FromFileObj(Asset asset)
-        {
-            string file = asset.GetSystemPath();
-            List<Vector3> positions = new List<Vector3>();
-            List<Vector3> normals = new List<Vector3>();
-            List<Vector2> texcoords = new List<Vector2>();
-
-            List<float> finalVertices = new List<float>();
-            List<float> finalNormals = new List<float>();
-            List<float> finalUVs = new List<float>();
-            List<uint> finalIndices = new List<uint>();
-
-            Dictionary<string, uint> vertexMap = new Dictionary<string, uint>();
-            try
-            {
-                string[] lines = File.ReadAllLines(file);
-
-                foreach (string line in lines)
-                {
-                    if (line.StartsWith("v "))
-                    {
-                        string[] parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                        float x = float.Parse(parts[1], CultureInfo.InvariantCulture);
-                        float y = float.Parse(parts[2], CultureInfo.InvariantCulture);
-                        float z = float.Parse(parts[3], CultureInfo.InvariantCulture);
-                        positions.Add(new Vector3(x, y, z));
-                    }
-                    else if (line.StartsWith("vt "))
-                    {
-                        string[] parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                        float u = float.Parse(parts[1], CultureInfo.InvariantCulture);
-                        float v = float.Parse(parts[2], CultureInfo.InvariantCulture);
-                        texcoords.Add(new Vector2(u, v));
-                    }
-                    else if (line.StartsWith("vn "))
-                    {
-                        string[] parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                        float x = float.Parse(parts[1], CultureInfo.InvariantCulture);
-                        float y = float.Parse(parts[2], CultureInfo.InvariantCulture);
-                        float z = float.Parse(parts[3], CultureInfo.InvariantCulture);
-                        normals.Add(new Vector3(x, y, z));
-                    }
-                    else if (line.StartsWith("f "))
-                    {
-                        string[] parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                        List<uint> faceIndices = new();
-
-                        for (int i = 1; i < parts.Length; i++)
-                        {
-                            string[] tokens = parts[i].Split('/');
-
-                            int posIndex = int.Parse(tokens[0]) - 1;
-                            int uvIndex = (tokens.Length > 1 && !string.IsNullOrEmpty(tokens[1])) ? int.Parse(tokens[1]) - 1 : -1;
-                            int normIndex = (tokens.Length > 2 && !string.IsNullOrEmpty(tokens[2])) ? int.Parse(tokens[2]) - 1 : -1;
-
-                            string key = $"{posIndex}/{uvIndex}/{normIndex}";
-                            if (!vertexMap.TryGetValue(key, out uint index))
-                            {
-                                Vector3 pos = positions[posIndex];
-                                Vector2 uv = (uvIndex >= 0 && uvIndex < texcoords.Count) ? texcoords[uvIndex] : Vector2.Zero;
-                                Vector3 norm = (normIndex >= 0 && normIndex < normals.Count) ? normals[normIndex] : Vector3.Zero;
-
-                                finalVertices.Add(pos.x);
-                                finalVertices.Add(pos.y);
-                                finalVertices.Add(pos.z);
-
-                                finalUVs.Add(uv.y);
-                                finalUVs.Add(uv.x);
-
-                                finalNormals.Add(norm.x);
-                                finalNormals.Add(norm.y);
-                                finalNormals.Add(norm.z);
-
-                                index = (uint)((finalVertices.Count / 3) - 1);
-                                vertexMap[key] = index;
-                            }
-
-                            faceIndices.Add(index);
-                        }
-
-                        for (int i = 1; i < faceIndices.Count - 1; i++)
-                        {
-                            finalIndices.Add(faceIndices[0]);
-                            finalIndices.Add(faceIndices[i]);
-                            finalIndices.Add(faceIndices[i + 1]);
-                        }
-                    }
-                }
-
-                Mesh mesh = new Mesh(finalVertices.ToArray(), finalIndices.ToArray())
-                {
-                    normals = finalNormals.ToArray(),
-                    uvs = finalUVs.ToArray()
-                };
-
-                mesh.RecalculateTangents();
-
-                mesh.SetAsset(asset);
-                return mesh;
-            }
-            catch (Exception e)
-            {
-                Debug.Error(e.Message);
-                return null;
-            }
-        }
 
     }
 }

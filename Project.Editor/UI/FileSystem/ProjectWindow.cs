@@ -112,7 +112,13 @@ namespace Project.Editor.UI.FileSystem
                 if (hiddenFiles.Contains(Path.GetExtension(fileName)))
                     continue;
 
-                AssetManager assetManager = AssetManager.GetAssetManager(Asset.FromSystemPath(Game.GetAssetDatabase(), file));
+                AssetManager? assetManager = AssetManager.GetAssetManager(Asset.FromSystemPath(Game.GetAssetDatabase(), file));
+
+                if (assetManager == null)
+                {
+                    assetManager = new DefaultAssetManager();
+                }
+
                 Vector4 borderColor = Vector4.Zero;
                 if (selectedFile == file)
                 {

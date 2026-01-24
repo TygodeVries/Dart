@@ -24,7 +24,7 @@ namespace Project.Editor.UI
         public override void Render()
         {
             ImGui.BeginMainMenuBar();
-
+            Jobs.RenderList();
             DrawPlayButton();
             Window();
             ImGui.EndMainMenuBar();
@@ -47,6 +47,11 @@ namespace Project.Editor.UI
                 if (ImGui.MenuItem("Asset Browser"))
                 {
                     GuiWindow.Enable(new AssetBrowser());
+                }
+
+                if (ImGui.MenuItem("Script"))
+                {
+                    EditorUtils.OpenScriptEditor();
                 }
 
                 ImGui.EndMenu();
@@ -77,7 +82,6 @@ namespace Project.Editor.UI
             {
                 if (ImGui.Button("Play Game"))
                 {
-                    EditorUtils.ShowProgressBar();
                     EditorUtils.StartGame();
                 }
             }

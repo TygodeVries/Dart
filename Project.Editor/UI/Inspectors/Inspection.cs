@@ -10,18 +10,12 @@
         /// <summary>
         /// Called when the inspection is first opened
         /// </summary>
-        public virtual void Open()
-        {
-
-        }
+        public virtual void Open() { }
 
 
         /// <summary>
         /// Called when unloading the inspection.
         /// </summary>
-        public virtual void Close()
-        {
-
-        }
+        public virtual void Close() { }
     }
 }

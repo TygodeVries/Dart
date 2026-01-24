@@ -6,20 +6,14 @@ using Project.Editor.UI.FileSystem;
 using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Styles;
 using Runtime;
-using Runtime.Calc;
-using Runtime.Components.Core;
-using Runtime.Components.Test;
 using Runtime.Data;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
-using Runtime.Graphics.Renderers;
 using Runtime.Logging;
-using Runtime.Objects;
-using Runtime.Scenes;
 
 namespace Editor
 {
-    [Runtime.Plugins.DartEntryPoint("Main")]
+    [Runtime.Plugins.DartEntryPoint(nameof(Main))]
     public class EntryPoint
     {
         static EntryPoint()
@@ -38,10 +32,12 @@ namespace Editor
                 if (args[cx] == "-p")
                 {
                     Project.Editor.EditorUtils.projectPath = args[cx + 1];
+                    Debug.Log($"Set project path {args[cx + 1]}");
                 }
                 if (args[cx] == "-e")
                 {
                     Project.Editor.EditorUtils.exeLocation = args[cx + 1];
+                    Debug.Log($"Set runtime location {args[cx + 1]}");
                 }
             }
 
@@ -63,25 +59,7 @@ namespace Editor
             Game.GetAssetDatabase().Start();
 
             Compiler.Generate();
-
-
-            MainThread.Run(() =>
-            {
-                Camera camera = new Camera();
-                camera.SetAsMain();
-                Scene.main.Instantiate(new GameObjectFactory()
-                    .AddComponent(camera)
-                    .AddComponent(new FlightCamera())
-                    .AddComponent(new Transform())
-                    .Build());
-
-                Scene.main.Instantiate(new GameObjectFactory()
-                    .AddComponent(new MeshRenderer()
-                    {
-                        mesh = PrimativeMesh.CreateCubeMesh()
-                    })
-                    .Build());
-            });
+            Compiler.StartAutoCompile();
         }
     }
 }

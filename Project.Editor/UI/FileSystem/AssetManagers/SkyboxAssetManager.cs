@@ -5,13 +5,13 @@ using Runtime.Graphics;
 
 namespace Project.Editor.UI.FileSystem.AssetManagers
 {
-    [AssetManager(".sky")]
-    internal class SkyboxAssetManager : AssetManager
+    [AssetManager(".wav")]
+    internal class WavAssetManager : AssetManager
     {
         Texture icon;
-        public SkyboxAssetManager()
+        public WavAssetManager()
         {
-            icon = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/gizmos/skybox.png"));
+            icon = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/wav.png"));
         }
 
         public override Texture GetIcon()
@@ -21,7 +21,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
 
         public override Inspection GetInspection()
         {
-            return new DefaultAssetInspection();
+            return new WavAssetInspection();
         }
     }
 }

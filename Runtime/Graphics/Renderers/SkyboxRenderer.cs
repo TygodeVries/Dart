@@ -14,7 +14,10 @@ namespace Runtime.Graphics.Renderers
         private ShaderProgram skyboxShader;
         [Inspectable] public CubemapTexture? cubemapTexture;
 
-
+        public override string? GetGizmosPath()
+        {
+            return "assets/textures/gizmos/skybox.png";
+        }
         public SkyboxRenderer(ShaderProgram skyboxShader, CubemapTexture? cubemapTexture)
         {
             this.Order = 10000000; // Render us LAST

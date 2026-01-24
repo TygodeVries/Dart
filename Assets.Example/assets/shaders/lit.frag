@@ -6,9 +6,9 @@ in vec3 WorldTangent;
 in vec4 TangentSpace;
 in vec2 UV;
 
-uniform sampler2D u_Texture;
-uniform sampler2D u_NormalMap;
-uniform sampler2D u_Rough;
+%show uniform sampler2D u_Texture;
+%show uniform sampler2D u_NormalMap;
+%show uniform sampler2D u_Rough;
 uniform samplerCube u_Sky;
 uniform vec3 u_camera_pos;
 

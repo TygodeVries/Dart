@@ -42,6 +42,9 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
 
         Material material;
 
+        /// <summary>
+        /// We are opening a 3d model viewer scene.
+        /// </summary>
         public override void OnOpen()
         {
             Mesh? mesh = Mesh.FromFileObj(asset!);
@@ -70,8 +73,6 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             sceneCamera.SetAsMain();
 
             Debug.Log("Setting background...");
-
-
             sceneCamera.backgroundColor = Colors.ModelPreviewBackground;
 
             Scene.main.Instantiate(new GameObjectFactory()

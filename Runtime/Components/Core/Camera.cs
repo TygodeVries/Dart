@@ -20,7 +20,10 @@ namespace Runtime.Components.Core
         public override void DrawGizmos()
         {
             GizmoRenderPass grp = GizmoRenderPass.GetInstance();
-            grp.AddLine(new Vector4(0, 0, 0, 1), new Vector4(0, 0, 0, 1));
+            Transform transform = GetComponent<Transform>();
+            if (transform == null) return;
+
+            grp.AddLine(new Vector4(transform.position, 1), new Vector4(transform.position + transform.GetForwards(), 1));
         }
 
         /// <summary>
