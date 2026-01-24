@@ -147,7 +147,10 @@ namespace Runtime.Plugin.Terrain
 		{
 
 			public int vertex_index;
-
+			public override String ToString()
+			{
+				return vertex_index.ToString();
+			}
 			public int CompareTo(object? obj)
 			{
 				if (obj is not GraphNavigationPiece q)

@@ -10,7 +10,7 @@ namespace Runtime.Plugin.Terrain
 {
 	public interface NavigationPiece : IComparable
 	{
-
+		public String ToString();
 	}
 	public interface Navigation
 	{
@@ -36,37 +36,46 @@ namespace Runtime.Plugin.Terrain
 			terrain.Draw();
 			Graphics.Pipeline.GizmoRenderPass gizmo = Runtime.Graphics.Pipeline.GizmoRenderPass.GetInstance();
 
-			Stack<NavigationPiece> st = new Stack<NavigationPiece>();
+			List<NavigationPiece>? st = GetPathFrom(ClosestBoundaryPiece());
 
-			NavigationPiece? q = ClosestBoundaryPiece();
-			if (null == q)
+			if (null == st)
 				return;
-			st.Push(q);
-			while (null != (q = Backtrace(q)))
-				st.Push(q);
 
-			NavigationPiece p = st.Pop();
-			while (st.Count > 0)
+			for (int cx = 1; cx < st.Count; cx ++)
 			{
-				NavigationPiece n = st.Pop();
-				gizmo.AddLine(terrain.GetVector(p), terrain.GetVector(n));
-				p = n;
+				gizmo.AddLine(terrain.GetVector(st[cx-1]), terrain.GetVector(st[cx]));
 			}
+		}
+		public List<NavigationPiece>? GetPathFrom(NavigationPiece? x)
+		{
+			if (null == x)
+				return null;
+			List<NavigationPiece> path = new List<NavigationPiece>();
+
+			NavigationPiece? q = x;
+			do
+			{
+				path.Add(q);
+			} while (null != (q = Backtrace(q)));
+
+			path.Reverse();
+			
+			return path;
 		}
 		public NavigationPiece? Backtrace(NavigationPiece x)
 		{
 			return exploredSet[x];
 		}
-		public bool Init(NavigationPiece start, NavigationPiece end)
+		public NavigationStatus Init(NavigationPiece start, NavigationPiece end)
 		{
 			if (0 == start.CompareTo(end))
-				return false;
+				return currentStatus = NavigationStatus.Done;
 			exploredSet.Clear();
 			boundary.Clear();
 			NavigationPiece[] nn = terrain.GetNeighbors(start);
 			exploredSet.Add(start, null);
 			boundary.Enqueue(start, 0);
-			return true;
+			return currentStatus = NavigationStatus.Busy;
 		}
 		public enum NavigationStatus
 		{
@@ -75,15 +84,21 @@ namespace Runtime.Plugin.Terrain
 			Stuck,
 			Error
 		};
+		NavigationStatus currentStatus = NavigationStatus.Error;
 		public NavigationStatus Step(NavigationPiece end)
 		{
+			if (currentStatus != NavigationStatus.Busy)
+				return currentStatus;
 			if (null == terrain)
-				return NavigationStatus.Error;
+				return currentStatus = NavigationStatus.Error;
 			if (boundary.Count == 0)
-				return NavigationStatus.Stuck;
+				return currentStatus = NavigationStatus.Stuck;
 			NavigationPiece current = boundary.Dequeue();
 			if (0 == current.CompareTo(end))
-				return NavigationStatus.Done;
+			{
+				boundary.Enqueue(current, 0);
+				return currentStatus = NavigationStatus.Done;
+			}
 			NavigationPiece[] nn = terrain.GetNeighbors(current);
 			foreach (NavigationPiece item in nn)
 			{
@@ -93,7 +108,7 @@ namespace Runtime.Plugin.Terrain
 					boundary.Enqueue(item, terrain.EstimateDistance(item, end) + terrain.TransitionCost(current, item));
 				}
 			}
-			return NavigationStatus.Busy;
+			return currentStatus = NavigationStatus.Busy;
 		}
 
 		public NavigationPiece? ClosestBoundaryPiece()
@@ -105,23 +120,11 @@ namespace Runtime.Plugin.Terrain
 		NavigationPiece[]? FindPath(NavigationPiece start, NavigationPiece end)
 		{
 			Init(start, end);
-			while (boundary.Count > 0)
-			{
-				NavigationPiece current = boundary.Dequeue();
-				if (current == end)
-					break;
-				NavigationPiece[] nn = terrain.GetNeighbors(current);
-				foreach (NavigationPiece item in nn)
-				{
-					if (!exploredSet.ContainsKey(item))
-					{
-						exploredSet.Add(item, current);
-
-						boundary.Enqueue(item, terrain.EstimateDistance(item, end));
-					}
-				}
-			}
-			return null;
+			NavigationStatus status = NavigationStatus.Error;
+			while ((status = Step(end)) == NavigationStatus.Busy) ;
+			if (status != NavigationStatus.Done)
+				return null;
+			return GetPathFrom(end)?.ToArray();
 		}
 	}
 }

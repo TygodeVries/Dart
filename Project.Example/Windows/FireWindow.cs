@@ -71,18 +71,7 @@ namespace Project.Example.Windows
 				if (pathfinder.Step(end) == PathFinder.NavigationStatus.Done)
 				{
 					Runtime.Logging.Debug.Log("Arrived!");
-
-					if (start is GraphNavigation.GraphNavigationPiece s)
-						if (end is GraphNavigation.GraphNavigationPiece e)
-						{
-							s.vertex_index = e.vertex_index;
-							do
-							{
-								e.vertex_index = (int)(r.NextInt64() % 23);
-							} while (e.vertex_index == s.vertex_index);
-							pathfinder.Init(s, e);
-						}
-
+					start = end;
 				}
 			}
 			ImGui.End();
