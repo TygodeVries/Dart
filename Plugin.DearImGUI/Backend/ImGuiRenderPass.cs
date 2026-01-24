@@ -95,17 +95,31 @@ namespace Runtime.DearImGUI.Backend
 
             foreach (GuiWindow guiWindow in guiWindows)
             {
-                bool began = true;
+                bool didBegin = false;
+                bool drawContents = true;
 
                 if (guiWindow.WriteHeaderAndFooter)
-                    began = guiWindow.Begin();
+                {
+                    drawContents = guiWindow.Begin();
+                    didBegin = true;
+                }
 
-                if (began)
-                    guiWindow.Render();
-
-                if (guiWindow.WriteHeaderAndFooter && began)
-                    ImGui.End();
+                try
+                {
+                    if (drawContents)
+                        guiWindow.Render();
+                }
+                catch (Exception e)
+                {
+                    Debug.Error(e.ToString());
+                }
+                finally
+                {
+                    if (guiWindow.WriteHeaderAndFooter && didBegin)
+                        ImGui.End();
+                }
             }
+
 
 
             ImGui.Render();

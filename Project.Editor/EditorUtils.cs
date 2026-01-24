@@ -37,7 +37,7 @@ namespace Project.Editor
         /// </summary>
         public static void StartGame()
         {
-            Compiler.Build(() =>
+            Compiler.ScheduleBuild(() =>
             {
                 Job job = new Job("Starting Game...");
                 Debug.Log("Starting Game...");

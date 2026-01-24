@@ -2,6 +2,6 @@ public class Test
 {
     public static void Yay()
     {
-        int i = 10;
+        int i = 5;
     }
 }

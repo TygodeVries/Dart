@@ -121,7 +121,7 @@ namespace Runtime.Graphics.Pipeline
             }
             else
             {
-                GL.ClearColor(1f, 0, 0, 1);
+                GL.ClearColor(0.1f, 0.1f, 0.1f, 1);
             }
 
             renderers.Sort((a, b) => a.Order - b.Order);

@@ -34,40 +34,57 @@ namespace Project.Editor.Code
             }
 
             if (scriptChange)
-                Build(() =>
+
+                ScheduleBuild(() =>
                 {
                     Runtime.Logging.Debug.Log("Auto recompiled code.");
                 });
         }
 
-        static Job? waitJob;
-
-        public static void Build(Action onComplete)
+        public static void ScheduleBuild(Action onComplete)
         {
+            Build(onComplete);
+        }
 
-            waitJob?.Done();
+        private static void Build(Action onComplete)
+        {
             // Run dotnet build on the script dir
             Generate();
-
-            Job compile = new Job("Compiling code...");
-            Runtime.Logging.Debug.Log("Compiling code...");
             Thread thr = new Thread(() =>
             {
                 try
                 {
+                    Job compile = new Job("Compiling code...");
+                    // Start working on the build
                     Process prc = Process.Start("CMD.exe", $"/C dotnet build \"{EditorUtils.projectPath}/scripts/Game.csproj\" --artifacts-path \"{EditorUtils.projectPath}/compile\"");
-                    File.Delete($"{EditorUtils.projectPath}/Game.dll");
+
+                    // Wait until build is finished
                     prc.WaitForExit();
-                    File.Copy($"{EditorUtils.projectPath}/compile/bin/Game/debug/Game.dll", $"{EditorUtils.projectPath}/Game.dll");
-                    Directory.Delete($"{EditorUtils.projectPath}/compile", recursive: true);
                     compile.Done();
 
-                    MainThread.Run(onComplete);
+                    Job unload = new Job("Unloading assets...");
+                    // Try to unload
+                    UserCode.Unload(() =>
+                    {
+                        // Delete old file
+                        File.Delete($"{EditorUtils.projectPath}/Game.dll");
+
+                        // Put in new file
+                        File.Copy($"{EditorUtils.projectPath}/compile/bin/Game/debug/Game.dll", $"{EditorUtils.projectPath}/Game.dll");
+
+                        // Clean up
+                        Directory.Delete($"{EditorUtils.projectPath}/compile", recursive: true);
+                        unload.Done();
+
+                        Job loading = new Job("Loading...");
+                        // Load in new code
+                        UserCode.Load();
+                        MainThread.Run(onComplete);
+                        loading.Done();
+                    });
                 }
                 catch (Exception ex)
                 {
-
-                    compile.Done();
                     Runtime.Logging.Debug.Error(ex.ToString());
                 }
             });
