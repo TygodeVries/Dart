@@ -1,7 +1,7 @@
 ﻿using FeatureTestProject;
 using ImGuiNET;
 using Runtime.Audio;
-using Runtime.Component.Core;
+using Runtime.Components.Core;
 using Runtime.DearImGUI.Gui;
 using Runtime.Objects;
 using Runtime.Plugin.Terrain;

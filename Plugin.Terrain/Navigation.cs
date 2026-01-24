@@ -21,7 +21,7 @@ namespace Runtime.Plugin.Terrain
 		Vector4 GetVector(NavigationPiece x);
 		void Draw();
 	}
-	public class PathFinder : IComponent
+	public class PathFinder : Component
 	{
 		PriorityQueue<NavigationPiece, double> boundary = new PriorityQueue<NavigationPiece, double>();
 		SortedDictionary<NavigationPiece, NavigationPiece?> exploredSet = 
