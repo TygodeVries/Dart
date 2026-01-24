@@ -17,6 +17,7 @@
   <Folder Name="/Plugins/">
     <Project Path="Plugin.DearImGUI\Plugin.DearImGui.csproj" />
     <Project Path="Plugin.ParticleSystem\Plugin.ParticleSystem.csproj" />
+    <Project Path="Plugin.Terrain/Plugin.Navigation.csproj" Id="7ad32798-7998-40f8-a91f-dc0f6c34a59f" />
     <Project Path="Plugin.Windows.audio\Plugin.Windows.Audio.vcxproj" Id="2005ab50-1b49-4d3a-7dc8-7203eac64f6f">
       <BuildDependency Project="Runtime\Runtime.csproj" />
     </Project>

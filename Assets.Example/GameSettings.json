@@ -1,6 +1,6 @@
 {
 	"CodePath": "Project.Example.dll",
 	"WindowTitle": "Dart Test Project",
-	"Plugins": [ "Plugin.Windows.Audio", "Plugin.DearImGui", "Plugin.ParticleSystem" ],
+	"Plugins": [  "Plugin.Windows.Audio", "Plugin.DearImGui", "Plugin.ParticleSystem", "Plugin.Navigation"]
 	"StartScene": "assets/Test.scene"
 }
