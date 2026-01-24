@@ -1,10 +1,9 @@
-﻿using ImGuiNET;
+﻿using Runtime.Calc;
 using Runtime.DearImGUI.Backend;
 using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
 using Runtime.Graphics.Pipeline;
 using Runtime.Logging;
-using Runtime.Plugins;
 
 namespace Runtime.DearImGUI
 {
@@ -18,6 +17,22 @@ namespace Runtime.DearImGUI
                 Debug.Log("Loaded into render pipeline...");
                 IGraphicsPipeline? gp = RenderCanvas.main!.GetGraphicsPipeline();
                 gp?.AddRenderPass(new ImGuiRenderPass());
+            };
+
+            UserCode.OnAttemptUnload += () =>
+            {
+                MainThread.Run(() =>
+                {
+                    GuiWindow.DisableAll();
+                });
+            };
+
+            UserCode.OnAttemptRestore += () =>
+            {
+                MainThread.Run(() =>
+                {
+                    GuiWindow.RestoreAll();
+                });
             };
         }
     }

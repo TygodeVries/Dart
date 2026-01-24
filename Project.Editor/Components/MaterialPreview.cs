@@ -44,6 +44,8 @@ namespace Project.Editor.Components
 
 
                 Debug.Log("Redid material");
+
+
                 MaterialData materialData = MaterialData.FromJson(materialAsset);
                 Material mat = materialData.CreateMaterial(assetDatabase);
 

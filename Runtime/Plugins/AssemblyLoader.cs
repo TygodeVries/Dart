@@ -1,4 +1,5 @@
-﻿using Runtime.Logging;
+﻿using Runtime.Data;
+using Runtime.Logging;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -16,7 +17,7 @@ namespace Runtime.Plugins
         public static void LogLoaded()
         {
             Debug.Log("The following assemblies are loaded:");
-            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (var asm in UserCode.GetAllAssemblies())
             {
                 Debug.Log("- " + asm.FullName);
             }

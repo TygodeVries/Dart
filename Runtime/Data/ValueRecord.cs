@@ -72,7 +72,7 @@ namespace Runtime.Data
                     return Vector4.Parse(Value);
             }
 
-            var v = AppDomain.CurrentDomain.GetAssemblies()
+            var v = UserCode.GetAllAssemblies()
                     .SelectMany(a => a.GetTypes())
                     .Where(t => typeof(AssetReference).IsAssignableFrom(t) && !t.IsAbstract);
 

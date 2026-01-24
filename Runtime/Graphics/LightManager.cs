@@ -1,6 +1,8 @@
 ﻿using Runtime.Calc;
 using Runtime.Components.Lighting;
 using Runtime.Graphics.Materials;
+using Runtime.Graphics.Renderers;
+using Runtime.Scenes;
 namespace Runtime.Graphics
 {
     public class LightManager
@@ -63,6 +65,17 @@ namespace Runtime.Graphics
                     material.SetVector3Array("u_point_light_data", data);
 
                     material.SetInt("u_pointLight_Count", positions.Length);
+
+                    SkyboxRenderer? skyboxRenderer = Scene.main.GetSkybox();
+                    if (skyboxRenderer != null)
+                    {
+                        material.SetCubemapTexture("u_Sky", skyboxRenderer.cubemapTexture);
+                        material.SetInt("u_hasSky", 1);
+                    }
+                    else
+                    {
+                        material.SetInt("u_hasSky", 0);
+                    }
                 }
             }
         }

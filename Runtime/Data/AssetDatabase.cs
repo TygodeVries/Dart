@@ -7,16 +7,31 @@ namespace Runtime.Data
     public class AssetDatabase
     {
         string activeFolder;
+
+        /// <summary>
+        /// Get the root folder of the asset database.
+        /// </summary>
+        /// <returns></returns>
         public string GetFolder()
         {
             return activeFolder;
         }
 
+        /// <summary>
+        /// Get the system path of an asset, from a relative path.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public string GetAssetPath(string path)
         {
             return Path.Join(GetFolder(), path);
         }
 
+        /// <summary>
+        /// Get an asset from the asset database
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public Asset GetAsset(string path)
         {
             return new Asset(this, path);
@@ -84,6 +99,7 @@ namespace Runtime.Data
             }
 
             DatabaseRefreshed?.Invoke();
+            changes.Clear();
         }
 
         public IReadOnlyDictionary<string, string> GetAllAssets()
@@ -127,11 +143,19 @@ namespace Runtime.Data
 
             watcher.IncludeSubdirectories = true;
 
-            watcher.Created += (sender, args) => { MainThread.Run(() => { Refresh(); }); };
+            watcher.Created += (sender, args) =>
+            {
+                MainThread.Run(() =>
+                {
+                    changes.Add(args.FullPath);
+                    Refresh();
+                });
+            };
             watcher.Changed += (sender, args) =>
             {
                 MainThread.Run(() =>
                 {
+                    changes.Add(args.FullPath);
                     Refresh();
                 });
             };
@@ -141,5 +165,7 @@ namespace Runtime.Data
             Refresh();
 
         }
+
+        public List<string> changes = new List<string>();
     }
 }

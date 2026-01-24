@@ -94,7 +94,16 @@ namespace Project.Editor.UI.Scenes
 
         public static void FinishedPlace()
         {
-            objectCursor = null;
+            if (objectCursor != null)
+            {
+                GameObject g = GameObject.LoadFromFile(objectCursor.GetAsset());
+                objectCursor = null;
+
+                MainThread.Run(() =>
+                {
+                    PlaceObject(g);
+                });
+            }
         }
 
         public static bool IsPlacing()
@@ -125,7 +134,7 @@ namespace Project.Editor.UI.Scenes
 
         public static void AddVisibility(GameObject g)
         {
-            if (g.GetComponent<MeshRenderer>() != null)
+            if (g.GetComponent<MeshRenderer>() != null && g.GetComponent<MeshRenderer>().mesh != null)
             {
                 return;
             }
@@ -154,7 +163,7 @@ namespace Project.Editor.UI.Scenes
                 texture = Texture.LoadFromPng(asset);
             }
 
-            material.SetTexture("u_Texture", texture, 0);
+            material.SetTexture("u_Texture", texture);
 
             Mesh mesh = Mesh.FromFileObj(EditorUtils.GetAssetDatabase().GetAsset("assets/models/gizmos.obj"));
 
@@ -181,6 +190,7 @@ namespace Project.Editor.UI.Scenes
             }
 
             MeshRenderer meshRenderer = g.GetComponent<MeshRenderer>();
+
 
             g.AddComponent(new AABBoxCollider()
             {

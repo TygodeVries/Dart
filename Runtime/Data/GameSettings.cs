@@ -1,4 +1,6 @@
-﻿namespace Runtime.Data
+﻿using System.Text.Json;
+
+namespace Runtime.Data
 {
     /// <summary>
     /// Basic settings of our game
@@ -18,6 +20,13 @@
         public GameSettings()
         {
             instance = this;
+        }
+
+        public Asset asset;
+
+        public void Save()
+        {
+            File.WriteAllText(asset.GetSystemPath(), JsonSerializer.Serialize(this));
         }
     }
 }

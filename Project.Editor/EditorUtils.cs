@@ -1,4 +1,6 @@
-﻿using Runtime.Data;
+﻿using Project.Editor.Code;
+using Project.Editor.UI;
+using Runtime.Data;
 using Runtime.Logging;
 
 namespace Project.Editor
@@ -20,6 +22,14 @@ namespace Project.Editor
             assets.Start();
         }
 
+        /// <summary>
+        /// #TODO: Add settings
+        /// </summary>
+        public static void OpenScriptEditor()
+        {
+            System.Diagnostics.Process.Start("CMD.exe", $"/c start \"\" \"{projectPath}/scripts/Game.csproj\"");
+        }
+
         static System.Diagnostics.Process? gameProcess;
 
         /// <summary>
@@ -27,23 +37,60 @@ namespace Project.Editor
         /// </summary>
         public static void StartGame()
         {
-            Debug.Log("Starting Game...");
-            var startInfo = new System.Diagnostics.ProcessStartInfo
+            Compiler.ScheduleBuild(() =>
             {
-                FileName = exeLocation,
-                Arguments = projectPath,
-                UseShellExecute = true
-            };
+                Job job = new Job("Starting Game...");
+                Debug.Log("Starting Game...");
 
-            gameProcess = System.Diagnostics.Process.Start(startInfo);
-            if (gameProcess == null)
-            {
-                Debug.Error("Could not start game!");
-                return;
-            }
+                var startInfo = new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = exeLocation,
+                    Arguments = projectPath,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                };
 
-            gameProcess.EnableRaisingEvents = true;
-            gameProcess.Exited += GameProcess_Exited;
+                gameProcess = new System.Diagnostics.Process
+                {
+                    StartInfo = startInfo,
+                    EnableRaisingEvents = true
+                };
+
+                // Subscribe to output events
+                gameProcess.OutputDataReceived += (sender, e) =>
+                {
+                    if (e.Data == null)
+                        return;
+                    if (!string.IsNullOrEmpty(e.Data))
+                        Debug.Log("[Game] " + e.Data);
+
+                    // Very safe!
+
+                    if (e.Data.Contains("Opening window"))
+                        job.Done();
+                };
+
+                gameProcess.ErrorDataReceived += (sender, e) =>
+                {
+                    if (!string.IsNullOrEmpty(e.Data))
+                        Debug.Error("[Game Error] " + e.Data);
+                };
+
+                gameProcess.Exited += GameProcess_Exited;
+
+                if (!gameProcess.Start())
+                {
+                    Debug.Error("Could not start game!");
+                    return;
+                }
+
+                // Begin async reading of stdout/stderr
+                gameProcess.BeginOutputReadLine();
+                gameProcess.BeginErrorReadLine();
+            });
+
         }
 
         /// <summary>

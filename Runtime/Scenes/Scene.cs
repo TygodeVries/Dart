@@ -3,6 +3,7 @@ using Runtime.Components.Core;
 using Runtime.Data;
 using Runtime.Graphics;
 using Runtime.Graphics.Pipeline;
+using Runtime.Graphics.Renderers;
 using Runtime.Logging;
 using Runtime.Objects;
 using Runtime.Physics;
@@ -16,6 +17,14 @@ namespace Runtime.Scenes
         bool hasBeenLoaded = false;
         public static void Load(Scene scene)
         {
+            if (UserCode.Unloading())
+            {
+                Debug.Warning("Can not load a scene while unloading user code.");
+                Scene.main?.Unload();
+                Scene.main = null;
+                return;
+            }
+
             if (Scene.main != null && Scene.main != scene)
                 Scene.main?.Unload();
 
@@ -59,6 +68,9 @@ namespace Runtime.Scenes
 
         public void SaveToFile(Asset asset)
         {
+            if (asset == null)
+                return;
+
             SceneFile sceneFile = new SceneFile();
             foreach (GameObject gameObject in gameObjects)
             {
@@ -112,6 +124,8 @@ namespace Runtime.Scenes
             }
 
             hasBeenLoaded = false;
+            gameObjects.Clear();
+            Camera.main = null;
         }
 
         public void DestroyObject(GameObject gameObject)
@@ -160,6 +174,15 @@ namespace Runtime.Scenes
         // Implicitly make the main scene an empty scene
         public static Scene main { get; private set; } = new Scene();
 
+
+        public void SetSkybox(SkyboxRenderer? skyboxRenderer)
+        {
+            this.skyboxRenderer = skyboxRenderer;
+        }
+
+        SkyboxRenderer? skyboxRenderer = null;
+        public SkyboxRenderer? GetSkybox() { return skyboxRenderer; }
+
         public PhysicsSolver physicsSolver = new PhysicsSolver();
 
         List<IManager> managers = new List<IManager>();
@@ -198,8 +221,10 @@ namespace Runtime.Scenes
                         updatable.Update();
                 }
 
-                foreach (GameObject obj in gameObjects)
+
+                for (int i = 0; i < gameObjects.Count; i++)
                 {
+                    GameObject obj = gameObjects[i];
                     obj.Update();
                 }
             }

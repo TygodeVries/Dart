@@ -53,7 +53,7 @@ namespace Runtime.Graphics
         // compute shader to step the particles forward in time
         ComputeShaderProgram? compute;
         int property_texture = 0;
-        public override void Render()
+        public override void Render(bool useMaterial = true)
         {
             int[] _viewport = new int[4];
             unsafe

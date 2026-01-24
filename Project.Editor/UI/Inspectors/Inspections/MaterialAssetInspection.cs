@@ -30,15 +30,6 @@ namespace Project.Editor.UI.Inspectors.Inspections
             Asset[] vertexShaders = Game.GetAssetDatabase().GetAllAssetsOfType(".vert").ToArray();
             Asset[] fragmentShaders = Game.GetAssetDatabase().GetAllAssetsOfType(".frag").ToArray();
 
-            // Vertex shader selector
-
-            /*
-            RenderShaderSelector("Vertex Shader", vertexShaders, true);
-
-            // Fragment shader selector
-            RenderShaderSelector("Fragment Shader", fragmentShaders, false);
-            */
-
             if (ImGui.Button($"{materialData.FragmentShader}"))
             {
                 AssetSelectorWindow assetSelectorWindow = new AssetSelectorWindow(".frag", Game.GetAssetDatabase());

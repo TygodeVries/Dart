@@ -55,6 +55,10 @@ namespace Project.Editor.UI.Inspectors
         public InspectorWindow()
         {
             activeWindow = this;
+            UserCode.OnAttemptUnload += () =>
+            {
+                SetInspection(null);
+            };
         }
 
         /// <summary>

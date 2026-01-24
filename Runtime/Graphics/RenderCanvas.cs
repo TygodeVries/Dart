@@ -19,6 +19,7 @@ namespace Runtime.Graphics
             this.graphicsPipeline.Initialize();
         }
 
+
         public Action? RenderPipelineSet;
 
         public IGraphicsPipeline? GetGraphicsPipeline()

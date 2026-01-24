@@ -61,7 +61,9 @@ namespace Project.Editor.UI.Inspectors.Inspections
 
                 guiWindow.OnComponentPicked += (Type type) =>
                 {
-                    gameObject.AddComponent((Component)Activator.CreateInstance(type));
+                    Component comp = (Component)Activator.CreateInstance(type);
+                    gameObject.AddComponent(comp);
+                    ObjectTracker.Track(comp);
                     GuiWindow.Disable(guiWindow);
                     Save();
                 };

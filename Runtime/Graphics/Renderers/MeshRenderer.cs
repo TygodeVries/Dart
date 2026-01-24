@@ -127,7 +127,7 @@ namespace Runtime.Graphics.Renderers
 
         public static int totalTrisCount;
 
-        public override void Render()
+        public override void Render(bool useMaterial = true)
         {
             if (mesh == null)
             {
@@ -135,13 +135,17 @@ namespace Runtime.Graphics.Renderers
                 return;
             }
 
-            if (material == null)
-            {
-                material = Material.CreateFallback();
-                return;
-            }
 
-            material?.Use();
+            if (useMaterial)
+            {
+                if (material == null)
+                {
+                    material = Material.CreateFallback();
+                    return;
+                }
+
+                material?.Use();
+            }
 
             GL.BindVertexArray(vao);
             GL.DrawElements(PrimitiveType.Triangles, indexCount, DrawElementsType.UnsignedInt, 0);
