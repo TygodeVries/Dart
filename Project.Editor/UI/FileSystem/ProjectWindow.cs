@@ -36,12 +36,14 @@ namespace Project.Editor.UI.FileSystem
         string browsePath = "assets";
         public override void Render()
         {
+            string currentPath = Path.Combine(EditorUtils.projectPath, browsePath);
+            DrawBackButton(currentPath);
+
             // Get all files we need to draw
             string[] directories;
             string[] files;
             try
             {
-
                 directories = Directory.GetDirectories(Path.Combine(EditorUtils.projectPath, browsePath));
                 files = Directory.GetFiles(Path.Combine(EditorUtils.projectPath, browsePath));
             }
@@ -50,18 +52,7 @@ namespace Project.Editor.UI.FileSystem
                 Debug.Error("Could not open directory: " + e.Message);
                 return;
             }
-            // Add a back button
-            string currentPath = Path.Combine(EditorUtils.projectPath, browsePath);
 
-            if (ImGui.Button("..."))
-            {
-                string? parent = Directory.GetParent(currentPath)?.FullName;
-
-                if (parent != null && parent.StartsWith(EditorUtils.projectPath))
-                {
-                    browsePath = Path.GetRelativePath(EditorUtils.projectPath, parent);
-                }
-            }
 
 
             // Calculate the columns count
@@ -150,6 +141,46 @@ namespace Project.Editor.UI.FileSystem
                 ImGui.NextColumn();
             }
 
+            DrawRightClickMenu(currentPath);
+
+            ImGui.Columns(1); // Reset
+        }
+
+        public void DrawBackButton(string currentPath)
+        {
+            if (!ImGui.Button("..."))
+                return;
+
+            try
+            {
+                string fullCurrent = Path.GetFullPath(currentPath);
+                string fullRoot = Path.GetFullPath(EditorUtils.projectPath);
+
+                DirectoryInfo? parent = Directory.GetParent(fullCurrent);
+                if (parent == null)
+                    return;
+
+                string fullParent = parent.FullName;
+
+                if (!fullParent.StartsWith(fullRoot + Path.DirectorySeparatorChar))
+                    return;
+
+                browsePath = Path.GetRelativePath(fullRoot, fullParent);
+                if (browsePath == ".")
+                    browsePath = "";
+
+                selectedFolder = "";
+                selectedFile = "";
+            }
+            catch
+            {
+
+            }
+        }
+
+
+        public void DrawRightClickMenu(string currentPath)
+        {
             if (ImGui.BeginPopupContextWindow($"FolderContext_", ImGuiPopupFlags.MouseButtonRight | ImGuiPopupFlags.NoOpenOverItems))
             {
                 if (ImGui.BeginMenu("Create"))
@@ -161,13 +192,16 @@ namespace Project.Editor.UI.FileSystem
 
                 if (ImGui.MenuItem("Open Folder in Explorer"))
                 {
-                    System.Diagnostics.Process.Start("explorer.exe", currentPath);
+                    Debug.Log($"Opening file explorer at {currentPath}");
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = currentPath,
+                        UseShellExecute = true
+                    });
                 }
 
                 ImGui.EndPopup();
             }
-
-            ImGui.Columns(1); // Reset
         }
     }
 }
