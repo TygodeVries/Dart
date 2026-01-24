@@ -13,6 +13,38 @@ namespace Runtime.Graphics.Renderers
         public float[]? uvs;
         public float[]? tangents;
 
+        public Vector3 CalculateBounds()
+        {
+            Vector3 firstVert = GetVertex(0);
+
+            Vector3 min = firstVert;
+            Vector3 max = firstVert;
+
+            for (int i = 0; i < indices.Length / 3; i++)
+            {
+                Vector3 vert = GetVertex(i);
+
+                if (vert.x < min.x) min.x = vert.x;
+                if (vert.y < min.y) min.y = vert.y;
+                if (vert.z < min.z) min.z = vert.z;
+
+                if (vert.x > max.x) max.x = vert.x;
+                if (vert.y > max.y) max.y = vert.y;
+                if (vert.z > max.z) max.z = vert.z;
+            }
+
+            return max - min;
+        }
+
+        public Vector3 GetVertex(int ind)
+        {
+            float x = vertices[0 + (ind * 3)];
+            float y = vertices[1 + (ind * 3)];
+            float z = vertices[2 + (ind * 3)];
+
+            return new Vector3(x, y, z);
+        }
+
         public Mesh(float[] vertices, uint[] indices)
         {
             this.vertices = vertices;

@@ -1,6 +1,6 @@
 ﻿
 using Runtime.Calc;
-using Runtime.Component.Core;
+using Runtime.Components.Core;
 using Runtime.Data;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Shaders;
@@ -40,7 +40,7 @@ namespace Runtime.Graphics.Renderers
             SetText(text);
         }
 
-        public override void OnLoad()
+        public override void Load()
         {
             if (font == null)
             {
@@ -49,7 +49,7 @@ namespace Runtime.Graphics.Renderers
 
             LoadTextMaterials();
             Apply();
-            base.OnLoad();
+            base.Load();
         }
 
         string text;

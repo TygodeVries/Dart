@@ -43,7 +43,18 @@ namespace Runtime.Graphics.Materials
                 }
                 else if (field.Type == "sampler2D")
                 {
-                    material.SetTexture(field.Name, Texture.LoadFromPng(database.GetAsset(field.Value)), textureIds);
+                    if (!File.Exists(database.GetAsset(field.Value).GetSystemPath()))
+                    {
+                        Debug.Error($"Texture for material was not found! {field.Value}   IN   {database.GetAsset(field.Value).GetSystemPath()}");
+                        break;
+                    }
+
+                    Texture texture = Texture.LoadFromPng(database.GetAsset(field.Value));
+                    if (texture == null)
+                    {
+                        Debug.Error("Texture is null!");
+                    }
+                    material.SetTexture(field.Name, texture, textureIds);
                     textureIds++;
                 }
             }
@@ -57,7 +68,8 @@ namespace Runtime.Graphics.Materials
             if (!File.Exists(file))
             {
                 Debug.Error($"Tried to load a file, but the asset file did not exist {file}");
-                // #TODO go to a backup material
+
+                return FromJson(asset.GetDatabase().GetAsset("fallback/fallback.material"));
             }
 
             string json = File.ReadAllText(file);

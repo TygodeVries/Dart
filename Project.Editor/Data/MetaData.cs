@@ -14,8 +14,9 @@ namespace Project.Editor.Data
     public class MetaData
     {
         private static Dictionary<string, MetaData> metaDataCache = new Dictionary<string, MetaData>();
-        public static MetaData FromMetaFile(Asset asset)
+        public static MetaData GetAssetMeta(Asset asset)
         {
+
             string path = asset.GetSystemPath();
             if (metaDataCache.ContainsKey(path))
             {

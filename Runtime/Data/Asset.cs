@@ -25,6 +25,20 @@
             return new Asset(database, relative);
         }
 
+        public string GetName()
+        {
+            return Path.GetFileName(GetSystemPath());
+        }
+
+        public Asset GetFolder()
+        {
+            string folderPath = Path.GetDirectoryName(path);
+
+            if (string.IsNullOrEmpty(folderPath))
+                return null;
+
+            return new Asset(assetDatabase, folderPath);
+        }
         public AssetDatabase GetDatabase() { return assetDatabase; }
 
         public string GetPath()

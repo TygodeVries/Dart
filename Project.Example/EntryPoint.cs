@@ -1,8 +1,6 @@
-﻿using Project.Example.Windows;
-using Runtime.Calc;
-using Runtime.Component.Core;
-using Runtime.Component.Test;
-using Runtime.DearImGUI.Gui;
+﻿using Runtime.Calc;
+using Runtime.Components.Core;
+using Runtime.Components.Test;
 using Runtime.Graphics;
 using Runtime.Objects;
 using Runtime.Scenes;
@@ -14,6 +12,7 @@ using Runtime.Graphics.Renderers;
 
 namespace FeatureTestProject
 {
+
 	[Runtime.Plugins.DartEntryPoint("Main")]
 	public class EntryPoint
 	{
@@ -29,14 +28,6 @@ namespace FeatureTestProject
 				 .AddComponent<Transform>()
 				 .AddComponent<FlightCamera>()
 				 .Build());
-//			MeshRenderer renderer = new MeshRenderer();
-//			Mesh mesh = Mesh.FromFileObj(new Runtime.Data.Asset(Runtime.Game.GetAssetDatabase(), "Assets\\Models\\insane.obj"));
-//			renderer.SetMesh(mesh);
-//
-//			Scene.main.Instantiate(
-//				new GameObjectFactory()
-//				.AddComponent(renderer)
-//				.Build());
 
 			GraphNavigation? terrain = GraphNavigation.FromFile(
 				new Runtime.Data.Asset(
@@ -51,7 +42,9 @@ namespace FeatureTestProject
 			GraphNavigation.GraphNavigationPiece end = new GraphNavigation.GraphNavigationPiece();
 			start.vertex_index = 0;
 
+
 			end.vertex_index = 2;
+
 
 			window = new FireWindow(finder, terrain, start, end);
 			GuiWindow.Enable(window);

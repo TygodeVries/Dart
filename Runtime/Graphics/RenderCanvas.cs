@@ -114,9 +114,25 @@ namespace Runtime.Graphics
             {
                 Time.deltaTime = 0.2f;
                 Console.WriteLine("Frame dropped!");
+                return;
             }
+            OnUpdate?.Invoke();
             Scene.main.Update();
         }
+
+        public void SetTargetFPS(double fps)
+        {
+            if (fps <= 0)
+            {
+                UpdateFrequency = 0;
+                return;
+            }
+
+            UpdateFrequency = fps;
+        }
+
+
+        public Action OnUpdate;
 
         int i = 0;
         double[] frames = new double[500];

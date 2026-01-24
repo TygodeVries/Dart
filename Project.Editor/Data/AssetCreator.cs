@@ -1,40 +1,70 @@
 ﻿using ImGuiNET;
-using Runtime.Component.Core;
+using Project.Editor.UI.Generic;
+using Runtime.Components.Core;
+using Runtime.Data;
+using Runtime.DearImGUI.Gui;
 using Runtime.Graphics.Materials;
 using Runtime.Objects;
 using Runtime.Objects.Prefabs;
+using Runtime.Scenes;
 
 namespace Project.Editor.Data
 {
     public class AssetCreator
     {
-        public static void GUI(string folder)
+        public static void GUI(Asset folder)
         {
+            Asset? asset = null;
             if (ImGui.MenuItem("Material"))
             {
-                CreateMaterial(folder);
+                asset = CreateMaterial(folder);
             }
 
             if (ImGui.MenuItem("Prefab"))
             {
-                CreatePrefab(folder);
+                asset = CreatePrefab(folder);
             }
+
+            if (ImGui.MenuItem("Scene"))
+            {
+                asset = CreateScene(folder);
+            }
+
+            if (asset == null)
+                return;
+
+            GuiWindow.Enable(new RenameAssetWindow(asset));
         }
 
-        private static void CreatePrefab(string folder)
+        private static Asset CreatePrefab(Asset folder)
         {
             GameObjectFactory factory = new GameObjectFactory()
                 .AddComponent<Transform>();
 
             PrefabGameObject prefab = PrefabGameObject.FromGameObject(factory.Build());
-            File.WriteAllText(Path.Join(folder, "Untitled.prefab"), prefab.ToJson(true));
+            string path = Path.Join(folder.GetSystemPath(), "Untitled.prefab");
+            File.WriteAllText(path, prefab.ToJson(true));
+            return Asset.FromSystemPath(folder.GetDatabase(), path);
         }
 
-        private static void CreateMaterial(string folder)
+        private static Asset CreateScene(Asset folder)
         {
+            Scene scene = new Scene();
+
+            string path = Path.Join(folder.GetSystemPath(), "Untitled.scene");
+            Asset asset = Asset.FromSystemPath(folder.GetDatabase(), path);
+
+            scene.SaveToFile(asset);
+
+            return asset;
+        }
+
+        private static Asset CreateMaterial(Asset folder)
+        {
+            string path = Path.Join(folder.GetSystemPath(), "Untitled.material");
             MaterialData materialData = new MaterialData()
             {
-                FilePath = Path.Join(folder, "Untitled.material"),
+                FilePath = path,
                 DataFields = new List<MaterialDataField>(),
                 Lit = true,
                 FragmentShader = "assets/shaders/lit.frag",
@@ -42,6 +72,7 @@ namespace Project.Editor.Data
             };
 
             materialData.Save();
+            return Asset.FromSystemPath(folder.GetDatabase(), path);
         }
     }
 }

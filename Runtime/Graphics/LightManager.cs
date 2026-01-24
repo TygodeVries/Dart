@@ -1,5 +1,5 @@
 ﻿using Runtime.Calc;
-using Runtime.Component.Lighting;
+using Runtime.Components.Lighting;
 using Runtime.Graphics.Materials;
 namespace Runtime.Graphics
 {

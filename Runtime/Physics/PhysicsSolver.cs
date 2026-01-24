@@ -1,4 +1,4 @@
-﻿using Runtime.Component.Physics;
+﻿using Runtime.Components.Physics;
 using Runtime.Physics.Raycasts;
 
 namespace Runtime.Physics
@@ -39,6 +39,9 @@ namespace Runtime.Physics
 
             foreach (ICollider collider in colliders)
             {
+                if (raycast.ignore.Contains(collider))
+                    continue;
+
                 float colliderDistance = collider.Raycast(raycast);
 
                 // We missed!

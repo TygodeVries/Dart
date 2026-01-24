@@ -1,9 +1,10 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using Runtime.Calc;
-using Runtime.Component.Core;
+using Runtime.Components.Core;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
 using Runtime.Logging;
+using Runtime.Objects;
 using Runtime.Scenes;
 
 namespace Runtime.Graphics.Pipeline
@@ -25,11 +26,7 @@ namespace Runtime.Graphics.Pipeline
                     {
                         case DebugSeverity.DebugSeverityNotification:
                             break;
-                        case DebugSeverity.DebugSeverityLow:
-                            break;
-                        case DebugSeverity.DebugSeverityMedium:
-                            break;
-                        case DebugSeverity.DebugSeverityHigh:
+                        default:
                             Debug.Log($"OpenGL:" + str);
                             break;
                     }
@@ -37,13 +34,13 @@ namespace Runtime.Graphics.Pipeline
             };
             GL.DebugMessageCallback(GLDebugProc, 0);
 
-            AddRenderPass( GizmoRenderPass.GetInstance());
+            AddRenderPass(GizmoRenderPass.GetInstance());
 
             GL.ClearColor(0, 0, 0, 0);
 
             EnableCap[] caps = new EnableCap[]
             {
-                     EnableCap.Multisample
+                 EnableCap.Multisample
             };
             Debug.Log("Turning on OpenGL features...");
             string features = "";
@@ -90,10 +87,23 @@ namespace Runtime.Graphics.Pipeline
             customRenderPasses.Add(renderPass);
         }
 
-        public void ClearRenderers()
+        public void ClearRenderersOfScene(Scene scene)
         {
-            renderers.Clear();
+            for (int i = renderers.Count - 1; i >= 0; i--)
+            {
+                Renderer renderer = renderers[i];
+
+                foreach (GameObject gameObject in scene.GetGameObjects())
+                {
+                    if (gameObject.HasComponent(renderer))
+                    {
+                        renderers.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
         }
+
         public void Render()
         {
             Scene.main.GetLightManager().UploadAll();
@@ -111,7 +121,7 @@ namespace Runtime.Graphics.Pipeline
             }
             else
             {
-                GL.ClearColor(0.5f, 0, 0, 1);
+                GL.ClearColor(1f, 0, 0, 1);
             }
 
             foreach (Renderer renderer in renderers)

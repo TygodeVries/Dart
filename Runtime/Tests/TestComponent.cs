@@ -3,7 +3,7 @@ using Runtime.Objects;
 
 namespace Runtime.Tests
 {
-    internal class TestComponent : IComponent
+    internal class TestComponent : Objects.Component
     {
         [Inspectable] bool IsAlive;
         [Inspectable] Mesh asset;
