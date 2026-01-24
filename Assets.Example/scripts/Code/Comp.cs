@@ -1,13 +1,20 @@
-﻿using Runtime.Logging;
+﻿using Runtime.Calc;
+using Runtime.Components.Core;
+using Runtime.Logging;
 using Runtime.Objects;
+using System;
 
 namespace Game.Code
 {
-    public class ThisIsATest : Component
+    public class EpicWaveTest : Component
     {
-        public override void Load()
+        float timer = 0;
+        public override void Update()
         {
-            Debug.Log("Helloeawasdawaeawaee!");
+            Debug.Log("Update.");
+            Transform transform = GetComponent<Transform>();
+            timer += (float)Time.deltaTime;
+            transform.position.y = MathF.Cos(timer);
         }
     }
 }

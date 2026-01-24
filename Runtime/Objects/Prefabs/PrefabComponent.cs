@@ -42,7 +42,7 @@ namespace Runtime.Objects.Prefabs
 
         public Component? GetComponent()
         {
-            Type? typeInstance = Type.GetType(type);
+            Type? typeInstance = UserCode.GetTypeOf(type);
             if (typeInstance == null)
             {
                 Debug.Error($"Failed to create component of type {type}, the type was null");
@@ -50,6 +50,7 @@ namespace Runtime.Objects.Prefabs
             }
 
             Component comp = (Component)Activator.CreateInstance(typeInstance);
+            ObjectTracker.Track(comp);
 
             PropertyInfo[] propertyInfos = comp.GetType().GetProperties();
             FieldInfo[] infos = comp.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);

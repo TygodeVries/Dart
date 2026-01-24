@@ -50,6 +50,7 @@ namespace Runtime.DearImGUI.Gui
                 Debug.Log($"Attempting to restore window: {win}");
                 Type type = UserCode.GetTypeOf(win);
                 GuiWindow? window = (GuiWindow)Activator.CreateInstance(type);
+                ObjectTracker.Track(window);
                 Enable(window);
             }
         }

@@ -36,6 +36,7 @@ namespace Project.Editor.UI.Inspectors.Inspections
             foreach (Component component in target.GetComponents())
             {
                 component.DrawGizmos();
+                ImGui.Text(component.GetType().Name);
             }
         }
     }

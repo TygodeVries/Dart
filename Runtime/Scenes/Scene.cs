@@ -17,6 +17,14 @@ namespace Runtime.Scenes
         bool hasBeenLoaded = false;
         public static void Load(Scene scene)
         {
+            if (UserCode.Unloading())
+            {
+                Debug.Warning("Can not load a scene while unloading user code.");
+                Scene.main?.Unload();
+                Scene.main = null;
+                return;
+            }
+
             if (Scene.main != null && Scene.main != scene)
                 Scene.main?.Unload();
 
@@ -116,6 +124,8 @@ namespace Runtime.Scenes
             }
 
             hasBeenLoaded = false;
+            gameObjects.Clear();
+            Camera.main = null;
         }
 
         public void DestroyObject(GameObject gameObject)

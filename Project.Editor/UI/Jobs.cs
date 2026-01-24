@@ -1,5 +1,6 @@
 ﻿using ImGuiNET;
 using Runtime.Calc;
+using Runtime.Logging;
 
 namespace Project.Editor.UI
 {
@@ -46,12 +47,14 @@ namespace Project.Editor.UI
         public string title;
         public Job(string title)
         {
+            Debug.Log($"Created job {title}");
             this.title = title;
             Jobs.AddJob(this);
         }
 
         public void Done()
         {
+            Debug.Log($"Finished job {title}");
             Jobs.RemoveJob(this);
         }
     }

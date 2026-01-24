@@ -3,6 +3,7 @@ using Project.Editor.Code;
 using Project.Editor.UI;
 using Project.Editor.UI.Assets;
 using Project.Editor.UI.FileSystem;
+using Project.Editor.UI.FileSystem.FileInspectors;
 using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Styles;
 using Runtime;
@@ -57,9 +58,11 @@ namespace Editor
             gameSettings.asset = settingAsset;
 
             Game.GetAssetDatabase().Start();
+            AssetManager.Init();
 
             Compiler.Generate();
             Compiler.StartAutoCompile();
+            UserCode.Load();
         }
     }
 }

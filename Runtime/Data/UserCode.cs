@@ -38,10 +38,13 @@ public class UserCode
             return;
         }
 
+        ObjectTracker.ReportAlive();
+
         // Try again
         new Thread(() =>
         {
-            Thread.Sleep(100);
+            Debug.Log("Waiting for data to be unloaded...");
+            Thread.Sleep(500);
             MainThread.Run(() => Unload(onUnloadFinish));
         }).Start();
     }
@@ -73,12 +76,14 @@ public class UserCode
 
         Asset dllAsset = Game.GetAssetDatabase().GetAsset("Game.dll");
 
-        loadContext = new AssemblyLoadContext("UserCode", isCollectible: true);
+        loadContext = new AssemblyLoadContext("Game", isCollectible: true);
         loadContextRef = new WeakReference(loadContext);
         unloadRequested = false;
 
         loadContext.LoadFromAssemblyPath(dllAsset.GetSystemPath());
         OnAttemptRestore?.Invoke();
+
+        Debug.Log("Loaded Game.dll");
     }
 
     public static Action? OnAttemptUnload;
@@ -99,9 +104,12 @@ public class UserCode
 
         foreach (var assembly in GetAllAssemblies())
         {
-            type = assembly.GetType(name, throwOnError: false, ignoreCase: false);
-            if (type != null)
-                return type;
+            if (assembly.GetName().Name == "Game")
+                foreach (var t in assembly.GetTypes())
+                {
+                    if (t.AssemblyQualifiedName == name)
+                        return t;
+                }
         }
 
         return null;
@@ -109,3 +117,26 @@ public class UserCode
 
 
 }
+
+public static class ObjectTracker
+{
+    private static List<WeakReference> tracked = new List<WeakReference>();
+
+    public static void Track(object obj)
+    {
+        tracked.Add(new WeakReference(obj));
+    }
+
+    public static void ReportAlive()
+    {
+        Console.WriteLine("=== Tracking Report ===");
+        foreach (var wr in tracked)
+        {
+            if (wr.IsAlive)
+            {
+                Console.WriteLine($"Alive: {wr.Target.GetType().FullName}");
+            }
+        }
+    }
+}
+

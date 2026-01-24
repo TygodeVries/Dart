@@ -43,7 +43,10 @@ namespace Project.Editor.Code
 
         public static void ScheduleBuild(Action onComplete)
         {
-            Build(onComplete);
+            MainThread.Run(() =>
+            {
+                Build(onComplete);
+            });
         }
 
         private static void Build(Action onComplete)

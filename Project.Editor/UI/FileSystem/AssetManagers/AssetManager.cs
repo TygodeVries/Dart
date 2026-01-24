@@ -22,7 +22,7 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
 
         public abstract Inspection GetInspection();
 
-        public static void Reset()
+        public static void Clear()
         {
             foreach (AssetManager fileInspector in cache.Values)
             {
@@ -33,6 +33,11 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
             assetManager = null;
 
             GC.Collect();
+        }
+
+        public static void Init()
+        {
+            UserCode.OnAttemptUnload += Clear;
         }
 
         private static Dictionary<string, AssetManager> cache = new Dictionary<string, AssetManager>();
@@ -64,6 +69,7 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
                 if (attribute != null && attribute.FileExtension.ToLower() == fileType)
                 {
                     AssetManager fileInspector = (AssetManager)Activator.CreateInstance(type)!;
+                    ObjectTracker.Track(fileInspector);
                     cache.Add(fileType, fileInspector);
                     cache[fileType].asset = asset;
                     return fileInspector;

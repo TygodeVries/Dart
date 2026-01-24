@@ -107,6 +107,7 @@ namespace Runtime.Objects
                 Console.WriteLine($"There is already a {type} attached to this object.");
             }
 
+            Debug.Log($"Adding object of type {type} to object.");
             components.Add(component);
             componentMap[type] = component;
             component.gameObject = this;
