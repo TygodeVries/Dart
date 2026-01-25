@@ -4,7 +4,7 @@ using Runtime.Audio;
 using Runtime.Components.Core;
 using Runtime.DearImGUI.Gui;
 using Runtime.Objects;
-using Runtime.Plugin.Terrain;
+using Runtime.Plugin.Navigation;
 using Runtime.WindowsNative;
 using Runtime.Calc;
 using System;

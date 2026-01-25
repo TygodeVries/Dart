@@ -6,7 +6,7 @@ using Runtime.Objects;
 using Runtime.Scenes;
 using static System.MathF;
 
-using Runtime.Plugin.Terrain;
+using Runtime.Plugin.Navigation;
 using Runtime.Logging;
 using Runtime.Graphics.Renderers;
 using Project.Example.Windows;

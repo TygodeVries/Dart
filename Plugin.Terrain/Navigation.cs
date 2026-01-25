@@ -6,7 +6,7 @@ using OpenTK.Graphics.OpenGL;
 using Runtime.Graphics.Shaders;
 using Runtime.Objects;
 
-namespace Runtime.Plugin.Terrain
+namespace Runtime.Plugin.Navigation
 {
 	public interface NavigationPiece : IComparable
 	{
@@ -117,7 +117,7 @@ namespace Runtime.Plugin.Terrain
 				return boundary.Peek();
 			return null;
 		}
-		NavigationPiece[]? FindPath(NavigationPiece start, NavigationPiece end)
+		public NavigationPiece[]? FindPath(NavigationPiece start, NavigationPiece end)
 		{
 			Init(start, end);
 			NavigationStatus status = NavigationStatus.Error;

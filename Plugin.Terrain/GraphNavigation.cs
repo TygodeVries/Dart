@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Runtime.Plugin.Terrain
+namespace Runtime.Plugin.Navigation
 {
 
 	[AssetReference(new string[] { ".obj" }, nameof(FromFileObj))]

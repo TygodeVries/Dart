@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Runtime.Plugin.Terrain
+namespace Runtime.Plugin.Navigation
 {
 	public class QuadNavigation : Navigation
 	{

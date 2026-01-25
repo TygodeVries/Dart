@@ -122,7 +122,7 @@ namespace Runtime.Components.Core
             position /= position.w;
             direction /= direction.w;
             direction -= position;
-            direction.Normalize();
+            direction = direction.Normalize();
 
             return new Raycast(position.Xyz, direction.Xyz);
         }
