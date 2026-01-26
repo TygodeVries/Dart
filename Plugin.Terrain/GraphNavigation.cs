@@ -118,17 +118,6 @@ namespace Runtime.Plugin.Navigation
 		Graph graph;
 		public void Draw()
 		{
-			GizmoRenderPass gizmo = GizmoRenderPass.GetInstance();
-			foreach (KeyValuePair<int, int[]> kv in graph.edges)
-			{
-				Vector4 a = graph.nodes[kv.Key];
-				foreach (int v in kv.Value)
-				{
-					Vector4 b = graph.nodes[v];
-	
-					gizmo.AddLine(a, b, new Vector4(0,0,1,1), new Vector4(0,0,1,1));
-				}
-			}
 		}
 		public static GraphNavigation? FromFile(Asset asset)
 		{

@@ -111,6 +111,10 @@ namespace Runtime.Graphics.Pipeline
             Matrix4 view = Matrix4.MultiplicativeIdentity;
             Matrix4 projection = Matrix4.MultiplicativeIdentity;
 
+            GL.Enable(EnableCap.DepthTest);
+         GL.DepthFunc(DepthFunction.Less);
+
+
             if (Camera.main != null)
             {
                 // Set to camera background color   

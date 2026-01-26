@@ -167,6 +167,16 @@ namespace Runtime.Graphics.Renderers
                 this.uvs[(i * 2) + 1] = uvs[i].y;
             }
         }
+         public Mesh(Vector3[] vertices, uint[] indices, Vector2[] uvs, Vector3[] normals) : this(vertices, indices, uvs)
+         {
+            this.normals = new float[uvs.Length * 3];
+            for (int i = 0; i < normals.Length; i++)
+            {
+               this.normals[3 * i + 0] = normals[i].x;
+               this.normals[3 * i + 1] = normals[i].y;
+               this.normals[3 * i + 2] = normals[i].z;
+            }
+         }
 
         public Mesh(Vector3[] vertices, uint[] indices)
         {

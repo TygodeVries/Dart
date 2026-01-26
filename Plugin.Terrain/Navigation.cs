@@ -34,17 +34,6 @@ namespace Runtime.Plugin.Navigation
 		public override void Update()
 		{
 			terrain.Draw();
-			Graphics.Pipeline.GizmoRenderPass gizmo = Runtime.Graphics.Pipeline.GizmoRenderPass.GetInstance();
-
-			List<NavigationPiece>? st = GetPathFrom(ClosestBoundaryPiece());
-
-			if (null == st)
-				return;
-
-			for (int cx = 1; cx < st.Count; cx ++)
-			{
-				gizmo.AddLine(terrain.GetVector(st[cx-1]), terrain.GetVector(st[cx]));
-			}
 		}
 		public List<NavigationPiece>? GetPathFrom(NavigationPiece? x)
 		{

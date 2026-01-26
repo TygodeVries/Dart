@@ -5,6 +5,7 @@ using Runtime.Data;
 using Runtime.Graphics.Shaders;
 using Runtime.Logging;
 using Runtime.Scenes;
+using System;
 
 namespace Runtime.Graphics.Materials
 {
@@ -19,7 +20,129 @@ namespace Runtime.Graphics.Materials
             return material;
         }
 
-        ShaderProgram shader;
+      public static Material CreateSimple()
+      {
+         ShaderProgram shaderProgram =
+            new ShaderProgram(
+@"
+#version 330 core
+
+layout(location = 0) in vec3 aPosition;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec2 uv;
+layout(location = 3) in vec4 tangent;
+
+uniform vec3 light_direction;
+uniform mat4 u_Model;
+uniform mat4 u_View;
+uniform mat4 u_Projection;
+
+out vec3 Pos;
+out vec3 Normal;
+out vec2 Uv;
+out vec4 Tangent;
+out vec3 LightDir;
+
+void main()
+{
+    gl_Position = u_Projection * u_View * u_Model * vec4(aPosition, 1.0);
+
+    Pos = vec3(u_Model * vec4(aPosition, 1.0));
+
+    mat3 normalMatrix = transpose(inverse(mat3(u_Model)));
+    Normal = normalize(normalMatrix * normal);
+
+    vec3 T = normalize(normalMatrix * tangent.xyz);
+    Tangent = vec4(T, tangent.w);
+
+    LightDir = normalize(light_direction);
+    Uv = uv;
+}
+",
+@"
+#version 330 core
+
+in vec3 Pos;
+in vec3 Normal;
+in vec2 Uv;
+in vec4 Tangent;
+
+uniform sampler2D u_Texture;
+uniform sampler2D u_NormalMap;
+uniform sampler2D u_Rough;
+
+uniform float u_shininess;
+uniform vec3 u_camera_pos;
+
+// Lighting (points)
+uniform vec3 u_point_light_pos[16];
+uniform vec3 u_point_light_col[16];
+uniform vec3 u_point_light_data[16];
+uniform int u_pointLight_Count;
+
+// Lighting (direct)
+uniform vec3 u_sun_Direction;
+uniform vec3 u_sun_Color;
+
+// Lighting (ambient)
+uniform vec3 u_ambient_color;
+
+out vec4 FragColor;
+
+void main()
+{
+	vec4 col = texture(u_Texture, Uv);
+	vec3 normalMap = texture(u_NormalMap, Uv).rgb * 2.0 - 1.0;
+	vec3 rough = texture(u_Rough, Uv).rgb;
+
+
+	vec3 viewDir = normalize(u_camera_pos - Pos);  // View direction
+
+	vec3 T = normalize(Tangent.xyz);
+	vec3 N = normalize(Normal);
+	vec3 B = cross(N, T) * Tangent.w;
+
+	mat3 TBN = mat3(T, B, N);
+	vec3 normal = normalize(TBN * normalMap);
+
+	// The resulting light
+	vec3 light = u_ambient_color;
+
+	// Calculate direct lighting
+	light = light + u_sun_Color * max(dot(normal, -u_sun_Direction), 0.0);
+
+	for (int i = 0; i < u_pointLight_Count; i++)
+	{
+		vec3 point_pos = u_point_light_pos[i];
+
+		vec3 toLight = point_pos - Pos;
+		float dist = length(toLight);
+		vec3 lightDir = normalize(toLight);
+
+		float dotV = max(dot(normal, lightDir), 0.0);
+
+		float attenuation = clamp(1.0 - dist * (1 / u_point_light_data[i].x), 0.0, 1.0);
+
+		vec3 diffuse = u_point_light_col[i] * dotV * attenuation * 10;
+
+		vec3 halfDir = normalize(lightDir + viewDir);
+		float dotNH = max(dot(normal, halfDir), 0.0);
+		float spec = pow(dotNH, (1 - rough.x) * 16) * attenuation;
+
+		vec3 specular = u_point_light_col[i] * spec * 10;
+
+		light += diffuse + specular;
+	}
+
+	FragColor = vec4(col.rgb * light, col.a);
+}
+");
+
+		Material material = new Material(shaderProgram);
+   	return material;
+   }
+
+		ShaderProgram shader;
         public Material(ShaderProgram shader)
         {
             this.shader = shader;
