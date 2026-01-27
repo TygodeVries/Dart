@@ -2,6 +2,7 @@
 using Runtime.DearImGUI.Gui;
 using Runtime.Logging;
 using Runtime.Objects;
+using System.Reflection;
 
 namespace Project.Editor.UI.Generic
 {
@@ -16,22 +17,38 @@ namespace Project.Editor.UI.Generic
                 GuiWindow.Disable(this);
             }
 
+            int i = 0;
             foreach (Type type in GetAllComponentTypes())
             {
-                if (ImGui.Button(type.Name))
-                {
-                    OnComponentPicked.Invoke(type);
-                }
+                i++;
+                if (typeof(Component).IsAssignableFrom(type))
+
+                    if (ImGui.Button($"{type.FullName}##{i}"))
+                    {
+                        OnComponentPicked.Invoke(type);
+                    }
             }
         }
 
         private List<Type> GetAllComponentTypes()
         {
-            // Maybe cache this?
-            return AppDomain.CurrentDomain.GetAssemblies()
-               .SelectMany(s => s.GetTypes())
-               .Where(p => typeof(Component).IsAssignableFrom(p))
-               .ToList();
+
+            Assembly[] assemblies = UserCode.GetAllAssemblies();
+            List<Type> types = new List<Type>();
+
+            foreach (Assembly assembly in assemblies)
+            {
+                try
+                {
+                    types.AddRange(assembly.GetTypes());
+                }
+                catch (Exception e)
+                {
+                    Debug.Error($"Failed to get types from assembly {assembly.FullName}. because {e}");
+                }
+            }
+
+            return types;
         }
     }
 }

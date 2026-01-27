@@ -120,7 +120,20 @@ namespace Project.Editor.Code
             foreach (string plugin in plugins)
             {
                 string path = Game.GetAssetDatabase().GetAsset($"plugins/{plugin}/info.plugin.json").GetSystemPath();
-                PluginData pluginData = JsonSerializer.Deserialize<PluginData>(File.ReadAllText(path));
+
+                if (!File.Exists(path))
+                {
+                    Runtime.Logging.Debug.Error($"Failed to read plugin data of plugin {plugin}");
+                    continue;
+                }
+
+                string content = File.ReadAllText(path);
+                PluginData? pluginData = JsonSerializer.Deserialize<PluginData>(content);
+                if (pluginData == null)
+                {
+                    Runtime.Logging.Debug.Error($"Failed to read plugin data of plugin {plugin}");
+                    continue;
+                }
                 string pluginSource = $"\n\t<Reference Include=\"{plugin}\">\r\n      <HintPath>../plugins/{plugin}/{pluginData.CoreDll}</HintPath>\r\n      <Private>false</Private>\r\n    </Reference>";
                 file += pluginSource;
             }

@@ -1,5 +1,5 @@
 {
 	"CodePath": "Project.Editor.dll",
 	"WindowTitle": "Dart Editor",
-	"Plugins": [  "plugin.dearimgui", "plugin.windows.audio"]
+	"Plugins": [  "plugin.dearimgui", "plugin.windows.audio", "plugin.Navigation"]
 }

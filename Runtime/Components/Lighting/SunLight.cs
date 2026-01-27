@@ -1,6 +1,6 @@
 ﻿using Runtime.Calc;
-using Runtime.Components.Core;
 using Runtime.Graphics;
+using Runtime.Objects;
 using Runtime.Scenes;
 
 namespace Runtime.Components.Lighting
@@ -32,16 +32,16 @@ namespace Runtime.Components.Lighting
         /// </summary>
         public Vector3 GetDirection()
         {
-            Transform transform = GetComponent<Transform>();
-            if (transform == null)
-                return new Vector3(1, 1, 1);
-
-            return transform.GetForwards();
+            return direction;
         }
+
+        [Inspectable]
+        public Vector3 direction = new Vector3(1, 1, 1);
 
         /// <summary>
         /// The color of the sun
         /// </summary>
+        [Inspectable]
         public Vector3 color = new Vector3(1, 1, 1);
     }
 }
