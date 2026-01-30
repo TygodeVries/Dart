@@ -8,6 +8,7 @@ using Runtime.Graphics;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
 using Runtime.Graphics.Shaders;
+using Runtime.Logging;
 using Runtime.Objects;
 using Runtime.Scenes;
 namespace Project.Editor.UI.Scenes
@@ -192,10 +193,17 @@ namespace Project.Editor.UI.Scenes
             MeshRenderer meshRenderer = g.GetComponent<MeshRenderer>();
 
 
-            g.AddComponent(new AABBoxCollider()
+            try
             {
-                size = meshRenderer.mesh.CalculateBounds()
-            });
+                g.AddComponent(new AABBoxCollider()
+                {
+                    size = meshRenderer.mesh.CalculateBounds()
+                });
+            }
+            catch (Exception e)
+            {
+                Debug.Warning("Failed to calculate bounds for mesh.");
+            }
         }
 
         public static void AddInteraction(GameObject g)

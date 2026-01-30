@@ -21,6 +21,10 @@
       <HintPath>../plugins/Plugin.ParticleSystem/Plugin.ParticleSystem.dll</HintPath>
       <Private>false</Private>
     </Reference>
+	<Reference Include="Plugin.Navigation">
+      <HintPath>../plugins/Plugin.Navigation/Plugin.Navigation.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
 	<Reference Include="Runtime">
       <HintPath>D:\Games\Dart\Assets.Editor\bin\Runtime.dll</HintPath>
      <Private>false</Private>

@@ -8,7 +8,7 @@ using SixLabors.ImageSharp.Processing;
 
 namespace Runtime.Graphics
 {
-    [AssetReference(new string[] { ".png" }, nameof(LoadFromPng))]
+    [AssetReference(new string[] { ".png" }, nameof(LoadFromPngSimple))]
     public class Texture : AssetReference
     {
         byte[] pixels;
@@ -28,6 +28,12 @@ namespace Runtime.Graphics
         }
 
         static Dictionary<string, Texture> cache = new Dictionary<string, Texture>();
+
+        public static Texture LoadFromPngSimple(Asset asset)
+        {
+            return LoadFromPng(asset);
+        }
+
         public static Texture LoadFromPng(Asset asset, int maxWidth = 8192, int maxHeight = 8192, bool upload = true, bool useCache = true)
         {
             if (cache.ContainsKey(asset.GetSystemPath()) && useCache)
