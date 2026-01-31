@@ -39,7 +39,7 @@ namespace Runtime.Graphics.Renderers
                         string[] parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                         float u = float.Parse(parts[1], CultureInfo.InvariantCulture);
                         float v = float.Parse(parts[2], CultureInfo.InvariantCulture);
-                        texcoords.Add(new Vector2(u, v));
+                        texcoords.Add(new Vector2(u, 1f-v));
                     }
                     else if (line.StartsWith("vn "))
                     {
@@ -73,8 +73,8 @@ namespace Runtime.Graphics.Renderers
                                 finalVertices.Add(pos.y);
                                 finalVertices.Add(pos.z);
 
-                                finalUVs.Add(uv.y);
                                 finalUVs.Add(uv.x);
+                                finalUVs.Add(uv.y);
 
                                 finalNormals.Add(norm.x);
                                 finalNormals.Add(norm.y);
