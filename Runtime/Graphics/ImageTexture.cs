@@ -104,10 +104,10 @@ namespace Runtime.Graphics
                 GL.TexParameterf(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
                 if (GL.GetError() != ErrorCode.NoError)
                     Debug.Log($"2OpenGL has an error: {GL.GetError()}");
-                GL.TexParameterf(TextureTarget.Texture2d, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+                GL.TexParameterf(TextureTarget.Texture2d, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
                 if (GL.GetError() != ErrorCode.NoError)
                     Debug.Log($"3OpenGL has an error: {GL.GetError()}");
-                GL.TexParameterf(TextureTarget.Texture2d, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+                GL.TexParameterf(TextureTarget.Texture2d, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
                 if (GL.GetError() != ErrorCode.NoError)
                     Debug.Log($"4OpenGL has an error: {GL.GetError()}");
                 GL.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixels);

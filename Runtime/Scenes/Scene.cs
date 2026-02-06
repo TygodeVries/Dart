@@ -216,28 +216,19 @@ namespace Runtime.Scenes
         {
         }
 
-      public T? FindAnyComponentOfType<T>() where T:Component
-      {
-         foreach (GameObject go in gameObjects)
-         {
-            T? cmp = go.GetComponent<T>();
-            if (null != cmp)
-               return cmp;
-         }
-         return null;
-      }
-      public T[] FindAllComponentOfType<T>() where T : Component
-      {
-         List<T> list = new List<T>();
-         foreach (GameObject go in gameObjects)
-         {
-				T? cmp = go.GetComponent<T>();
-            if (null != cmp)
-               list.Add(cmp);
 
-			}
-         return list.ToArray();
-		}
+        public T[] FindAllComponentOfType<T>() where T : Component
+        {
+            List<T> list = new List<T>();
+            foreach (GameObject go in gameObjects)
+            {
+                T? cmp = go.GetComponent<T>();
+                if (null != cmp)
+                    list.Add(cmp);
+
+            }
+            return list.ToArray();
+        }
         public void Update()
         {
             if (hasBeenLoaded)
@@ -278,7 +269,7 @@ namespace Runtime.Scenes
             return null;
         }
 
-        public List<T>? FindAllComponentOfType<T>() where T : Component
+        public List<T>? FindAllComponentsOfType<T>() where T : Component
         {
             List<T> list = new List<T>();
             foreach (GameObject gameObject in gameObjects)
