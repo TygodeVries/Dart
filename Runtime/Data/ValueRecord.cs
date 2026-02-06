@@ -82,8 +82,8 @@ namespace Runtime.Data
             {
                 AssetReferenceAttribute? attribute = type.GetCustomAttributes(typeof(AssetReferenceAttribute), false)
                                    .FirstOrDefault() as AssetReferenceAttribute;
-                if (attribute == null)
-                    return null;
+            if (attribute == null)
+               continue;
                 if (attribute.filetype.Contains(Path.GetExtension(Value).ToLower()))
                 {
                     MethodInfo? method = type.GetMethod(attribute.createMethod);

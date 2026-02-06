@@ -262,37 +262,5 @@ namespace Runtime.Scenes
         }
 
 
-        public T? FindAnyComponentOfType<T>() where T : Component
-        {
-            foreach (GameObject gameObject in gameObjects)
-            {
-                foreach (Component component in gameObject.GetComponents())
-                {
-                    if (component is T t)
-                    {
-                        return t;
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        public List<T>? FindAllComponentOfType<T>() where T : Component
-        {
-            List<T> list = new List<T>();
-            foreach (GameObject gameObject in gameObjects)
-            {
-                foreach (Component component in gameObject.GetComponents())
-                {
-                    if (component is T t)
-                    {
-                        list.Add(t);
-                    }
-                }
-            }
-
-            return list;
-        }
     }
 }
