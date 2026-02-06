@@ -24,8 +24,8 @@ namespace Runtime.Plugin.Navigation
 	public class PathFinder : Component
 	{
 		PriorityQueue<NavigationPiece, double> boundary = new PriorityQueue<NavigationPiece, double>();
-		SortedDictionary<NavigationPiece, NavigationPiece?> exploredSet = 
-			new SortedDictionary<NavigationPiece, NavigationPiece?>();
+		SortedDictionary<NavigationPiece, (NavigationPiece?, double)> exploredSet = 
+			new SortedDictionary<NavigationPiece, (NavigationPiece?, double)>();
 		Navigation terrain;
 		public PathFinder(Navigation terrain)
 		{
@@ -53,7 +53,8 @@ namespace Runtime.Plugin.Navigation
 		}
 		public NavigationPiece? Backtrace(NavigationPiece x)
 		{
-			return exploredSet[x];
+			(NavigationPiece? parent, double q) = exploredSet[x];
+			return parent;
 		}
 		public NavigationStatus Init(NavigationPiece start, NavigationPiece end)
 		{
@@ -62,7 +63,7 @@ namespace Runtime.Plugin.Navigation
 			exploredSet.Clear();
 			boundary.Clear();
 			NavigationPiece[] nn = terrain.GetNeighbors(start);
-			exploredSet.Add(start, null);
+			exploredSet.Add(start, (null,0));
 			boundary.Enqueue(start, 0);
 			return currentStatus = NavigationStatus.Busy;
 		}
@@ -89,12 +90,22 @@ namespace Runtime.Plugin.Navigation
 				return currentStatus = NavigationStatus.Done;
 			}
 			NavigationPiece[] nn = terrain.GetNeighbors(current);
+			(NavigationPiece? _, double cur_distance) = exploredSet[current];
 			foreach (NavigationPiece item in nn)
 			{
 				if (!exploredSet.ContainsKey(item))
 				{
-					exploredSet.Add(item, current);
+					exploredSet.Add(item, (current, cur_distance + terrain.TransitionCost(current, item)));
 					boundary.Enqueue(item, terrain.EstimateDistance(item, end) + terrain.TransitionCost(current, item));
+				}
+				else
+				{
+					(NavigationPiece? _, double prev_distance) = exploredSet[item];
+					if (cur_distance + terrain.TransitionCost(current, item) < prev_distance)
+					{
+						exploredSet[item] = (current, cur_distance + terrain.TransitionCost(current, item));
+					}
+
 				}
 			}
 			return currentStatus = NavigationStatus.Busy;
