@@ -48,7 +48,47 @@ namespace Runtime.Data
        20,21,22,20,22,23        // bottom
     };
 
+            float[] uvs =
+{
+    // Front (+Z)
+    0f, 0f,
+    1f, 0f,
+    1f, 1f,
+    0f, 1f,
+
+    // Back (-Z)
+    1f, 0f,
+    1f, 1f,
+    0f, 1f,
+    0f, 0f,
+
+    // Left (-X)
+    0f, 0f,
+    1f, 0f,
+    1f, 1f,
+    0f, 1f,
+
+    // Right (+X)
+    1f, 0f,
+    1f, 1f,
+    0f, 1f,
+    0f, 0f,
+
+    // Top (+Y)
+    0f, 0f,
+    0f, 1f,
+    1f, 1f,
+    1f, 0f,
+
+    // Bottom (-Y)
+    1f, 1f,
+    0f, 1f,
+    0f, 0f,
+    1f, 0f
+};
+
             Mesh cube = new Mesh(vertices, indices);
+            cube.uvs = uvs;
             return cube;
         }
 

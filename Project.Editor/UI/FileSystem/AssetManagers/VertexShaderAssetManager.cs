@@ -8,13 +8,13 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
     [AssetManager(".vert")]
     internal class VertexShaderAssetManager : AssetManager
     {
-        Texture icon;
+        ImageTexture icon;
         public VertexShaderAssetManager()
         {
-            icon = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/vertexshader.png"));
+            icon = ImageTexture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/vertexshader.png"));
         }
 
-        public override Texture GetIcon()
+        public override ImageTexture GetIcon()
         {
             return icon;
         }

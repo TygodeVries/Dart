@@ -8,13 +8,13 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
     [AssetManager(".wav")]
     internal class WavAssetManager : AssetManager
     {
-        Texture icon;
+        ImageTexture icon;
         public WavAssetManager()
         {
-            icon = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/wav.png"));
+            icon = ImageTexture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/wav.png"));
         }
 
-        public override Texture GetIcon()
+        public override ImageTexture GetIcon()
         {
             return icon;
         }

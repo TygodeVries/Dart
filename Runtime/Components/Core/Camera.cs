@@ -17,6 +17,22 @@ namespace Runtime.Components.Core
             return "assets/textures/gizmos/camera.png";
         }
 
+
+        public RenderTexture? renderTexture { get; private set; }
+
+        public void SetRenderTexture(RenderTexture renderTexture)
+        {
+            this.renderTexture = renderTexture;
+        }
+
+        public void ClearRenderTexture()
+        {
+            this.renderTexture = null;
+        }
+
+        public Action startRender;
+        public Action endRender;
+
         public override void DrawGizmos()
         {
             GizmoRenderPass grp = GizmoRenderPass.GetInstance();
@@ -48,6 +64,8 @@ namespace Runtime.Components.Core
         {
             if (main == null)
                 main = this;
+
+            RenderCanvas.main.GetGraphicsPipeline().AddCamera(this);
         }
 
         public override void Unload()
@@ -86,16 +104,32 @@ namespace Runtime.Components.Core
         {
             Transform? transform = GetComponent<Transform>();
 
-            Vector3 position = new Vector3(0, 0, 0);
-            Vector3 direction = new Vector3(0, 0, -1);
             if (transform != null)
             {
-                position = transform.position;
-                direction = transform.GetForwards();
-            }
+                Vector3 position = new Vector3(0, 0, 0);
+                Vector3 direction = new Vector3(0, 0, -1);
+                if (transform != null)
+                {
+                    position = transform.position;
+                    direction = transform.GetForwards();
+                }
 
-            return Matrix4.LookAt(position, position + direction, Vector3.UnitY);
+                return Matrix4.LookAt(position, position + direction, Vector3.UnitY);
+            }
+            else
+            {
+                return viewMatrix;
+            }
         }
+
+        Matrix4 viewMatrix;
+
+        public void ForceViewMatrix(Matrix4 view)
+        {
+            viewMatrix = view;
+        }
+
+
         public Raycast? GetRaycastFromMouse()
         {
             if (null == RenderCanvas.main)

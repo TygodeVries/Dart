@@ -8,13 +8,13 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
     [AssetManager(".frag")]
     internal class FragmentShaderAssetManager : AssetManager
     {
-        Texture icon;
+        ImageTexture icon;
         public FragmentShaderAssetManager()
         {
-            icon = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/fragmentshader.png"));
+            icon = ImageTexture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/fragmentshader.png"));
         }
 
-        public override Texture GetIcon()
+        public override ImageTexture GetIcon()
         {
             return icon;
         }

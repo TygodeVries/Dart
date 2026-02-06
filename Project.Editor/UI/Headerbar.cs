@@ -66,7 +66,7 @@ namespace Project.Editor.UI
 
                 if (ImGui.MenuItem("Export"))
                 {
-
+                    EditorUtils.ExportGame();
                 }
 
                 ImGui.EndMenu();

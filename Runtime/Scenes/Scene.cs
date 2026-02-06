@@ -160,7 +160,12 @@ namespace Runtime.Scenes
             gameObjects.Add(game);
 
             if (hasBeenLoaded)
-                game.OnLoad();
+            {
+                MainThread.Run(() =>
+                {
+                    game.OnLoad();
+                }); // #TODO quick fix, since scene loading happends to an already loaded scene, loading orders did not work.
+            }
         }
 
 
@@ -232,6 +237,40 @@ namespace Runtime.Scenes
             {
                 Debug.Error("Main scene has not been loaded yet! I have no idea how this would be possible, nice.");
             }
+        }
+
+
+        public T? FindAnyComponentOfType<T>() where T : Component
+        {
+            foreach (GameObject gameObject in gameObjects)
+            {
+                foreach (Component component in gameObject.GetComponents())
+                {
+                    if (component is T t)
+                    {
+                        return t;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public List<T>? FindAllComponentOfType<T>() where T : Component
+        {
+            List<T> list = new List<T>();
+            foreach (GameObject gameObject in gameObjects)
+            {
+                foreach (Component component in gameObject.GetComponents())
+                {
+                    if (component is T t)
+                    {
+                        list.Add(t);
+                    }
+                }
+            }
+
+            return list;
         }
     }
 }

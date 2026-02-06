@@ -1,5 +1,6 @@
 ﻿using Project.Editor.Code;
 using Project.Editor.UI;
+using Runtime.Calc;
 using Runtime.Data;
 using Runtime.Logging;
 
@@ -14,6 +15,62 @@ namespace Project.Editor
         {
             return assets;
         }
+        public static void ExportGame()
+        {
+            Job job = new Job("Exporting Game...");
+
+            MainThread.Run(() =>
+            {
+                string runtime = Path.GetDirectoryName(exeLocation);
+
+                CopyDirectory(runtime, $"{projectPath}/Game Export/runtime/");
+                CopyDirectory(projectPath, $"{projectPath}/Game Export/runtime/assets/");
+
+                // Create Play.bat
+                File.WriteAllText($"{projectPath}/Game Export/Play.bat", "runtime\\Runtime.exe \"runtime/assets\"");
+
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
+                {
+                    FileName = $"{projectPath}/Game Export",
+                    UseShellExecute = true, // Important for opening folders
+                    Verb = "open"           // Optional, opens with default action
+                });
+            });
+
+            job.Done();
+        }
+
+        static void CopyDirectory(string source, string destination)
+        {
+
+            if (source.Contains($"Game Export"))
+                return;
+            // #TODO This will cause issues, but it will work for now...
+            if (source.Contains($"Scripts"))
+                return;
+
+            if (source.Contains(".git"))
+                return;
+
+            if (source.Contains(".vs"))
+                return;
+
+            Debug.Log($"Exporting {source}");
+            Directory.CreateDirectory(destination);
+
+            foreach (var file in Directory.GetFiles(source))
+            {
+                var destFile = Path.Combine(destination, Path.GetFileName(file));
+                File.Copy(file, destFile, overwrite: true);
+            }
+
+            foreach (var dir in Directory.GetDirectories(source))
+            {
+                var destDir = Path.Combine(destination, Path.GetFileName(dir));
+                CopyDirectory(dir, destDir);
+            }
+        }
+
 
         static AssetDatabase assets;
         public static void LoadAssetDatabase()

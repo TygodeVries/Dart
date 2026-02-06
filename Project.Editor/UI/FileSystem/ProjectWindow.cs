@@ -24,10 +24,10 @@ namespace Project.Editor.UI.FileSystem
             ".meta",
             ".mtl"
         };
-        Texture folderTexture;
+        ImageTexture folderTexture;
         public ProjectWindow()
         {
-            folderTexture = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/folder.png"));
+            folderTexture = ImageTexture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/folder.png"));
         }
 
         string selectedFolder = "";

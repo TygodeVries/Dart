@@ -127,11 +127,15 @@ namespace Runtime.Graphics.Renderers
 
         public static int totalTrisCount;
 
+        bool meshIsNullWarnGiven = false;
         public override void Render(bool useMaterial = true)
         {
             if (mesh == null)
             {
-                Debug.Log("Mesh is null!");
+                if (!meshIsNullWarnGiven)
+                    Debug.Warning("Mesh is null!");
+
+                meshIsNullWarnGiven = true;
                 return;
             }
 

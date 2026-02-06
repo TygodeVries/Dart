@@ -1,5 +1,1 @@
-{
-	"CodePath": "Game.dll",
-	"WindowTitle": "Dart Test Project",
-	"Plugins": [  "Plugin.Windows.Audio", "Plugin.DearImGui", "Plugin.ParticleSystem", "Plugin.Navigation"]
-}
+{"WindowTitle":"Dart Test Project","CodePath":"Game.dll","Plugins":["Plugin.Windows.Audio","Plugin.DearImGui","Plugin.ParticleSystem","Plugin.Navigation"],"StartScene":"assets\\Main.scene"}

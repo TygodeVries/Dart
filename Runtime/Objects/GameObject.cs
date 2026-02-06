@@ -131,12 +131,23 @@ namespace Runtime.Objects
         }
 
         public bool enableUpdates = true;
+        public bool renderGizmos = false;
         public void Update()
         {
 
 
             foreach (Component component in components)
             {
+                try
+                {
+                    if (renderGizmos)
+                        component.DrawGizmos();
+                }
+                catch (Exception e)
+                {
+                    Debug.Error($"Failed to draw gizmos {component.GetType()}! {e} AKA ITS AT {e.StackTrace}");
+                }
+
                 if (!enableUpdates && !component.AlwaysUpdate)
                 {
                     continue;
@@ -148,7 +159,7 @@ namespace Runtime.Objects
                 }
                 catch (Exception e)
                 {
-                    Debug.Error($"Failed to update {component.GetType()}! " + e);
+                    Debug.Error($"Failed to update {component.GetType()}! {e} AKA ITS AT {e.StackTrace}");
                 }
             }
         }

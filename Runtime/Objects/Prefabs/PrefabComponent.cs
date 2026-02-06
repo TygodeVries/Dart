@@ -54,34 +54,50 @@ namespace Runtime.Objects.Prefabs
 
             PropertyInfo[] propertyInfos = comp.GetType().GetProperties();
             FieldInfo[] infos = comp.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-            foreach (ValueRecord value in overrides)
+            foreach (ValueRecord valueRecord in overrides)
             {
-                FieldInfo? v = infos.FirstOrDefault((e) =>
-                {
-                    return e.Name == value.Name;
-                }, null);
+                object? val = valueRecord.GetValue();
 
-                if (v != null)
+                FieldInfo? field = infos.FirstOrDefault(f => f.Name == valueRecord.Name);
+                if (field != null)
                 {
-                    v.SetValue(comp, value.GetValue());
+                    Type fieldType = field.FieldType;
+
+                    // Handle nulls for value types
+                    if (val == null && fieldType.IsValueType && Nullable.GetUnderlyingType(fieldType) == null)
+                    {
+                        val = Activator.CreateInstance(fieldType);
+                    }
+
+                    field.SetValue(comp, val);
+                    continue;
                 }
-                else
-                {
-                    PropertyInfo? p = propertyInfos.FirstOrDefault((e) =>
-                    {
-                        return e.Name == value.Name;
-                    }, null);
 
-                    if (p != null)
+                PropertyInfo? prop = propertyInfos.FirstOrDefault(p => p.Name == valueRecord.Name);
+                if (prop != null)
+                {
+                    Type propType = prop.PropertyType;
+
+                    if (val == null && propType.IsValueType && Nullable.GetUnderlyingType(propType) == null)
                     {
-                        p.SetValue(comp, value.GetValue());
+                        val = Activator.CreateInstance(propType);
+                    }
+
+                    if (prop.CanWrite)
+                    {
+                        prop.SetValue(comp, val);
                     }
                     else
                     {
-                        Debug.Error($"Could not find field or property named {value.Name} on {comp.GetType()}");
+                        Debug.Error($"Property {prop.Name} on {comp.GetType()} is read-only.");
                     }
+
+                    continue;
                 }
+
+                Debug.Error($"Could not find field or property named '{valueRecord.Name}' on {comp.GetType()}");
             }
+
 
             return comp;
         }

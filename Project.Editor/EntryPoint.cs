@@ -24,6 +24,7 @@ namespace Editor
 
         public static void Main()
         {
+
             Style.Apply();
             Debug.Log("Loading Editor...");
             string[] args = Environment.GetCommandLineArgs();

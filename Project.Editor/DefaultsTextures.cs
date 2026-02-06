@@ -4,32 +4,32 @@ namespace Project.Editor
 {
     internal class DefaultsTextures
     {
-        private static Texture? fallbackTexture;
+        private static ImageTexture? fallbackTexture;
         /// <summary>
         /// A fallback texture that will be used in case an error has occured.
         /// </summary>
         /// <returns></returns>
-        public static Texture GetFallbackTexture()
+        public static ImageTexture GetFallbackTexture()
         {
             if (fallbackTexture == null)
             {
-                fallbackTexture = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/Unknown.png"));
+                fallbackTexture = ImageTexture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/Unknown.png"));
             }
 
             return fallbackTexture;
         }
 
-        private static Texture? loadingTexture;
+        private static ImageTexture? loadingTexture;
 
         /// <summary>
         /// A generic texture used for loading
         /// </summary>
         /// <returns></returns>
-        public static Texture GetLoadingTexture()
+        public static ImageTexture GetLoadingTexture()
         {
             if (loadingTexture == null)
             {
-                loadingTexture = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/loading.png"));
+                loadingTexture = ImageTexture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/loading.png"));
             }
 
             return loadingTexture;

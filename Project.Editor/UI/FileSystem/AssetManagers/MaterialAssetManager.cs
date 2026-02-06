@@ -27,7 +27,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
         }
 
         public static Mesh[] previewMeshes;
-        Texture icon;
+        ImageTexture icon;
         public MaterialAssetManager()
         {
             // #Todo: Make this be a small preview of the model 
@@ -37,10 +37,10 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
                 Mesh.FromFileObj(EditorUtils.GetAssetDatabase().GetAsset("assets/models/ModelPreview_Box.obj"))!
             };
 
-            icon = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/material.png"));
+            icon = ImageTexture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/material.png"));
         }
 
-        public override Texture GetIcon()
+        public override ImageTexture GetIcon()
         {
             return icon;
         }

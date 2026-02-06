@@ -59,18 +59,29 @@ namespace Runtime.Graphics.Pipeline
             }
         }
 
+
+        /// <summary>
+        /// Add a renderer to be rendered starting the next frame
+        /// </summary>
+        /// <param name="renderer"></param>
         public void AddRenderer(Renderer renderer)
         {
             renderers.Add(renderer);
-            Debug.Log("Added renderer: " + renderers.Count);
         }
 
+        /// <summary>
+        /// Remove a renderer from rendering.
+        /// </summary>
+        /// <param name="renderer"></param>
         public void RemoveRenderer(Renderer renderer)
         {
             renderers.Remove(renderer);
-
         }
 
+        /// <summary>
+        /// Returns the amount of renderers that are rendered every frame (Scene count, not drawcall count)
+        /// </summary>
+        /// <returns></returns>
         public int GetRendererCount()
         {
             return renderers.Count;
@@ -82,11 +93,18 @@ namespace Runtime.Graphics.Pipeline
         // Any custom passes we might need to do (ui?)
         List<RenderPass> customRenderPasses = new List<RenderPass>();
 
+        // Different perspectives to render from
+        List<Camera> cameras = new List<Camera>();
+
         public void AddRenderPass(RenderPass renderPass)
         {
             customRenderPasses.Add(renderPass);
         }
 
+        /// <summary>
+        /// Remove all renderers of a spesific scene from the rendering process
+        /// </summary>
+        /// <param name="scene"></param>
         public void ClearRenderersOfScene(Scene scene)
         {
             for (int i = renderers.Count - 1; i >= 0; i--)
@@ -104,33 +122,35 @@ namespace Runtime.Graphics.Pipeline
             }
         }
 
-        public void Render()
+        /// <summary>
+        /// Add a camera to be rendererd
+        /// </summary>
+        /// <param name="camera"></param>
+        public void AddCamera(Camera camera)
         {
-            Scene.main.GetLightManager().UploadAll();
+            cameras.Add(camera);
+        }
 
-            Matrix4 view = Matrix4.MultiplicativeIdentity;
-            Matrix4 projection = Matrix4.MultiplicativeIdentity;
+        /// <summary>
+        /// Fallback if there are no cameras rendering
+        /// </summary>
+        private void NoCameras()
+        {
+            GL.ClearColor(0.1f, 0.1f, 0.1f, 1);
+        }
 
-            GL.Enable(EnableCap.DepthTest);
-         GL.DepthFunc(DepthFunction.Less);
-
-
-            if (Camera.main != null)
-            {
-                // Set to camera background color   
-                GL.ClearColor(Camera.main.backgroundColor.x, Camera.main.backgroundColor.y, Camera.main.backgroundColor.z, 1);
-                Camera renderCamera = Camera.main;
-                view = renderCamera.GetViewMatrix();
-                projection = renderCamera.GetProjectionMatrix();
-            }
-            else
-            {
-                GL.ClearColor(0.1f, 0.1f, 0.1f, 1);
-            }
-
-            renderers.Sort((a, b) => a.Order - b.Order);
+        /// <summary>
+        /// Render all the rendereres in openGL
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="projection"></param>
+        private void RenderRenderers(Matrix4 view, Matrix4 projection)
+        {
             foreach (Renderer renderer in renderers)
             {
+                if (!renderer.Visible)
+                    continue;
+
                 Material? material = renderer.GetMaterial();
 
                 if (material != null && material.matrixEnabled)
@@ -155,6 +175,59 @@ namespace Runtime.Graphics.Pipeline
 
                 renderer.Render();
             }
+        }
+
+        public void Render()
+        {
+            Scene.main.GetLightManager().UploadAll();
+
+            Matrix4 view = Matrix4.MultiplicativeIdentity;
+            Matrix4 projection = Matrix4.MultiplicativeIdentity;
+
+            GL.Enable(EnableCap.DepthTest);
+            GL.DepthFunc(DepthFunction.Less);
+
+            if (cameras.Count == 0)
+            {
+                NoCameras();
+            }
+
+            // Presort render order
+            renderers.Sort((a, b) => a.Order - b.Order);
+
+            // For every camera currently loaded
+            foreach (Camera camera in cameras)
+            {
+                camera.startRender?.Invoke();
+                // Set render texture
+                if (camera.renderTexture != null)
+                    camera.renderTexture.Bind();
+                else
+                {
+                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0); // Reset if nothing, aka draw to the screen
+                    GL.Viewport(0, 0, RenderCanvas.main!.Size.X, RenderCanvas.main!.Size.Y);
+                }
+
+                // Set background color
+                GL.ClearColor(camera.backgroundColor.x, camera.backgroundColor.y, camera.backgroundColor.z, 1);
+
+                GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+                // Set Matrixes for rendering
+                view = camera.GetViewMatrix();
+                projection = camera.GetProjectionMatrix();
+
+                RenderRenderers(view, projection);
+
+                // Reset render texture
+                if (camera.renderTexture != null)
+                    camera.renderTexture.Unbind(RenderCanvas.main!.Size.X, RenderCanvas.main!.Size.Y);
+                camera.endRender?.Invoke();
+            }
+
+            // Back to main
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            GL.Viewport(0, 0, RenderCanvas.main!.FramebufferSize.X, RenderCanvas.main!.FramebufferSize.Y);
 
             foreach (RenderPass renderPass in customRenderPasses)
             {

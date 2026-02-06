@@ -19,12 +19,12 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             return prefabAssetInspection;
         }
 
-        Texture icon;
+        ImageTexture icon;
         public PrefabAssetManager()
         {
-            icon = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/prefab.png"));
+            icon = ImageTexture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/prefab.png"));
         }
-        public override Texture GetIcon()
+        public override ImageTexture GetIcon()
         {
             return icon;
         }
@@ -38,6 +38,7 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
 
             gameObject = PrefabGameObject.FromFile(GetAsset()).GetGameObject();
             gameObject.enableUpdates = false; // Avoid it from moving
+            gameObject.renderGizmos = true;
 
             scene.Instantiate(gameObject);
 

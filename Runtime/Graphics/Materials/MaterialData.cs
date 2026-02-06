@@ -49,7 +49,7 @@ namespace Runtime.Graphics.Materials
                         break;
                     }
 
-                    Texture texture = Texture.LoadFromPng(database.GetAsset(field.Value));
+                    ImageTexture texture = ImageTexture.LoadFromPng(database.GetAsset(field.Value));
                     if (texture == null)
                     {
                         Debug.Error("Texture is null!");

@@ -1,4 +1,5 @@
-﻿using Runtime.Graphics.Renderers;
+﻿using Runtime.Components.Core;
+using Runtime.Graphics.Renderers;
 
 namespace Runtime.Graphics.Pipeline
 {
@@ -8,7 +9,7 @@ namespace Runtime.Graphics.Pipeline
         void Initialize() { }
         void AddRenderer(Renderer renderer) { }
         void RemoveRenderer(Renderer renderer) { }
-
+        void AddCamera(Camera camera) { }
         void AddRenderPass(RenderPass pass) { }
     }
 }

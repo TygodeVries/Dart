@@ -27,7 +27,9 @@ namespace Runtime.Data
         {
             if (value == null)
             {
-                Debug.Error($"You can not create a record for value of null on record {name}!");
+                Type = ValueRecordType.Null;
+                Name = name;
+                SetValue(null);
                 return;
             }
             var v = ValueRecordTypeFromType(value!.GetType());
@@ -80,7 +82,8 @@ namespace Runtime.Data
             {
                 AssetReferenceAttribute? attribute = type.GetCustomAttributes(typeof(AssetReferenceAttribute), false)
                                    .FirstOrDefault() as AssetReferenceAttribute;
-
+                if (attribute == null)
+                    return null;
                 if (attribute.filetype.Contains(Path.GetExtension(Value).ToLower()))
                 {
                     MethodInfo? method = type.GetMethod(attribute.createMethod);
@@ -112,11 +115,12 @@ namespace Runtime.Data
         }
 
 
-        public void SetValue(object value)
+        public void SetValue(object? value)
         {
             if (value == null)
             {
                 Type = ValueRecordType.Null;
+                Value = "null";
                 return;
             }
 

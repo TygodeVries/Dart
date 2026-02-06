@@ -6,9 +6,9 @@ using Runtime.Logging;
 namespace Runtime.Graphics
 {
     [AssetReference(new string[] { ".sky" }, nameof(CreateFromFile))]
-    public class CubemapTexture : AssetReference
+    public class CubemapTexture : Texture
     {
-        public CubemapTexture(Texture[] faces)
+        public CubemapTexture(ImageTexture[] faces)
         {
             if (faces.Length != 6)
             {
@@ -40,7 +40,7 @@ namespace Runtime.Graphics
         public bool isUploaded;
         public int size;
 
-        Texture[] faces;
+        ImageTexture[] faces;
         // Order:
         // +X (right)
         // -X (left)
@@ -52,7 +52,7 @@ namespace Runtime.Graphics
         public static CubemapTexture CreateFromFile(Asset asset)
         {
             string[] files = { "right.png", "left.png", "up.png", "down.png", "forward.png", "backward.png" };
-            Texture[] faces = new Texture[files.Length];
+            ImageTexture[] faces = new ImageTexture[files.Length];
             for (int i = 0; i < files.Length; i++)
             {
                 string file = Path.Join(asset.GetFolder().GetSystemPath(), files[i]);
@@ -62,7 +62,7 @@ namespace Runtime.Graphics
                     continue;
                 }
 
-                Texture texture = Texture.LoadFromPng(Asset.FromSystemPath(asset.GetDatabase(), file), upload: false, useCache: false);
+                ImageTexture texture = ImageTexture.LoadFromPng(Asset.FromSystemPath(asset.GetDatabase(), file), upload: false, useCache: false);
                 faces[i] = texture;
             }
 
@@ -71,7 +71,7 @@ namespace Runtime.Graphics
             return cmt;
         }
 
-        public void Use(TextureUnit textureUnit)
+        public override void Use(TextureUnit textureUnit)
         {
             if (!isUploaded)
                 Upload();

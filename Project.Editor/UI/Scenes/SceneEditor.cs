@@ -135,7 +135,7 @@ namespace Project.Editor.UI.Scenes
 
         public static void AddVisibility(GameObject g)
         {
-            if (g.GetComponent<MeshRenderer>() != null && g.GetComponent<MeshRenderer>().mesh != null)
+            if (g.GetComponent<MeshRenderer>() != null)
             {
                 return;
             }
@@ -157,11 +157,11 @@ namespace Project.Editor.UI.Scenes
                 }
             }
 
-            Texture texture = DefaultsTextures.GetFallbackTexture();
+            ImageTexture texture = DefaultsTextures.GetFallbackTexture();
             if (icon != null)
             {
                 Asset asset = new Asset(EditorUtils.GetAssetDatabase(), icon);
-                texture = Texture.LoadFromPng(asset);
+                texture = ImageTexture.LoadFromPng(asset);
             }
 
             material.SetTexture("u_Texture", texture);

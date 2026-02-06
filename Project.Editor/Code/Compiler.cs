@@ -136,6 +136,11 @@ namespace Project.Editor.Code
                 }
                 string pluginSource = $"\n\t<Reference Include=\"{plugin}\">\r\n      <HintPath>../plugins/{plugin}/{pluginData.CoreDll}</HintPath>\r\n      <Private>false</Private>\r\n    </Reference>";
                 file += pluginSource;
+
+                foreach (string dep in pluginData.Dependencies)
+                {
+                    file += $"\n\t<Reference Include=\"{dep}\">\r\n      <HintPath>../plugins/{plugin}/{dep}</HintPath>\r\n      <Private>false</Private>\r\n    </Reference>";
+                }
             }
 
             file += $"\n\t<Reference Include=\"Runtime\">\r\n      <HintPath>{EditorUtils.exeLocation.Replace(".exe", ".dll")}</HintPath>\r\n     <Private>false</Private>\r\n      </Reference>";

@@ -8,13 +8,13 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
     [AssetManager(".sky")]
     internal class SkyboxAssetManager : AssetManager
     {
-        Texture icon;
+        ImageTexture icon;
         public SkyboxAssetManager()
         {
-            icon = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/gizmos/skybox.png"));
+            icon = ImageTexture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/gizmos/skybox.png"));
         }
 
-        public override Texture GetIcon()
+        public override ImageTexture GetIcon()
         {
             return icon;
         }

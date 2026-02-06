@@ -5,10 +5,10 @@ namespace Project.Editor.UI.Inspectors.Inspections
 {
     internal class PngAssetInspection : AssetInspection
     {
-        Texture? texture;
+        ImageTexture? texture;
         public override void Loaded()
         {
-            texture = Texture.LoadFromPng(GetAsset());
+            texture = ImageTexture.LoadFromPng(GetAsset());
         }
 
         public override void Render()

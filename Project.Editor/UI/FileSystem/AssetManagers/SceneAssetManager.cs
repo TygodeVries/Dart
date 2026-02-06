@@ -14,14 +14,14 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
     [AssetManager(".scene")]
     internal class SceneAssetManager : AssetManager
     {
-        Texture texture;
+        ImageTexture texture;
         public SceneAssetManager()
         {
             Asset asset = EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/scene.png");
-            texture = Texture.LoadFromPng(asset);
+            texture = ImageTexture.LoadFromPng(asset);
         }
 
-        public override Texture GetIcon()
+        public override ImageTexture GetIcon()
         {
             return texture;
         }

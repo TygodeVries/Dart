@@ -46,7 +46,7 @@ namespace Runtime.Components.Test
                 tr.position += tr.GetForwards() * -moveDelta.z * (float)Time.deltaTime * flightSpeed;
                 tr.position += tr.GetRight() * moveDelta.x * (float)Time.deltaTime * flightSpeed;
                 tr.position += tr.GetUp() * moveDelta.y * (float)Time.deltaTime * flightSpeed;
-                if (Mouse.current.rightPressed)
+                if (Mouse.current.leftPressed)
                 {
 
                     // Rotating
@@ -55,15 +55,7 @@ namespace Runtime.Components.Test
 
                 }
 
-                if (Mouse.current.RightPressedThisFrame())
-                {
-                    Mouse.current.SetCursorState(OpenTK.Windowing.Common.CursorState.Hidden);
-                }
 
-                if (Mouse.current.RightReleasedThisFrame())
-                {
-                    Mouse.current.SetCursorState(OpenTK.Windowing.Common.CursorState.Normal);
-                }
             }
         }
 

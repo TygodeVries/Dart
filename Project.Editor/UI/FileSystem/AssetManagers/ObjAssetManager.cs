@@ -24,18 +24,18 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             return inspection;
         }
 
-        Texture icon;
+        ImageTexture icon;
         public ObjAssetManager()
         {
             // #Todo: Make this be a small preview of the model 
-            icon = Texture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/model.png"));
+            icon = ImageTexture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/model.png"));
 
             // Load a default shader
             material = new Material(ShaderProgram.FromFile(EditorUtils.GetAssetDatabase().GetAsset("assets/shaders/previews/model_untextured.vert"), EditorUtils.GetAssetDatabase().GetAsset("assets/shaders/previews/model_untextured.frag")));
             material.SetVector3("tintColor", new Vector3(1, 1, 1));
         }
 
-        public override Texture GetIcon()
+        public override ImageTexture GetIcon()
         {
             return icon;
         }

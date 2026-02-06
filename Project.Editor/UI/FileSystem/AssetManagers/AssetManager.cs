@@ -12,7 +12,7 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
         {
             return asset;
         }
-        public virtual Texture GetIcon()
+        public virtual ImageTexture GetIcon()
         {
             return DefaultsTextures.GetFallbackTexture();
         }

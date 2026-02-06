@@ -15,15 +15,15 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
             return inspection;
         }
 
-        Dictionary<string, Texture> textureCache = new Dictionary<string, Texture>();
+        Dictionary<string, ImageTexture> textureCache = new Dictionary<string, ImageTexture>();
         HashSet<string> loadingTextures = new HashSet<string>();
 
         public override void ClearCache()
         {
-            textureCache = new Dictionary<string, Texture>();
+            textureCache = new Dictionary<string, ImageTexture>();
         }
 
-        public override Texture GetIcon()
+        public override ImageTexture GetIcon()
         {
             string taskPath = (string)asset.GetPath()!.Clone();
             if (textureCache.TryGetValue(taskPath, out var tex))
@@ -43,7 +43,7 @@ namespace Project.Editor.UI.FileSystem.FileInspectors
             {
                 Debug.Log($"Now loading: {taskPath}");
 
-                var texture = Texture.LoadFromPng(new Runtime.Data.Asset(asset.GetDatabase(), taskPath), 100, 100, false);
+                var texture = ImageTexture.LoadFromPng(new Runtime.Data.Asset(asset.GetDatabase(), taskPath), 100, 100, false);
 
                 lock (textureCache)
                     textureCache[taskPath] = texture;

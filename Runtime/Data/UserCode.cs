@@ -75,15 +75,22 @@ public class UserCode
         }
 
         Asset dllAsset = Game.GetAssetDatabase().GetAsset("Game.dll");
+        if (File.Exists(dllAsset.GetSystemPath()))
+        {
+            loadContext = new AssemblyLoadContext("Game", isCollectible: true);
+            loadContextRef = new WeakReference(loadContext);
+            unloadRequested = false;
 
-        loadContext = new AssemblyLoadContext("Game", isCollectible: true);
-        loadContextRef = new WeakReference(loadContext);
-        unloadRequested = false;
+            loadContext.LoadFromAssemblyPath(dllAsset.GetSystemPath());
+            Debug.Log("Loaded Game.dll");
+        }
+        else
+        {
+            Debug.Log("No Game.dll was provided. Skipping!");
+        }
 
-        loadContext.LoadFromAssemblyPath(dllAsset.GetSystemPath());
         OnAttemptRestore?.Invoke();
 
-        Debug.Log("Loaded Game.dll");
     }
 
     public static Action? OnAttemptUnload;

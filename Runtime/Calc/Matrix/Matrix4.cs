@@ -28,7 +28,26 @@
             m.Invert();
             this = new Matrix4(m);
         }
-
+        public Matrix4 Transpose()
+        {
+            return new Matrix4(new float[]{
+                m00,
+                m10,
+                m20,
+                m30,
+                m01,
+                m11,
+                m21,
+                m31,
+                m02,
+                m12,
+                m22,
+                m32,
+                m03,
+                m13,
+                m23,
+                m33 });
+        }
         public static Matrix4 LookAt(Vector3 eye, Vector3 target, Vector3 up)
         {
             return new Matrix4(OpenTK.Mathematics.Matrix4.LookAt(eye.ToOpenTK(), target.ToOpenTK(), up.ToOpenTK()));
@@ -38,7 +57,7 @@
 
         public OpenTK.Mathematics.Matrix4 ToOpenTK()
         {
-            return new OpenTK.Mathematics.Matrix4(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33); ;
+            return new OpenTK.Mathematics.Matrix4(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33);
         }
 
         public static Matrix4 CreateRotationX(float angle)
@@ -81,7 +100,29 @@
             OpenTK.Mathematics.Matrix4.CreatePerspectiveFieldOfView(fovy, aspect, depthNear, depthFar, out matrix);
             return new Matrix4(matrix);
         }
+        public Matrix4(float[] m)
+        {
+            int idx = 0;
+            m00 = m[idx++];
+            m01 = m[idx++];
+            m02 = m[idx++];
+            m03 = m[idx++];
 
+            m10 = m[idx++];
+            m11 = m[idx++];
+            m12 = m[idx++];
+            m13 = m[idx++];
+
+            m20 = m[idx++];
+            m21 = m[idx++];
+            m22 = m[idx++];
+            m23 = m[idx++];
+
+            m30 = m[idx++];
+            m31 = m[idx++];
+            m32 = m[idx++];
+            m33 = m[idx++];
+        }
         public Matrix4(OpenTK.Mathematics.Matrix4 matrix)
         {
             this.m00 = matrix.M11;

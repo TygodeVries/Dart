@@ -11,6 +11,7 @@ namespace Runtime.Graphics.Renderers
 
         public int Order = 0;
 
+        public bool Visible = true;
         public void SetMaterial(Material material)
         {
             this.material = material;

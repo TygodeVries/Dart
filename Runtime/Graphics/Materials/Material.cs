@@ -5,7 +5,6 @@ using Runtime.Data;
 using Runtime.Graphics.Shaders;
 using Runtime.Logging;
 using Runtime.Scenes;
-using System;
 
 namespace Runtime.Graphics.Materials
 {
@@ -20,11 +19,11 @@ namespace Runtime.Graphics.Materials
             return material;
         }
 
-      public static Material CreateSimple()
-      {
-         ShaderProgram shaderProgram =
-            new ShaderProgram(
-@"
+        public static Material CreateSimple()
+        {
+            ShaderProgram shaderProgram =
+               new ShaderProgram(
+   @"
 #version 330 core
 
 layout(location = 0) in vec3 aPosition;
@@ -59,7 +58,7 @@ void main()
     Uv = uv;
 }
 ",
-@"
+   @"
 #version 330 core
 
 in vec3 Pos;
@@ -134,15 +133,15 @@ void main()
 		light += diffuse + specular;
 	}
 
-	FragColor = vec4(col.rgb * light, col.a);
+	FragColor = vec4(col.rgb, col.a);
 }
 ");
 
-		Material material = new Material(shaderProgram);
-   	return material;
-   }
+            Material material = new Material(shaderProgram);
+            return material;
+        }
 
-		ShaderProgram shader;
+        ShaderProgram shader;
         public Material(ShaderProgram shader)
         {
             this.shader = shader;
@@ -360,7 +359,7 @@ void main()
                 textureId.Add(field, textureId.Count);
             }
 
-            Debug.Log($"Set texture field {field} to " + texture?.GetAsset().GetSystemPath());
+
             if (materialFields.ContainsKey(field))
             {
                 if (materialFields[field] is TextureMaterialField)

@@ -517,3 +517,4 @@ Assets.Editor/plugins/Plugin.Windows.Audio/Ijwhost.dll
 Assets.Editor/plugins/Plugin.DearImGui/Runtime.dll
 Assets.Editor/plugins/Plugin.DearImGui/Plugin.DearImGui.dll
 Assets.Editor/imgui.ini
+/Assets.Example/Game Export
