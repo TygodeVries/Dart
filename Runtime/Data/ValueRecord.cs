@@ -50,6 +50,9 @@ namespace Runtime.Data
             if (Type == ValueRecordType.Null)
                 return null;
 
+         if (Value == null)
+               return null;
+
             switch (Type)
             {
                 case ValueRecordType.String:
