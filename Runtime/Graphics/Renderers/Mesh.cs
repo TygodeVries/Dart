@@ -74,7 +74,7 @@ namespace Runtime.Graphics.Renderers
                                 finalVertices.Add(pos.z);
 
                                 finalUVs.Add(uv.x);
-                                finalUVs.Add(1 - uv.y);
+                                finalUVs.Add(uv.y);
 
                                 finalNormals.Add(norm.x);
                                 finalNormals.Add(norm.y);
