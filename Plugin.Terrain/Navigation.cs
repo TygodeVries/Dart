@@ -119,7 +119,9 @@ namespace Runtime.Plugin.Navigation
 		}
 		public NavigationPiece[]? FindPath(NavigationPiece start, NavigationPiece end)
 		{
-			Init(start, end);
+			if (Init(start, end) == NavigationStatus.Done)
+				return null;
+			
 			NavigationStatus status = NavigationStatus.Error;
 			while ((status = Step(end)) == NavigationStatus.Busy) ;
 			if (status != NavigationStatus.Done)
