@@ -12,8 +12,8 @@ namespace Runtime.DearImGUI.Backend
 {
     public class ImGuiRenderPass : RenderPass
     {
-        ImGuiIOPtr io;
-        nint context;
+        private ImGuiIOPtr io;
+        private nint context;
         public override void Start()
         {
             instance = this;
@@ -106,8 +106,11 @@ namespace Runtime.DearImGUI.Backend
 
                 try
                 {
+
                     if (drawContents)
                         guiWindow.Render();
+
+                    guiWindow.MouseHovering = ImGui.IsWindowHovered();
                 }
                 catch (Exception e)
                 {
@@ -137,7 +140,7 @@ namespace Runtime.DearImGUI.Backend
             }
         }
 
-        Dictionary<Keys, ImGuiKey> keyMap = new Dictionary<Keys, ImGuiKey>
+        private Dictionary<Keys, ImGuiKey> keyMap = new Dictionary<Keys, ImGuiKey>
         {
             // Letters
             { Keys.A, ImGuiKey.A },
@@ -234,7 +237,7 @@ namespace Runtime.DearImGUI.Backend
             { Keys.GraveAccent, ImGuiKey.GraveAccent },
         };
 
-        void InputData()
+        private void InputData()
         {
             // Mouse Position
             Vector2 mouse = Mouse.current.position;
@@ -258,25 +261,25 @@ namespace Runtime.DearImGUI.Backend
 
             foreach (var v in keyMap)
             {
-                bool isPressedThisFrame = Keyboard.current.IsPressedThisFrame(v.Key);
+                bool isPressedThisFrame = Keyboard.current.IsPressedThisFrame((Key)v.Key);
 
                 if (isPressedThisFrame)
                 {
                     io.AddKeyEvent(v.Value, true);
                 }
 
-                bool isReleasedThisFrame = Keyboard.current.IsReleasedThisFrame(v.Key);
+                bool isReleasedThisFrame = Keyboard.current.IsReleasedThisFrame((Key)v.Key);
                 if (isReleasedThisFrame)
                 {
                     io.AddKeyEvent(v.Value, false);
                 }
             }
 
-            // Update modifier keys manually (important)
-            io.KeyCtrl = Keyboard.current.IsPressed(Keys.LeftControl) || Keyboard.current.IsPressed(Keys.RightControl);
-            io.KeyShift = Keyboard.current.IsPressed(Keys.LeftShift) || Keyboard.current.IsPressed(Keys.RightShift);
-            io.KeyAlt = Keyboard.current.IsPressed(Keys.LeftAlt) || Keyboard.current.IsPressed(Keys.RightAlt);
-            io.KeySuper = Keyboard.current.IsPressed(Keys.LeftSuper) || Keyboard.current.IsPressed(Keys.RightSuper);
+            // Update modifier keys manually 
+            io.KeyCtrl = Keyboard.current.IsPressed((Key)Keys.LeftControl) || Keyboard.current.IsPressed((Key)Keys.RightControl);
+            io.KeyShift = Keyboard.current.IsPressed((Key)Keys.LeftShift) || Keyboard.current.IsPressed((Key)Keys.RightShift);
+            io.KeyAlt = Keyboard.current.IsPressed((Key)Keys.LeftAlt) || Keyboard.current.IsPressed((Key)Keys.RightAlt);
+            io.KeySuper = Keyboard.current.IsPressed((Key)Keys.LeftSuper) || Keyboard.current.IsPressed((Key)Keys.RightSuper);
 
         }
     }

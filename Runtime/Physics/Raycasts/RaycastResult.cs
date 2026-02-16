@@ -8,12 +8,13 @@ namespace Runtime.Physics.Raycasts
         public float distance;
         public Vector3 hit;
         public ICollider collider;
-
-        public RaycastResult(float distance, ICollider collider, Vector3 hit)
+        public Vector3 surfaceNormal;
+        public RaycastResult(float distance, ICollider collider, Vector3 hit, Vector3 surfaceNormal)
         {
             this.distance = distance;
             this.collider = collider;
             this.hit = hit;
+            this.surfaceNormal = surfaceNormal;
         }
     }
 }

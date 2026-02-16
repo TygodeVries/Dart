@@ -29,8 +29,9 @@ namespace Runtime.Components.Physics
         {
             return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
         }
-        public override float Raycast(Raycast raycast)
+        public override (float, Vector3) Raycast(Raycast raycast)
         {
+            // #TODO add normal
             Vector3 mu = raycast.position - GetCenter();
             Vector3 d = raycast.direction;
 
@@ -39,14 +40,14 @@ namespace Runtime.Components.Physics
             float uu = Inner(mu, mu);
             float det = (ud * ud) - (dd * (uu - (radius * radius)));
             if (det < 0)
-                return -1;
+                return (-1, Vector3.Zero);
             det = MathF.Sqrt(det) / dd;
             float e = -ud;
             float i = e - det;
             if (i >= 0)
-                return i;
+                return (i, Vector3.Zero);
             i = e + det;
-            return i;
+            return (i, Vector3.Zero);
         }
     }
 }

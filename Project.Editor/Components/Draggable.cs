@@ -25,7 +25,7 @@ namespace Project.Editor.Components
 
             if (Mouse.current.LeftReleasedThisFrame())
             {
-                Mouse.current.SetCursorState(OpenTK.Windowing.Common.CursorState.Normal);
+                Mouse.current.ShowCursor();
                 isDragging = false;
             }
 
@@ -85,7 +85,7 @@ namespace Project.Editor.Components
 
             if (result.collider.gameObject == gameObject)
             {
-                Mouse.current.SetCursorState(OpenTK.Windowing.Common.CursorState.Grabbed);
+                Mouse.current.HideCursor();
                 isDragging = true;
             }
         }

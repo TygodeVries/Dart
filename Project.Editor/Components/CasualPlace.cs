@@ -1,5 +1,4 @@
-﻿using OpenTK.Windowing.GraphicsLibraryFramework;
-using Project.Editor.UI.Scenes;
+﻿using Project.Editor.UI.Scenes;
 using Runtime.Calc;
 using Runtime.Components.Core;
 using Runtime.Components.Physics;
@@ -26,11 +25,11 @@ namespace Project.Editor.Components
 
         public override void Update()
         {
-            if (Keyboard.current.IsPressed(Keys.Z))
+            if (Keyboard.current.IsPressed(Key.Z))
             {
                 Rotate();
             }
-            else if (Keyboard.current.IsPressed(Keys.LeftShift))
+            else if (Keyboard.current.IsPressed(Key.LeftShift))
             {
                 Vertical();
             }
@@ -46,7 +45,7 @@ namespace Project.Editor.Components
                 SceneEditor.FinishedPlace();
             }
 
-            if (Keyboard.current.IsPressedThisFrame(Keys.Escape))
+            if (Keyboard.current.IsPressedThisFrame(Key.Escape))
             {
                 if (startPos != null)
                 {

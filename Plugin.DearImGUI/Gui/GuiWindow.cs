@@ -6,6 +6,7 @@ namespace Runtime.DearImGUI.Gui
 {
     public abstract class GuiWindow
     {
+        public bool MouseHovering;
         public bool WriteHeaderAndFooter = true;
         private int? id;
         public int GetId()
@@ -30,6 +31,17 @@ namespace Runtime.DearImGUI.Gui
         public static void Enable(GuiWindow window)
         {
             windowsToOpen.Enqueue(window);
+        }
+
+        public static bool IsMouseOverlappingAnyWindow()
+        {
+            foreach (GuiWindow window in ImGuiRenderPass.guiWindows)
+            {
+                if (window.MouseHovering)
+                    return true;
+            }
+
+            return false;
         }
 
         private static List<string> restore = new List<string>();
@@ -74,7 +86,6 @@ namespace Runtime.DearImGUI.Gui
             if (!isOpen)
             {
                 GuiWindow.Disable(this);
-                ImGui.End();
             }
 
             return visible && isOpen;

@@ -40,7 +40,8 @@ namespace Runtime.Graphics.Pipeline
 
             EnableCap[] caps = new EnableCap[]
             {
-                 EnableCap.Multisample
+                 EnableCap.Multisample,
+                 EnableCap.CullFace
             };
             Debug.Log("Turning on OpenGL features...");
             string features = "";
@@ -205,7 +206,7 @@ namespace Runtime.Graphics.Pipeline
                 else
                 {
                     GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0); // Reset if nothing, aka draw to the screen
-                    GL.Viewport(0, 0, RenderCanvas.main!.Size.X, RenderCanvas.main!.Size.Y);
+                    GL.Viewport(0, 0, RenderCanvas.main!.FramebufferSize.X, RenderCanvas.main!.FramebufferSize.Y);
                 }
 
                 // Set background color
@@ -221,7 +222,7 @@ namespace Runtime.Graphics.Pipeline
 
                 // Reset render texture
                 if (camera.renderTexture != null)
-                    camera.renderTexture.Unbind(RenderCanvas.main!.Size.X, RenderCanvas.main!.Size.Y);
+                    camera.renderTexture.Unbind(RenderCanvas.main!.FramebufferSize.X, RenderCanvas.main!.FramebufferSize.Y);
                 camera.endRender?.Invoke();
             }
 

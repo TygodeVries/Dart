@@ -14,7 +14,17 @@ namespace Runtime.Input
             Debug.Log("Activated Mouse!");
         }
 
-        public void SetCursorState(CursorState state)
+        public void HideCursor()
+        {
+            SetCursorState(CursorState.Grabbed);
+        }
+
+        public void ShowCursor()
+        {
+            SetCursorState(CursorState.Normal);
+        }
+
+        private void SetCursorState(CursorState state)
         {
             RenderCanvas.main!.CursorState = state;
         }

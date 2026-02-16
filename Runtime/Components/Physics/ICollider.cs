@@ -24,6 +24,6 @@ namespace Runtime.Components.Physics
 
         public abstract bool HasOverlap(Vector3 point);
         public abstract bool HasOverlap(ICollider collider);
-        public abstract float Raycast(Raycast raycast);
+        public abstract (float distance, Vector3 normal) Raycast(Raycast raycast);
     }
 }

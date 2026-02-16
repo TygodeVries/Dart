@@ -113,15 +113,16 @@ namespace Runtime.Components.Physics
         /// </summary>
         /// <param name="ray"></param>
         /// <returns></returns>
-        public override float Raycast(Raycast ray)
+        public override (float distance, Vector3 normal) Raycast(Raycast ray)
         {
-            Transform? transform = GetComponent<Transform>();
             Vector3 center = GetCenter();
             Vector3 min = center - (size / 2);
             Vector3 max = center + (size / 2);
 
             float tmin = float.NegativeInfinity;
             float tmax = float.PositiveInfinity;
+
+            Vector3 hitNormal = Vector3.Zero;
 
             for (int i = 0; i < 3; i++)
             {
@@ -133,30 +134,44 @@ namespace Runtime.Components.Physics
                 if (MathF.Abs(dir) < 0.0001f)
                 {
                     if (origin < slabMin || origin > slabMax)
-                        return -1;
+                        return (-1, Vector3.Zero);
                 }
                 else
                 {
                     float t1 = (slabMin - origin) / dir;
                     float t2 = (slabMax - origin) / dir;
 
+                    float enterT = t1;
+                    float exitT = t2;
+                    int sign = -1;
+
                     if (t1 > t2)
                     {
-                        float tmp = t1;
-                        t1 = t2;
-                        t2 = tmp;
+                        (t1, t2) = (t2, t1);
+                        sign = 1;
                     }
 
-                    tmin = MathF.Max(tmin, t1);
+                    if (t1 > tmin)
+                    {
+                        tmin = t1;
+
+                        hitNormal = Vector3.Zero;
+                        hitNormal[i] = sign;
+                    }
+
                     tmax = MathF.Min(tmax, t2);
 
                     if (tmin > tmax)
-                        return -1;
+                        return (-1, Vector3.Zero);
                 }
             }
 
-            return tmin >= 0 ? tmin : tmax;
+            if (tmin >= 0)
+                return (tmin, hitNormal);
+
+            return (tmax, Vector3.Zero - hitNormal);
         }
+
 
     }
 }

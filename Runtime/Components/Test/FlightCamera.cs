@@ -1,5 +1,4 @@
-﻿using OpenTK.Windowing.GraphicsLibraryFramework;
-using Runtime.Calc;
+﻿using Runtime.Calc;
 using Runtime.Components.Core;
 using Runtime.Input;
 
@@ -19,22 +18,22 @@ namespace Runtime.Components.Test
             if (flightSpeed < 0)
                 flightSpeed = 0;
 
-            if (Keyboard.current.IsPressed(Keys.A))
+            if (Keyboard.current.IsPressed(Key.A))
                 goalDelta.x = -1;
 
-            if (Keyboard.current.IsPressed(Keys.D))
+            if (Keyboard.current.IsPressed(Key.D))
                 goalDelta.x = 1;
 
-            if (Keyboard.current.IsPressed(Keys.Q))
+            if (Keyboard.current.IsPressed(Key.Q))
                 goalDelta.y = -1;
 
-            if (Keyboard.current.IsPressed(Keys.E))
+            if (Keyboard.current.IsPressed(Key.E))
                 goalDelta.y = 1;
 
-            if (Keyboard.current.IsPressed(Keys.W))
+            if (Keyboard.current.IsPressed(Key.W))
                 goalDelta.z = -1;
 
-            if (Keyboard.current.IsPressed(Keys.S))
+            if (Keyboard.current.IsPressed(Key.S))
                 goalDelta.z = 1;
 
             goalDelta.Normalize();

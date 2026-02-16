@@ -25,23 +25,23 @@ namespace Project.Editor.Preview
             else
             {
                 float xRot = 0;
-                if (Keyboard.current.IsPressed(OpenTK.Windowing.GraphicsLibraryFramework.Keys.Left))
+                if (Keyboard.current.IsPressed(Key.Left))
                 {
                     xRot = -1;
                 }
 
-                if (Keyboard.current.IsPressed(OpenTK.Windowing.GraphicsLibraryFramework.Keys.Right))
+                if (Keyboard.current.IsPressed(Key.Right))
                 {
                     xRot = 1;
                 }
 
                 float yRot = 0;
-                if (Keyboard.current.IsPressed(OpenTK.Windowing.GraphicsLibraryFramework.Keys.Up))
+                if (Keyboard.current.IsPressed(Key.Up))
                 {
                     yRot = -1;
                 }
 
-                if (Keyboard.current.IsPressed(OpenTK.Windowing.GraphicsLibraryFramework.Keys.Down))
+                if (Keyboard.current.IsPressed(Key.Down))
                 {
                     yRot = 1;
                 }

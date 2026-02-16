@@ -1,5 +1,4 @@
-﻿using OpenTK.Windowing.GraphicsLibraryFramework;
-using Runtime.Logging;
+﻿using Runtime.Logging;
 
 namespace Runtime.Input
 {
@@ -12,18 +11,18 @@ namespace Runtime.Input
             Debug.Log("Activated keyboard!");
         }
 
-        private Dictionary<Keys, bool> keyStates = new Dictionary<Keys, bool>();
+        private Dictionary<Key, bool> keyStates = new Dictionary<Key, bool>();
 
         // Keys pressed during this frame
-        private List<Keys> keysPressedThisFrame = new List<Keys>();
+        private List<Key> keysPressedThisFrame = new List<Key>();
 
         // Keys released during this frame
-        private List<Keys> keysReleasedThisFrame = new List<Keys>();
+        private List<Key> keysReleasedThisFrame = new List<Key>();
 
         /// <summary>
         /// Update key state and track presses/releases per frame
         /// </summary>
-        public void SetKeyState(Keys key, bool pressed)
+        public void SetKeyState(Key key, bool pressed)
         {
             bool wasPressed = keyStates.ContainsKey(key) && keyStates[key];
 
@@ -43,6 +42,29 @@ namespace Runtime.Input
             }
         }
 
+        public float GetAxis(KeyboardAxis axis)
+        {
+            if (axis == KeyboardAxis.Vertical)
+            {
+                if (IsPressed(Key.W))
+                    return 1;
+
+                if (IsPressed(Key.S))
+                    return -1;
+            }
+
+            if (axis == KeyboardAxis.Horizontal)
+            {
+                if (IsPressed(Key.D))
+                    return 1;
+
+                if (IsPressed(Key.A))
+                    return -1;
+            }
+
+            return 0;
+        }
+
         /// <summary>
         /// Cleanup pressed/released states at end of frame
         /// </summary>
@@ -55,7 +77,7 @@ namespace Runtime.Input
         /// <summary>
         /// Is key currently pressed?
         /// </summary>
-        public bool IsPressed(Keys key)
+        public bool IsPressed(Key key)
         {
             return keyStates.ContainsKey(key) && keyStates[key];
         }
@@ -63,7 +85,7 @@ namespace Runtime.Input
         /// <summary>
         /// Was key pressed this frame?
         /// </summary>
-        public bool IsPressedThisFrame(Keys key)
+        public bool IsPressedThisFrame(Key key)
         {
             return keysPressedThisFrame.Contains(key);
         }
@@ -71,10 +93,15 @@ namespace Runtime.Input
         /// <summary>
         /// Was key released this frame?
         /// </summary>
-        public bool IsReleasedThisFrame(Keys key)
+        public bool IsReleasedThisFrame(Key key)
         {
             return keysReleasedThisFrame.Contains(key);
         }
     }
 
+    public enum KeyboardAxis
+    {
+        Horizontal,
+        Vertical
+    }
 }

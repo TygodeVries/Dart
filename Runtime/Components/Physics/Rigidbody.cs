@@ -7,48 +7,65 @@ namespace Runtime.Components.Physics
 {
     public class Rigidbody : Objects.Component
     {
+        private Transform? transform;
+        private ICollider? collider;
+
+        public Vector3 velocity = Vector3.Zero;
+        public float gravity = -7f;
+
+        public override void Load()
+        {
+            transform = GetComponent<Transform>();
+            collider = GetComponent<ICollider>();
+
+            if (transform == null)
+                Debug.Error("Rigidbody requires Transform!");
+
+            if (collider == null)
+                Debug.Warning("Rigidbody has no collider attached.");
+        }
+
         public override void Update()
         {
-            // We need to be able to move objects
-            if (GetComponent<Transform>() == null)
+            if (transform == null)
+                return;
+
+            float dt = (float)Time.deltaTime;
+
+            // Apply gravity
+            velocity.y += gravity * dt;
+
+            MoveAxisSeparated(velocity * dt);
+        }
+
+        private void MoveAxisSeparated(Vector3 delta)
+        {
+            if (transform == null || collider == null)
             {
-                Console.WriteLine("Rigidbody requires Transform to function!");
+                transform!.position += delta;
                 return;
             }
 
-            // Move by a spesific amount
-            Move(velocity * (float)Time.deltaTime);
+            MoveAxis(new Vector3(delta.x, 0, 0), ref velocity.x);
 
-            // Add a gravity force
-            velocity += new Vector3(0, -7, 0) * (float)Time.deltaTime;
+            MoveAxis(new Vector3(0, delta.y, 0), ref velocity.y);
+
+            MoveAxis(new Vector3(0, 0, delta.z), ref velocity.z);
         }
 
-        /// <summary>
-        /// The speed of an object, in units/second
-        /// </summary>
-        public Vector3 velocity = new Vector3(0, 0, 0);
-
-        public void Move(Vector3 delta)
+        private void MoveAxis(Vector3 delta, ref float velocityAxis)
         {
-            if (GetComponent<Transform>() is Transform t)
+            if (transform == null)
+                return;
+
+            transform.position += delta;
+
+            if (Scene.main!.physicsSolver.HasAnyOverlap(collider!))
             {
-                t.position += delta;
-                ICollider? collider = GetComponent<ICollider>();
-                if (collider == null)
-                {
-                    Console.WriteLine("Rigid body has no collider attached!");
-                    return;
-                }
-                bool hasAnyOverlap = Scene.main!.physicsSolver.HasAnyOverlap(collider);
-                if (hasAnyOverlap)
-                {
-                    // Undo!!
-                    t.position -= delta;
-                    velocity = Vector3.Zero;
-                }
+                transform.position -= delta;
+
+                velocityAxis = 0f;
             }
-            else
-                Debug.Error("Rigidbody without Transform");
         }
     }
 }

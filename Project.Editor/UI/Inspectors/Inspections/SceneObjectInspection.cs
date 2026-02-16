@@ -1,5 +1,4 @@
 ﻿using ImGuiNET;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 using Project.Editor.Components;
 using Runtime.Components.Core;
 using Runtime.Input;
@@ -19,13 +18,13 @@ namespace Project.Editor.UI.Inspectors.Inspections
         public override void Render()
         {
             ImGui.Text(target.GetAsset()?.GetName());
-            if (ImGui.Button("Delete") || Keyboard.current.IsPressedThisFrame(Keys.Delete) || Keyboard.current.IsPressedThisFrame(Keys.Backspace))
+            if (ImGui.Button("Delete") || Keyboard.current.IsPressedThisFrame(Key.Delete) || Keyboard.current.IsPressedThisFrame(Key.Backspace))
             {
                 Scene.main.DestroyObject(target);
                 InspectorWindow.GetActive().SetInspection(null);
             }
 
-            if (ImGui.Button("Move") || Keyboard.current.IsPressedThisFrame(Keys.M))
+            if (ImGui.Button("Move") || Keyboard.current.IsPressedThisFrame(Key.M))
             {
                 target.AddComponent(new CasualPlace()
                 {

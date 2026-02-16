@@ -89,7 +89,7 @@ namespace Runtime.Graphics
 
         protected override void OnKeyDown(KeyboardKeyEventArgs e)
         {
-            Keyboard.current.SetKeyState(e.Key, true);
+            Keyboard.current.SetKeyState((Key)e.Key, true);
             base.OnKeyDown(e);
         }
 
@@ -100,7 +100,7 @@ namespace Runtime.Graphics
         }
         protected override void OnKeyUp(KeyboardKeyEventArgs e)
         {
-            Keyboard.current.SetKeyState(e.Key, false);
+            Keyboard.current.SetKeyState((Key)e.Key, false);
             base.OnKeyUp(e);
         }
 

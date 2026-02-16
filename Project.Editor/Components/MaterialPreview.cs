@@ -26,7 +26,7 @@ namespace Project.Editor.Components
         int currentPreviewModel = 0;
         public override void Update()
         {
-            if (Keyboard.current.IsPressedThisFrame(OpenTK.Windowing.GraphicsLibraryFramework.Keys.Space))
+            if (Keyboard.current.IsPressedThisFrame(Key.Space))
             {
                 currentPreviewModel++;
 

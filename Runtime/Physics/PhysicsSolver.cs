@@ -1,4 +1,5 @@
-﻿using Runtime.Components.Physics;
+﻿using Runtime.Calc;
+using Runtime.Components.Physics;
 using Runtime.Physics.Raycasts;
 
 namespace Runtime.Physics
@@ -36,22 +37,24 @@ namespace Runtime.Physics
         {
             float closestDistance = -1;
             ICollider? closestCollider = null;
+            Vector3 surfaceNormal = new Vector3();
 
             foreach (ICollider collider in colliders)
             {
                 if (raycast.ignore.Contains(collider))
                     continue;
 
-                float colliderDistance = collider.Raycast(raycast);
+                var result = collider.Raycast(raycast);
 
                 // We missed!
-                if (colliderDistance < 0)
+                if (result.distance < 0)
                     continue;
 
-                if (colliderDistance < closestDistance || closestDistance < 0)
+                if (result.distance < closestDistance || closestDistance < 0)
                 {
                     closestCollider = collider;
-                    closestDistance = colliderDistance;
+                    closestDistance = result.distance;
+                    surfaceNormal = result.normal;
                 }
             }
 
@@ -63,7 +66,8 @@ namespace Runtime.Physics
             return new RaycastResult(
                 distance: closestDistance!,
                 collider: closestCollider!,
-                hit: (raycast.position + (raycast.direction * closestDistance))!
+                hit: (raycast.position + (raycast.direction * closestDistance))!,
+                surfaceNormal: surfaceNormal
             );
         }
     }

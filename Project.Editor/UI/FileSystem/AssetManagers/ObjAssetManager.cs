@@ -2,9 +2,11 @@
 using Project.Editor.UI.FileSystem.FileInspectors;
 using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Inspectors.Inspections;
+using Project.Editor.UI.Scenes;
 using Project.Editor.UI.Styles;
 using Runtime.Calc;
 using Runtime.Components.Core;
+using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
 using Runtime.Graphics.Materials;
 using Runtime.Graphics.Renderers;
@@ -70,7 +72,9 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
 
             Debug.Log("Creating Camera...");
             Camera sceneCamera = new Camera();
-            sceneCamera.SetAsMain();
+            CameraWindow cameraWindow = new CameraWindow();
+            cameraWindow.RenderCamera(sceneCamera);
+            GuiWindow.Enable(cameraWindow);
 
             Debug.Log("Setting background...");
             sceneCamera.backgroundColor = Colors.ModelPreviewBackground;
