@@ -1,4 +1,5 @@
-﻿using Project.Editor;
+﻿using ImGuiNET;
+using Project.Editor;
 using Project.Editor.Code;
 using Project.Editor.UI;
 using Project.Editor.UI.Assets;
@@ -45,10 +46,14 @@ namespace Editor
 
             EditorUtils.LoadAssetDatabase();
 
+            GuiWindow.Enable(new DockerWindow());
             GuiWindow.Enable(new Headerbar());
             GuiWindow.Enable(new ProjectWindow());
             GuiWindow.Enable(new InspectorWindow());
             GuiWindow.Enable(new AssetBrowser());
+
+            ImGui.GetIO().ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;
+            ImGui.GetIO().ConfigFlags |= ImGuiConfigFlags.DockingEnable;
 
             Debug.Log("Overriding asset database to use open project instead.");
 
