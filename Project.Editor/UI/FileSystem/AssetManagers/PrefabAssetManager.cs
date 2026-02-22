@@ -2,6 +2,7 @@
 using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Inspectors.Inspections;
 using Runtime.Components.Core;
+using Runtime.Components.Lighting;
 using Runtime.Components.Test;
 using Runtime.Data;
 using Runtime.Graphics;
@@ -23,14 +24,21 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             return prefabAssetInspection;
         }
 
-        private ImageTexture icon;
+        private ImageTexture fallbackIcon;
         public PrefabAssetManager()
         {
-            icon = ImageTexture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/prefab.png"));
+            fallbackIcon = ImageTexture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/prefab.png"));
         }
         public override ImageTexture GetIcon()
         {
-            return icon;
+            Asset iconAsset = IconCache.GetIconForAsset(asset);
+            if (!File.Exists(iconAsset.GetSystemPath()))
+                return fallbackIcon;
+            ImageTexture icon = ImageTexture.LoadFromPng(iconAsset);
+            if (icon != null)
+                return icon;
+
+            return fallbackIcon;
         }
 
 
@@ -45,7 +53,12 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             gameObject.renderGizmos = true;
 
             AddVisibility(gameObject);
-
+            Scene.main.Instantiate(new GameObjectFactory()
+                .AddComponent(new SunLight()
+                {
+                    direction = new Runtime.Calc.Vector3(1, -1, 1)
+                })
+                .Build());
             scene.Instantiate(gameObject);
 
             GameObjectInspection inspection = new GameObjectInspection(gameObject, asset);
@@ -107,7 +120,8 @@ namespace Project.Editor.UI.FileSystem.AssetManagers
             Scene.main.Instantiate(new GameObjectFactory()
                 .AddComponent(new Transform()
                 {
-                    position = new Runtime.Calc.Vector3(0, 0, 0)
+                    position = new Runtime.Calc.Vector3(0, 0, 3),
+                    rotation = new Runtime.Calc.Vector3(0, 180, 0)
                 })
                 .AddComponent(sceneCamera)
                 .AddComponent(new FlightCamera())

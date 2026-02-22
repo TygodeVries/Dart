@@ -19,37 +19,49 @@ namespace Project.Editor.UI.FileSystem
             return "Project";
         }
 
-        string[] hiddenFiles = new string[]
+        private string[] hiddenFiles = new string[]
         {
             ".meta",
             ".mtl"
         };
-        ImageTexture folderTexture;
+        private ImageTexture folderTexture;
         public ProjectWindow()
         {
             folderTexture = ImageTexture.LoadFromPng(EditorUtils.GetAssetDatabase().GetAsset("assets/textures/icons/folder.png"));
         }
 
-        string selectedFolder = "";
-        string selectedFile = "";
+        private string selectedFolder = "";
+        private string selectedFile = "";
 
-        string browsePath = "assets";
+        private string browsePath = "assets";
         public override void Render()
         {
             string currentPath = Path.Combine(EditorUtils.projectPath, browsePath);
             DrawBackButton(currentPath);
 
-            // Get all files we need to draw
-            string[] directories;
-            string[] files;
+            List<string> directories = new List<string>();
+            List<string> files = new List<string>();
+
             try
             {
-                directories = Directory.GetDirectories(Path.Combine(EditorUtils.projectPath, browsePath));
-                files = Directory.GetFiles(Path.Combine(EditorUtils.projectPath, browsePath));
+                foreach (var entry in Directory.EnumerateFileSystemEntries(currentPath))
+                {
+                    try
+                    {
+                        if (Directory.Exists(entry))
+                            directories.Add(entry);
+                        else if (File.Exists(entry))
+                            files.Add(entry);
+                    }
+                    catch
+                    {
+                        Debug.Warning("Skipped unreadable entry: " + entry);
+                    }
+                }
             }
             catch (Exception e)
             {
-                Debug.Error("Could not open directory: " + e.Message);
+                Debug.Error("Could not enumerate directory: " + e.Message);
                 return;
             }
 

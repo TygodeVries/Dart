@@ -64,7 +64,7 @@ namespace Runtime.Components.Core
         {
             if (main == null)
                 main = this;
-
+            AspectRatio = Game.width / (float)Game.height;
             RenderCanvas.main.GetGraphicsPipeline().AddCamera(this);
         }
 
@@ -83,6 +83,7 @@ namespace Runtime.Components.Core
             main = this;
         }
 
+        public float AspectRatio;
         /// <summary>
         /// Returns the projection matrix of the camera
         /// </summary>
@@ -91,7 +92,7 @@ namespace Runtime.Components.Core
         {
             return Matrix4.CreatePerspectiveFieldOfView(
                 OpenTK.Mathematics.MathHelper.DegreesToRadians(fieldOfView),
-                Game.width / (float)Game.height,
+                AspectRatio,
                 0.1f, 4000.0f
             );
         }

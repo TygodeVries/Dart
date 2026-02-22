@@ -2,11 +2,14 @@
 using Project.Editor.UI.Generic;
 using Runtime;
 using Runtime.Calc;
+using Runtime.Components.Core;
 using Runtime.Data;
 using Runtime.DearImGUI.Gui;
+using Runtime.Graphics;
 using Runtime.Logging;
 using Runtime.Objects;
 using Runtime.Objects.Prefabs;
+using Runtime.Scenes;
 using System.Reflection;
 
 namespace Project.Editor.UI.Inspectors.Inspections
@@ -77,6 +80,33 @@ namespace Project.Editor.UI.Inspectors.Inspections
             PrefabGameObject prefab = PrefabGameObject.FromGameObject(gameObject);
             File.WriteAllText(asset.GetSystemPath(), prefab.ToJson());
             OnRedraw?.Invoke(gameObject);
+
+            RenderTexture renderTexture = new RenderTexture(256, 256);
+            Camera camera = new Camera();
+            camera.AspectRatio = 1;
+            camera.SetRenderTexture(renderTexture);
+
+            GameObject cameraObj = new GameObjectFactory()
+                .AddComponent(new Transform()
+                {
+                    position = new Vector3(0, 0, 3),
+                    rotation = new Vector3(0, 180, 0)
+                })
+                .AddComponent(camera)
+                .Build();
+
+            camera.endRender += () =>
+            {
+                MainThread.Run(() =>
+                {
+                    renderTexture.SaveToAsset(IconCache.GetIconForAsset(asset));
+                    Scene.main.DestroyObject(cameraObj);
+                });
+
+                camera.endRender = null;
+            };
+
+            Scene.main.Instantiate(cameraObj);
         }
         private void DrawInspectableMember(MemberInfo member, Type valueType, Func<object?> getter, Action<object?> setter)
         {

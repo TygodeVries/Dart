@@ -11,7 +11,7 @@ namespace Runtime.Graphics
     [AssetReference(new string[] { ".png" }, nameof(LoadFromPngSimple))]
     public class ImageTexture : Texture
     {
-        byte[] pixels;
+        private byte[] pixels;
         public int width;
         public int height;
         public int Handle = 0;
@@ -27,8 +27,12 @@ namespace Runtime.Graphics
             this.pixels = pixels;
         }
 
-        static Dictionary<string, ImageTexture> cache = new Dictionary<string, ImageTexture>();
 
+        private static Dictionary<string, ImageTexture> cache = new Dictionary<string, ImageTexture>();
+        public static void RemoveFromCache(Asset asset)
+        {
+            cache.Remove(asset.GetSystemPath());
+        }
         public static ImageTexture LoadFromPngSimple(Asset asset)
         {
             return LoadFromPng(asset);

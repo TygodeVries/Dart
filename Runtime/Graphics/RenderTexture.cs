@@ -1,4 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
+using Runtime.Data;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Runtime.Graphics
 {
@@ -61,6 +64,36 @@ namespace Runtime.Graphics
             // Reset
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
+
+        public void SaveToAsset(Asset asset)
+        {
+            byte[] pixels = new byte[Width * Height * 4];
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, Framebuffer);
+            GL.ReadPixels(0, 0, Width, Height, PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+
+            byte[] data = (byte[])pixels.Clone();
+
+            using Image<Rgba32> image = new Image<Rgba32>(Width, Height);
+
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    int idx = ((y * Width) + x) * 4;
+                    byte r = data[idx + 0];
+                    byte g = data[idx + 1];
+                    byte b = data[idx + 2];
+                    byte a = data[idx + 3];
+
+                    // Flip vertically for ImageSharp
+                    image[x, Height - y - 1] = new Rgba32(r, g, b, a);
+                }
+            }
+
+            image.Save(asset.GetSystemPath());
+        }
+
 
         public void Bind()
         {
