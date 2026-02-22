@@ -82,14 +82,14 @@ namespace Project.Editor.UI
         {
             if (EditorUtils.IsGameRunning())
             {
-                if (ImGui.Button("Play Game"))
+                if (ImGui.Button("|>"))
                 {
                     EditorUtils.StartGame();
                 }
             }
             else
             {
-                if (ImGui.Button("Stop Game"))
+                if (ImGui.Button("||"))
                 {
                     EditorUtils.StopGame();
                 }

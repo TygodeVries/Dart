@@ -59,7 +59,6 @@ namespace Runtime.Graphics.Pipeline
             }
         }
 
-
         /// <summary>
         /// Add a renderer to be rendered starting the next frame
         /// </summary>
@@ -141,6 +140,7 @@ namespace Runtime.Graphics.Pipeline
         private void NoCameras()
         {
             GL.ClearColor(0.4f, 0.1f, 0.1f, 1);
+            Debug.Warning("No Camera's Rendering!");
         }
 
         /// <summary>
@@ -203,6 +203,7 @@ namespace Runtime.Graphics.Pipeline
             // For every camera currently loaded
             foreach (Camera camera in cameras)
             {
+                GL.UseProgram(0);
 
                 camera.startRender?.Invoke();
                 // Set render texture
@@ -224,7 +225,7 @@ namespace Runtime.Graphics.Pipeline
                 projection = camera.GetProjectionMatrix();
 
                 RenderRenderers(view, projection);
-                Debug.Log(view.ToString());
+
                 // Reset render texture
                 if (camera.renderTexture != null)
                     camera.renderTexture.Unbind(RenderCanvas.main!.FramebufferSize.X, RenderCanvas.main!.FramebufferSize.Y);

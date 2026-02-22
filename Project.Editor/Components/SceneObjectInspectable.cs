@@ -2,6 +2,7 @@
 using Project.Editor.UI.Inspectors.Inspections;
 using Project.Editor.UI.Scenes;
 using Runtime.Components.Core;
+using Runtime.DearImGUI.Gui;
 using Runtime.Input;
 using Runtime.Objects;
 using Runtime.Physics.Raycasts;
@@ -17,6 +18,9 @@ namespace Project.Editor.Components
 
         public override void Update()
         {
+            if (GuiWindow.IsMouseOverlappingAnyWindow())
+                return;
+
             if (Mouse.current.LeftPressedThisFrame() && !SceneEditor.IsPlacing())
             {
                 Raycast raycast = Camera.main.GetRaycastFromMouse();

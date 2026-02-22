@@ -1,5 +1,4 @@
-﻿using ImGuiNET;
-using Runtime.DearImGUI.Gui;
+﻿using Runtime.DearImGUI.Gui;
 
 namespace Project.Editor.UI
 {
@@ -12,7 +11,7 @@ namespace Project.Editor.UI
 
         public override void Render()
         {
-            ImGui.DockSpaceOverViewport();
+            // ImGui.DockSpaceOverViewport();
         }
     }
 }

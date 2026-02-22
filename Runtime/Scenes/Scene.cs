@@ -138,7 +138,6 @@ namespace Runtime.Scenes
             });
 
             gameObject?.Unload();
-            Scene.main.Save();
         }
 
         private void Load()

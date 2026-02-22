@@ -33,6 +33,8 @@ namespace Runtime.Input
                 // Key went down this frame
                 if (!keysPressedThisFrame.Contains(key))
                     keysPressedThisFrame.Add(key);
+
+                AnyKeyPressed?.Invoke();
             }
             else if (!pressed && wasPressed)
             {
@@ -41,6 +43,8 @@ namespace Runtime.Input
                     keysReleasedThisFrame.Add(key);
             }
         }
+
+        public Action? AnyKeyPressed;
 
         public float GetAxis(KeyboardAxis axis)
         {

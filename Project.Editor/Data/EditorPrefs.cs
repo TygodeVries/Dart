@@ -44,5 +44,18 @@ namespace Project.Editor.Data
 
             return (string)record!.GetValue()!;
         }
+
+
+        public static void SetValue(string key, object value)
+        {
+            ValueRecord? record = GetRecord(key);
+            if (record != null)
+            {
+                record.SetValue(value);
+                return;
+            }
+
+            records.Add(new ValueRecord("key", value));
+        }
     }
 }

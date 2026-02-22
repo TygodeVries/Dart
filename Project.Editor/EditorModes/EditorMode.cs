@@ -1,10 +1,19 @@
-﻿namespace Project.Editor.EditorModes
+﻿using Runtime.Input;
+
+namespace Project.Editor.EditorModes
 {
     public class EditorMode
     {
         public static void Init()
         {
             WindowSwitcher.Init();
+            Keyboard.current.AnyKeyPressed += () =>
+            {
+                if (Keyboard.current.IsPressedThisFrame(Key.Tab))
+                {
+                    SwitchModes();
+                }
+            };
         }
 
         public static void SwitchModes()
@@ -20,6 +29,8 @@
         {
             return mode;
         }
+
+
 
         public static void SetMode(Mode mode)
         {

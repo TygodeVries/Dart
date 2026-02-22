@@ -13,13 +13,13 @@ namespace Runtime.Graphics.Renderers
         private static Material? uiTextMaterial;
         public void LoadTextMaterials()
         {
-            ShaderProgram worldTextShader = ShaderProgram.FromFile(Game.GetAssetDatabase().GetAsset("assets/shaders/worldText.vert"), Game.GetAssetDatabase().GetAsset("assets/shaders/worldText.frag"));
+            ShaderProgram worldTextShader = ShaderProgram.FromFile(assetDatabase.GetAsset("assets/shaders/worldText.vert"), assetDatabase.GetAsset("assets/shaders/worldText.frag"));
             worldTextShader.Compile();
 
             worldTextMaterial = new Material(worldTextShader);
             worldTextMaterial.SetTexture("u_Texture", ImageTexture.LoadFromPng(font.texture));
 
-            ShaderProgram uiTextShader = ShaderProgram.FromFile(Game.GetAssetDatabase().GetAsset("assets/shaders/uiText.vert"), Game.GetAssetDatabase().GetAsset("assets/shaders/uiText.frag"));
+            ShaderProgram uiTextShader = ShaderProgram.FromFile(assetDatabase.GetAsset("assets/shaders/uiText.vert"), assetDatabase.GetAsset("assets/shaders/uiText.frag"));
             uiTextShader.Compile();
 
             uiTextMaterial = new Material(uiTextShader)
@@ -33,18 +33,20 @@ namespace Runtime.Graphics.Renderers
         public float fontSize = 0.1f;
         public float characterDistance = 0.5f;
 
-        Font? font;
+        private Font? font;
 
         public void Apply()
         {
             SetText(text);
         }
 
+        private AssetDatabase assetDatabase;
+
         public override void Load()
         {
             if (font == null)
             {
-                font = new Font(Game.GetAssetDatabase().GetAsset("assets/fonts/download.png"));
+                font = new Font(assetDatabase.GetAsset("assets/fonts/download.png"));
             }
 
             LoadTextMaterials();
@@ -52,7 +54,7 @@ namespace Runtime.Graphics.Renderers
             base.Load();
         }
 
-        string text;
+        private string text;
         public void SetText(string text)
         {
             this.text = text;
@@ -111,7 +113,7 @@ namespace Runtime.Graphics.Renderers
             uvs.AddRange(font.GetCharacterUv(c));
         }
 
-        public TextRenderer(TextSpace textSpace)
+        public TextRenderer(TextSpace textSpace, AssetDatabase assetDatabase)
         {
             text = "";
             if (textSpace == TextSpace.World)
@@ -140,9 +142,11 @@ namespace Runtime.Graphics.Renderers
 
                 this.material = uiTextMaterial;
             }
+
+            this.assetDatabase = assetDatabase;
         }
 
-        public TextRenderer(string text, TextSpace textSpace) : this(textSpace)
+        public TextRenderer(string text, TextSpace textSpace, AssetDatabase database) : this(textSpace, database)
         {
             SetText(text);
         }
@@ -169,7 +173,7 @@ namespace Runtime.Graphics.Renderers
         }
 
         public Asset texture;
-        string fontText = " 1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,.<>/?!@#$%^&*()";
+        private string fontText = " 1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,.<>/?!@#$%^&*()";
         public Vector2[] GetCharacterUv(char c)
         {
             int charIndex = fontText.IndexOf(c);

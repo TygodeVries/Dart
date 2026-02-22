@@ -13,14 +13,15 @@ namespace Project.Editor.UI.Inspectors.Inspections
 {
     public class GameObjectInspection : Inspection
     {
-        GameObject gameObject;
-        Asset asset;
+        private GameObject gameObject;
+        private Asset asset;
         public GameObjectInspection(GameObject gameObject, Asset asset)
         {
             this.gameObject = gameObject;
             this.asset = asset;
         }
 
+        public Action<GameObject> OnRedraw;
         public override void Render()
         {
             foreach (Component component in gameObject.GetComponents())
@@ -75,8 +76,9 @@ namespace Project.Editor.UI.Inspectors.Inspections
             Debug.Log("Saving prefab...");
             PrefabGameObject prefab = PrefabGameObject.FromGameObject(gameObject);
             File.WriteAllText(asset.GetSystemPath(), prefab.ToJson());
+            OnRedraw?.Invoke(gameObject);
         }
-        void DrawInspectableMember(MemberInfo member, Type valueType, Func<object?> getter, Action<object?> setter)
+        private void DrawInspectableMember(MemberInfo member, Type valueType, Func<object?> getter, Action<object?> setter)
         {
             InspectableAttribute? attribute =
                 member.GetCustomAttribute<InspectableAttribute>();

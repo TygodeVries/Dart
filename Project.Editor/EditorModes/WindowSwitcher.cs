@@ -6,6 +6,7 @@ using Project.Editor.UI.FileSystem;
 using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Scenes;
 using Runtime;
+using Runtime.Components.Core;
 using Runtime.Data;
 using Runtime.DearImGUI.Gui;
 using Runtime.Logging;
@@ -43,13 +44,24 @@ namespace Project.Editor.EditorModes
         {
             GuiWindow.Enable(new ProjectWindow());
             GuiWindow.Enable(new InspectorWindow());
+            LoadBackgroundScene();
         }
 
         private static void EnableBuildMode()
         {
             GuiWindow.Enable(new AssetBrowser());
             GuiWindow.Enable(new BuildBar());
+            GuiWindow.Enable(new InspectorWindow());
             LoadLastScene();
+        }
+
+        private static void LoadBackgroundScene()
+        {
+            Scene scene = new Scene();
+            Scene.Load(scene);
+            scene.Instantiate(new GameObjectFactory()
+                .AddComponent(new Camera())
+                .Build());
         }
 
         private static void LoadLastScene()
