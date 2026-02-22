@@ -16,7 +16,7 @@ namespace Runtime.Objects.Prefabs
                 Component? component = componentPrefab.GetComponent();
                 if (component == null)
                 {
-                    Debug.Error("Failed to create game object prefab");
+                    Debug.Error("Failed to load component while making gameobject, this might cause wierd effects!");
                     continue;
                 }
 

@@ -14,7 +14,7 @@ namespace Runtime.Scenes
     [AssetReference(new string[] { ".scene" }, nameof(LoadFromAsset))]
     public class Scene : AssetReference
     {
-        bool hasBeenLoaded = false;
+        private bool hasBeenLoaded = false;
         public static void Load(Scene scene)
         {
             if (UserCode.Unloading())
@@ -108,6 +108,7 @@ namespace Runtime.Scenes
             File.WriteAllText(asset.GetSystemPath(), JsonSerializer.Serialize(sceneFile));
         }
 
+
         public void Unload()
         {
             if (RenderCanvas.main != null)
@@ -115,6 +116,7 @@ namespace Runtime.Scenes
                 if (RenderCanvas.main!.GetGraphicsPipeline() is DefaultGraphicsPipeline defaultGraphics)
                 {
                     defaultGraphics.ClearRenderersOfScene(this);
+                    defaultGraphics.ClearCameras();
                 }
             }
 
@@ -170,7 +172,7 @@ namespace Runtime.Scenes
 
 
 
-        LightManager defaultLightManager = new LightManager();
+        private LightManager defaultLightManager = new LightManager();
         public LightManager GetLightManager()
         {
             return defaultLightManager;
@@ -185,13 +187,13 @@ namespace Runtime.Scenes
             this.skyboxRenderer = skyboxRenderer;
         }
 
-        SkyboxRenderer? skyboxRenderer = null;
+        private SkyboxRenderer? skyboxRenderer = null;
         public SkyboxRenderer? GetSkybox() { return skyboxRenderer; }
 
         public PhysicsSolver physicsSolver = new PhysicsSolver();
 
-        List<IManager> managers = new List<IManager>();
-        List<GameObject> gameObjects = new List<GameObject>();
+        private List<IManager> managers = new List<IManager>();
+        private List<GameObject> gameObjects = new List<GameObject>();
         public List<GameObject> GetGameObjects()
         {
             return gameObjects;

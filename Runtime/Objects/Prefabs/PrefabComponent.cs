@@ -49,57 +49,67 @@ namespace Runtime.Objects.Prefabs
                 return null;
             }
 
-            Component comp = (Component)Activator.CreateInstance(typeInstance);
-            ObjectTracker.Track(comp);
-
-            PropertyInfo[] propertyInfos = comp.GetType().GetProperties();
-            FieldInfo[] infos = comp.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-            foreach (ValueRecord valueRecord in overrides)
+            try
             {
-                object? val = valueRecord.GetValue();
+                Component comp = (Component)Activator.CreateInstance(typeInstance);
+                ObjectTracker.Track(comp);
 
-                FieldInfo? field = infos.FirstOrDefault(f => f.Name == valueRecord.Name);
-                if (field != null)
+                PropertyInfo[] propertyInfos = comp.GetType().GetProperties();
+                FieldInfo[] infos = comp.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+                foreach (ValueRecord valueRecord in overrides)
                 {
-                    Type fieldType = field.FieldType;
+                    object? val = valueRecord.GetValue();
 
-                    // Handle nulls for value types
-                    if (val == null && fieldType.IsValueType && Nullable.GetUnderlyingType(fieldType) == null)
+                    FieldInfo? field = infos.FirstOrDefault(f => f.Name == valueRecord.Name);
+                    if (field != null)
                     {
-                        val = Activator.CreateInstance(fieldType);
+                        Type fieldType = field.FieldType;
+
+                        // Handle nulls for value types
+                        if (val == null && fieldType.IsValueType && Nullable.GetUnderlyingType(fieldType) == null)
+                        {
+                            val = Activator.CreateInstance(fieldType);
+                        }
+
+                        field.SetValue(comp, val);
+                        continue;
                     }
 
-                    field.SetValue(comp, val);
-                    continue;
+                    PropertyInfo? prop = propertyInfos.FirstOrDefault(p => p.Name == valueRecord.Name);
+                    if (prop != null)
+                    {
+                        Type propType = prop.PropertyType;
+
+                        if (val == null && propType.IsValueType && Nullable.GetUnderlyingType(propType) == null)
+                        {
+                            val = Activator.CreateInstance(propType);
+                        }
+
+                        if (prop.CanWrite)
+                        {
+                            prop.SetValue(comp, val);
+                        }
+                        else
+                        {
+                            Debug.Error($"Property {prop.Name} on {comp.GetType()} is read-only.");
+                        }
+
+                        continue;
+                    }
+
+                    Debug.Error($"Could not find field or property named '{valueRecord.Name}' on {comp.GetType()}");
                 }
 
-                PropertyInfo? prop = propertyInfos.FirstOrDefault(p => p.Name == valueRecord.Name);
-                if (prop != null)
-                {
-                    Type propType = prop.PropertyType;
 
-                    if (val == null && propType.IsValueType && Nullable.GetUnderlyingType(propType) == null)
-                    {
-                        val = Activator.CreateInstance(propType);
-                    }
-
-                    if (prop.CanWrite)
-                    {
-                        prop.SetValue(comp, val);
-                    }
-                    else
-                    {
-                        Debug.Error($"Property {prop.Name} on {comp.GetType()} is read-only.");
-                    }
-
-                    continue;
-                }
-
-                Debug.Error($"Could not find field or property named '{valueRecord.Name}' on {comp.GetType()}");
+                return comp;
             }
 
+            catch (Exception e)
+            {
+                Debug.Error($"Could not load component of type: {typeInstance} because {e}\nThe component was not loaded with the object.");
+            }
 
-            return comp;
+            return null;
         }
     }
 }

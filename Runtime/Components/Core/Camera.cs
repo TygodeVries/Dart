@@ -55,7 +55,7 @@ namespace Runtime.Components.Core
         /// <summary>
         /// The color used to clear the background
         /// </summary>
-        public Vector3 backgroundColor = new Vector3(0.1f, 0.77f, 0.78f);
+        public Vector3 backgroundColor = new Vector3(0.65f, 0.77f, 0.78f);
 
         /// <summary>
         /// Create a new camera, if there is no main camera, auto assign this
@@ -122,7 +122,7 @@ namespace Runtime.Components.Core
             }
         }
 
-        Matrix4 viewMatrix;
+        private Matrix4 viewMatrix;
 
         public void ForceViewMatrix(Matrix4 view)
         {

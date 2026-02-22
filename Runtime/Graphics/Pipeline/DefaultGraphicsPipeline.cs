@@ -11,7 +11,7 @@ namespace Runtime.Graphics.Pipeline
 {
     public class DefaultGraphicsPipeline : IGraphicsPipeline
     {
-        GLDebugProc? GLDebugProc;
+        private GLDebugProc? GLDebugProc;
         public void Initialize()
         {
             Debug.Log("Initializing...");
@@ -40,8 +40,7 @@ namespace Runtime.Graphics.Pipeline
 
             EnableCap[] caps = new EnableCap[]
             {
-                 EnableCap.Multisample,
-                 EnableCap.CullFace
+                 EnableCap.Multisample
             };
             Debug.Log("Turning on OpenGL features...");
             string features = "";
@@ -89,13 +88,13 @@ namespace Runtime.Graphics.Pipeline
         }
 
         // Anything that needs to be rendered by this graphics pipeline
-        List<Renderer> renderers = new List<Renderer>();
+        private List<Renderer> renderers = new List<Renderer>();
 
         // Any custom passes we might need to do (ui?)
-        List<RenderPass> customRenderPasses = new List<RenderPass>();
+        private List<RenderPass> customRenderPasses = new List<RenderPass>();
 
         // Different perspectives to render from
-        List<Camera> cameras = new List<Camera>();
+        private List<Camera> cameras = new List<Camera>();
 
         public void AddRenderPass(RenderPass renderPass)
         {
@@ -122,6 +121,10 @@ namespace Runtime.Graphics.Pipeline
                 }
             }
         }
+        public void ClearCameras()
+        {
+            cameras.Clear();
+        }
 
         /// <summary>
         /// Add a camera to be rendererd
@@ -137,7 +140,7 @@ namespace Runtime.Graphics.Pipeline
         /// </summary>
         private void NoCameras()
         {
-            GL.ClearColor(0.1f, 0.1f, 0.1f, 1);
+            GL.ClearColor(0.4f, 0.1f, 0.1f, 1);
         }
 
         /// <summary>
@@ -193,12 +196,14 @@ namespace Runtime.Graphics.Pipeline
                 NoCameras();
             }
 
+
             // Presort render order
             renderers.Sort((a, b) => a.Order - b.Order);
 
             // For every camera currently loaded
             foreach (Camera camera in cameras)
             {
+
                 camera.startRender?.Invoke();
                 // Set render texture
                 if (camera.renderTexture != null)
@@ -219,7 +224,7 @@ namespace Runtime.Graphics.Pipeline
                 projection = camera.GetProjectionMatrix();
 
                 RenderRenderers(view, projection);
-
+                Debug.Log(view.ToString());
                 // Reset render texture
                 if (camera.renderTexture != null)
                     camera.renderTexture.Unbind(RenderCanvas.main!.FramebufferSize.X, RenderCanvas.main!.FramebufferSize.Y);

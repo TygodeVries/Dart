@@ -1,4 +1,5 @@
 ﻿using ImGuiNET;
+using Project.Editor.EditorModes;
 using Project.Editor.UI.Assets;
 using Project.Editor.UI.FileSystem;
 using Project.Editor.UI.Inspectors;
@@ -25,6 +26,7 @@ namespace Project.Editor.UI
         {
             ImGui.BeginMainMenuBar();
             Jobs.RenderList();
+            DrawModeButton();
             DrawPlayButton();
             Window();
             ImGui.EndMainMenuBar();
@@ -90,6 +92,24 @@ namespace Project.Editor.UI
                 if (ImGui.Button("Stop Game"))
                 {
                     EditorUtils.StopGame();
+                }
+            }
+        }
+
+        private void DrawModeButton()
+        {
+            if (EditorMode.GetMode() == Mode.Build)
+            {
+                if (ImGui.Button("Build"))
+                {
+                    EditorMode.SetMode(Mode.Edit);
+                }
+            }
+            else
+            {
+                if (ImGui.Button("Edit"))
+                {
+                    EditorMode.SetMode(Mode.Build);
                 }
             }
         }

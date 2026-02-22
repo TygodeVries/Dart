@@ -48,6 +48,15 @@
                 m23,
                 m33 });
         }
+
+        public override string ToString()
+        {
+            return
+                $"{m00}, {m01}, {m02}, {m03}\n" +
+                $"{m10}, {m11}, {m12}, {m13}\n" +
+                $"{m20}, {m21}, {m22}, {m23}\n" +
+                $"{m30}, {m31}, {m32}, {m33}\n";
+        }
         public static Matrix4 LookAt(Vector3 eye, Vector3 target, Vector3 up)
         {
             return new Matrix4(OpenTK.Mathematics.Matrix4.LookAt(eye.ToOpenTK(), target.ToOpenTK(), up.ToOpenTK()));

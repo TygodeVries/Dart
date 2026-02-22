@@ -1,15 +1,11 @@
 ﻿using ImGuiNET;
 using Project.Editor;
 using Project.Editor.Code;
-using Project.Editor.UI;
-using Project.Editor.UI.Assets;
-using Project.Editor.UI.FileSystem;
+using Project.Editor.EditorModes;
 using Project.Editor.UI.FileSystem.FileInspectors;
-using Project.Editor.UI.Inspectors;
 using Project.Editor.UI.Styles;
 using Runtime;
 using Runtime.Data;
-using Runtime.DearImGUI.Gui;
 using Runtime.Graphics;
 using Runtime.Logging;
 
@@ -46,12 +42,6 @@ namespace Editor
 
             EditorUtils.LoadAssetDatabase();
 
-            GuiWindow.Enable(new DockerWindow());
-            GuiWindow.Enable(new Headerbar());
-            GuiWindow.Enable(new ProjectWindow());
-            GuiWindow.Enable(new InspectorWindow());
-            GuiWindow.Enable(new AssetBrowser());
-
             ImGui.GetIO().ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;
             ImGui.GetIO().ConfigFlags |= ImGuiConfigFlags.DockingEnable;
 
@@ -69,6 +59,8 @@ namespace Editor
             Compiler.Generate();
             Compiler.StartAutoCompile();
             UserCode.Load();
+            EditorMode.Init();
+            EditorMode.SetMode(Mode.Edit);
         }
     }
 }

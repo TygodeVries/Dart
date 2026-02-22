@@ -3,6 +3,7 @@ using Runtime.Calc;
 using Runtime.Components;
 using Runtime.Components.Core;
 using Runtime.Components.Physics;
+using Runtime.Components.Test;
 using Runtime.Data;
 using Runtime.Graphics;
 using Runtime.Graphics.Materials;
@@ -22,10 +23,26 @@ namespace Project.Editor.UI.Scenes
             SceneEditor.MakeAllObjectsEditorReady();
         }
 
-        static Scene? scene = null;
+        private static Scene? scene = null;
         public static bool IsEnabledInCurrentScene()
         {
             return scene == Scene.main && Scene.main != null;
+        }
+
+        public static void CreateSceneCamera()
+        {
+            Camera sceneCamera = new Camera();
+            sceneCamera.SetAsMain();
+
+            Scene.main.Instantiate(new GameObjectFactory()
+                .AddComponent(new Transform()
+                {
+                    position = new Runtime.Calc.Vector3(0, 0, 0)
+                })
+                .AddComponent(sceneCamera)
+                .AddComponent(new FlightCamera())
+                .Build()
+                );
         }
 
         private static void CreateCursor(Scene scene)
@@ -79,7 +96,7 @@ namespace Project.Editor.UI.Scenes
                 .Build());
         }
 
-        static GameObject? objectCursor = null;
+        private static GameObject? objectCursor = null;
         public static void PlaceObject(GameObject gm)
         {
             if (IsPlacing())
