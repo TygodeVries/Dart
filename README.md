@@ -1,2 +1,2 @@
-# Roadmap
-Check out our roadmap on [Trello](https://trello.com/b/LtrHSKLh/dart-game-engine-roadmap)
+This project has been discontinued (for now) in place of Yarn. 
+Build to be cross platform with Web, this was not possible with Dart.
